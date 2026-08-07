@@ -1,0 +1,7 @@
+client/dist
+client/node_modules
+server/node_modules
+server/generated
+server/backups
+server/prisma/migrations
+*.log

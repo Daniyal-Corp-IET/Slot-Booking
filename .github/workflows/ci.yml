@@ -1,0 +1,43 @@
+name: Project checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/slot_booking
+      JWT_SECRET: ci-only-secret-with-more-than-32-characters
+      NODE_ENV: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: |
+            client/package-lock.json
+            server/package-lock.json
+      - name: Install client dependencies
+        run: npm ci
+        working-directory: client
+      - name: Install server dependencies
+        run: npm ci
+        working-directory: server
+      - name: Audit dependencies
+        run: npm run audit
+      - name: Check server JavaScript
+        run: npm run check
+        working-directory: server
+      - name: Validate database schema
+        run: npx prisma validate
+        working-directory: server
+      - name: Lint client
+        run: npm run lint
+        working-directory: client
+      - name: Build client
+        run: npm run build
+        working-directory: client

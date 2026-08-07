@@ -1,0 +1,12 @@
+**/node_modules/
+**/dist/
+**/.env
+**/.env.*
+!**/.env.example
+server/generated/
+server/backups/
+*.log
+.DS_Store
+.idea/
+.vscode/
+.agents/

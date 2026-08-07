@@ -1,0 +1,18 @@
+{
+  "name": "itx-slot-booking",
+  "private": true,
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "install:all": "npm --prefix client ci && npm --prefix server ci",
+    "check": "npm --prefix server run check && npm --prefix client run lint && npm --prefix client run build",
+    "migrate:deploy": "npm --prefix server run prisma:migrate:deploy",
+    "audit": "npm --prefix client audit --audit-level=high && npm --prefix server audit --audit-level=high",
+    "format": "prettier --write client/src server --ignore-unknown",
+    "format:check": "prettier --check client/src server --ignore-unknown"
+  },
+  "devDependencies": {
+    "prettier": "^3.9.6"
+  }
+}

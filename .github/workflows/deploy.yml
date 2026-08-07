@@ -1,0 +1,22 @@
+name: Deploy production
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: [Project checks]
+    types: [completed]
+
+jobs:
+  deploy:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger the configured hosting deployment
+        env:
+          DEPLOY_WEBHOOK_URL: ${{ secrets.DEPLOY_WEBHOOK_URL }}
+        run: |
+          if [ -z "$DEPLOY_WEBHOOK_URL" ]; then
+            echo "Add DEPLOY_WEBHOOK_URL in GitHub repository secrets before deploying."
+            exit 1
+          fi
+          curl --fail --silent --show-error --request POST "$DEPLOY_WEBHOOK_URL"

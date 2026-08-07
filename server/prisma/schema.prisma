@@ -1,0 +1,150 @@
+generator client {
+  provider   = "prisma-client-js"
+  engineType = "client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum BookingStatus {
+  UPCOMING
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+model Admin {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  username     String   @unique
+  passwordHash String   @map("password_hash")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("admins")
+}
+
+model Course {
+  id           Int       @id @default(autoincrement())
+  name         String    @unique @map("course_name")
+  abbreviation String    @unique @map("course_abbreviation")
+  students     Student[]
+
+  @@map("courses")
+}
+
+model Student {
+  id                  String        @id @map("student_id")
+  firstName           String        @map("first_name")
+  lastName            String        @map("last_name")
+  programStart        DateTime      @map("program_start") @db.Date
+  programEnd          DateTime      @map("program_end") @db.Date
+  email               String        @unique
+  phoneNumber         String?       @map("phone_number")
+  passwordHash        String        @map("password_hash")
+  sessionVersion      Int           @default(0) @map("session_version")
+  monthlyLimitMinutes Int           @default(2100) @map("monthly_limit_minutes")
+  courseId            Int           @map("course_id")
+  createdAt           DateTime      @default(now()) @map("created_at")
+  course              Course        @relation(fields: [courseId], references: [id])
+  bookings            Booking[]
+  bookingHolds        BookingHold[]
+
+  @@index([courseId])
+  @@map("students")
+}
+
+model System {
+  id           Int            @id @default(autoincrement()) @map("system_number")
+  isActive     Boolean        @default(true) @map("is_active")
+  createdAt    DateTime       @default(now()) @map("created_at")
+  bookings     Booking[]
+  bookingHolds BookingHold[]
+  outages      SystemOutage[]
+
+  @@map("systems")
+}
+
+model SystemOutage {
+  id        String    @id @default(uuid())
+  systemId  Int       @map("system_number")
+  startsAt  DateTime  @default(now()) @map("starts_at")
+  endsAt    DateTime? @map("ends_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  system    System    @relation(fields: [systemId], references: [id])
+
+  @@index([systemId, startsAt])
+  @@map("system_outages")
+}
+
+model Booking {
+  id            String        @id @default(uuid())
+  reference     String        @unique
+  studentId     String        @map("student_id")
+  systemId      Int           @map("system_number")
+  startsAt      DateTime      @map("starts_at")
+  endsAt        DateTime      @map("ends_at")
+  bookedMinutes Int           @map("booked_minutes")
+  usedMinutes   Int?          @map("used_minutes")
+  status        BookingStatus @default(UPCOMING)
+  startedAt     DateTime?     @map("started_at")
+  endedAt       DateTime?     @map("ended_at")
+  cancelledAt   DateTime?     @map("cancelled_at")
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+  student       Student       @relation(fields: [studentId], references: [id])
+  system        System        @relation(fields: [systemId], references: [id])
+
+  @@index([studentId, startsAt])
+  @@index([systemId, startsAt])
+  @@index([status, startsAt])
+  @@map("bookings")
+}
+
+model BookingHold {
+  id        String   @id @default(uuid())
+  studentId String   @unique @map("student_id")
+  systemId  Int      @map("system_number")
+  startsAt  DateTime @map("starts_at")
+  endsAt    DateTime @map("ends_at")
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  system    System   @relation(fields: [systemId], references: [id], onDelete: Cascade)
+
+  @@index([systemId, startsAt, endsAt])
+  @@index([expiresAt])
+  @@map("booking_holds")
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  actorId    String   @map("actor_id")
+  actorRole  String   @map("actor_role")
+  action     String
+  entityType String   @map("entity_type")
+  entityId   String?  @map("entity_id")
+  details    Json     @default("{}")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([actorId, createdAt])
+  @@index([entityType, entityId])
+  @@map("audit_logs")
+}
+
+model LabPolicy {
+  id                      Int      @id @default(1)
+  monthlyLimitMinutes     Int      @default(2100) @map("monthly_limit_minutes")
+  dailyLimitMinutes       Int      @default(300) @map("daily_limit_minutes")
+  bookingIncrementMinutes Int      @default(10) @map("booking_increment_minutes")
+  minDurationMinutes      Int      @default(30) @map("min_duration_minutes")
+  maxDurationMinutes      Int      @default(180) @map("max_duration_minutes")
+  openMinutes             Int      @default(540) @map("open_minutes")
+  closeMinutes            Int      @default(1080) @map("close_minutes")
+  cancelBeforeMinutes     Int      @default(0) @map("cancel_before_minutes")
+  sundayHoliday           Boolean  @default(true) @map("sunday_holiday")
+  updatedAt               DateTime @updatedAt @map("updated_at")
+
+  @@map("lab_policy")
+}
