@@ -2,7 +2,6 @@ import bcrypt from "bcryptjs";
 import { Router } from "express";
 import jwt from "jsonwebtoken";
 import { env } from "../config/env.js";
-import { requireLogin } from "../middleware/auth.js";
 import { findAccountByLoginId, getPublicUser } from "../models/users.js";
 
 const router = Router();
@@ -53,19 +52,6 @@ router.post("/login", async (request, response) => {
         message: "Login successful.",
         user: publicUser,
     });
-});
-
-router.get("/me", requireLogin, (request, response) => {
-    response.json({ user: request.user });
-});
-
-router.post("/logout", requireLogin, (request, response) => {
-    response.clearCookie("authToken", {
-        httpOnly: true,
-        sameSite: "lax",
-        secure: env.NODE_ENV === "production",
-    });
-    response.json({ message: "Logged out successfully." });
 });
 
 export default router;

@@ -10,13 +10,18 @@ import { disconnectSocketClients, initializeSocket } from "./config/socket.js";
 import { handleError, notFound } from "./middleware/errorHandler.js";
 import { requireSameOrigin } from "./middleware/sameOrigin.js";
 import adminRoutes from "./routes/admin.routes.js";
-import authRoutes from "./routes/auth.routes.js";
 import bookingRoutes from "./routes/booking.routes.js";
+import bookingHoldRoutes from "./routes/bookingHold.routes.js";
 import courseRoutes from "./routes/course.routes.js";
-import healthRoutes from "./routes/health.routes.js";
+import loginRoutes from "./routes/login.routes.js";
+import logoutRoutes from "./routes/logout.routes.js";
 import policyRoutes from "./routes/policy.routes.js";
+import resetPasswordRoutes from "./routes/resetPassword.routes.js";
 import studentRoutes from "./routes/student.routes.js";
 import systemRoutes from "./routes/system.routes.js";
+import systemAvailabilityRoutes from "./routes/systemAvailability.routes.js";
+import updateRoutes from "./routes/update.routes.js";
+import verifyRoutes from "./routes/verify.routes.js";
 import { refreshBookingStatuses } from "./services/booking.service.js";
 import { notifyBookingsChanged } from "./services/socket.service.js";
 
@@ -44,15 +49,29 @@ const loginLimiter = rateLimit({
     message: { message: "Too many login attempts. Please try again in 15 minutes." },
 });
 
+app.get("/api/health", async (request, response) => {
+    try {
+        await getDatabase().$queryRaw`SELECT 1`;
+        response.json({ status: "ok" });
+    } catch {
+        response.status(503).json({ status: "unavailable" });
+    }
+});
+
 app.use("/api/auth/login", loginLimiter);
-app.use("/api/health", healthRoutes);
 app.use("/api/admins", adminRoutes);
-app.use("/api/auth", authRoutes);
+app.use("/api/auth", loginRoutes);
+app.use("/api/auth", logoutRoutes);
+app.use("/api/auth", verifyRoutes);
 app.use("/api/bookings", bookingRoutes);
+app.use("/api/bookings", bookingHoldRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/policy", policyRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/systems", systemRoutes);
+app.use("/api/systems", systemAvailabilityRoutes);
+app.use("/api", resetPasswordRoutes);
+app.use("/api", updateRoutes);
 
 app.use(notFound);
 app.use(handleError);

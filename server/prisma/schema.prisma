@@ -16,8 +16,10 @@ enum BookingStatus {
 
 model Admin {
   id           String   @id @default(uuid())
+  fullName     String   @map("full_name")
   email        String   @unique
   username     String   @unique
+  phoneNumber  String?  @map("phone_number")
   passwordHash String   @map("password_hash")
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")

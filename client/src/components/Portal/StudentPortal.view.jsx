@@ -5,6 +5,8 @@ import { useLab } from "../../context/LabContext";
 import { NotificationDialog } from "../Feedback/Feedback";
 import { Navbar } from "../Navbar/Navbar";
 import { Sidebar } from "../Sidebar/Sidebar";
+import { SidebarCollapseToggle } from "../Sidebar/SidebarCollapseToggle";
+import { useSidebarCollapse } from "../Sidebar/useSidebarCollapse";
 import { STUDENT_PAGE_TITLES } from "./StudentPortal.helpers";
 
 // Student route layout
@@ -13,6 +15,7 @@ export function StudentPortalView({ onPasswordChanged, student }) {
     const { bookings, policy } = useLab();
     const [menuOpen, setMenuOpen] = useState(false);
     const [notificationsOpen, setNotificationsOpen] = useState(false);
+    const [collapsed, toggleCollapsed] = useSidebarCollapse();
     const page = STUDENT_PAGE_TITLES[location.pathname] ?? STUDENT_PAGE_TITLES["/portal"];
     const identity = { name: student.name, initials: student.initials, subtitle: student.id };
 
@@ -34,10 +37,13 @@ export function StudentPortalView({ onPasswordChanged, student }) {
 
     return (
         <div className="portal-canvas relative min-h-screen text-itx-ink">
-            <aside className="portal-sidebar absolute inset-y-0 left-0 z-40 hidden w-72 xl:block">
+            <aside
+                className={`portal-sidebar absolute inset-y-0 left-0 z-40 hidden transition-[width] duration-300 ease-smooth xl:block ${collapsed ? "w-20" : "w-72"}`}
+            >
                 <div className="sticky top-0 h-screen overflow-hidden">
-                    <Sidebar identity={identity} />
+                    <Sidebar collapsed={collapsed} identity={identity} />
                 </div>
+                <SidebarCollapseToggle collapsed={collapsed} onToggle={toggleCollapsed} />
             </aside>
 
             {menuOpen && (
@@ -57,7 +63,7 @@ export function StudentPortalView({ onPasswordChanged, student }) {
                 </div>
             )}
 
-            <div className="min-h-screen xl:ml-72">
+            <div className={`min-h-screen transition-[margin] duration-300 ${collapsed ? "xl:ml-20" : "xl:ml-72"}`}>
                 <Navbar identity={identity} onMenuOpen={() => setMenuOpen(true)} onNotificationsOpen={() => setNotificationsOpen(true)} page={page} />
                 <main className="px-4 py-5 sm:px-6 sm:py-6 lg:px-8 xl:px-10 xl:py-7">
                     <div className="ui-page-enter" key={location.pathname}>

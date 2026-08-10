@@ -1,6 +1,9 @@
 @import "tailwindcss";
 
 @theme {
+    --default-transition-duration: 180ms;
+    --default-transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
     --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
     --font-display: "Space Grotesk", "Geist", ui-sans-serif, system-ui, sans-serif;
     --color-itx-canvas: #f2f7f6;
@@ -76,6 +79,7 @@ h3 {
 }
 
 html {
+    scroll-behavior: smooth;
     scrollbar-color: rgba(15, 23, 42, 0.15) transparent;
     scrollbar-width: thin;
 }
@@ -93,6 +97,11 @@ html::-webkit-scrollbar-thumb {
     border-radius: 999px;
     background: rgba(15, 23, 42, 0.15);
     background-clip: padding-box;
+    transition: background-color 180ms var(--ease-smooth);
+}
+
+html::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(15, 23, 42, 0.28);
 }
 
 button,
@@ -111,9 +120,24 @@ select:not(:disabled) {
     cursor: pointer;
 }
 
+@layer base {
+    button:not(:disabled),
+    a[href] {
+        transition-property: transform, box-shadow, opacity;
+        transition-duration: 150ms;
+        transition-timing-function: var(--ease-smooth);
+    }
+
+    button:not(:disabled):active,
+    a[href]:active {
+        transform: scale(0.98);
+    }
+}
+
 :is(button, input, select, textarea, a):focus-visible {
     outline: 3px solid rgba(18, 138, 147, 0.22);
     outline-offset: 2px;
+    transition: outline-color 150ms var(--ease-smooth);
 }
 
 :is(.portal-canvas, .admin-canvas) {
@@ -138,11 +162,13 @@ select:not(:disabled) {
 }
 
 .portal-sidebar {
-    border-right: 1px solid rgba(15, 23, 42, 0.08);
+    border-right: 1px solid rgba(15, 23, 42, 0.1);
     background:
         radial-gradient(circle at 16% 7%, rgba(18, 138, 147, 0.14), transparent 14rem),
         radial-gradient(circle at 105% 88%, rgba(227, 172, 92, 0.07), transparent 15rem), linear-gradient(165deg, #ffffff 0%, #f4faf9 55%, #e9f3f1 100%);
-    box-shadow: 24px 0 70px -46px rgba(15, 23, 42, 0.06);
+    box-shadow:
+        1px 0 0 rgba(15, 23, 42, 0.03),
+        24px 0 70px -46px rgba(15, 23, 42, 0.08);
 }
 
 .admin-nav-link {
@@ -159,14 +185,15 @@ select:not(:disabled) {
     font-weight: 600;
     outline: none;
     transition:
-        color 150ms ease,
-        border-color 150ms ease,
-        background-color 150ms ease;
+        color 150ms var(--ease-smooth),
+        border-color 150ms var(--ease-smooth),
+        background-color 150ms var(--ease-smooth),
+        gap 300ms var(--ease-smooth);
 }
 
 .admin-nav-link:hover {
-    border-color: rgba(15, 23, 42, 0.08);
-    background: rgba(15, 23, 42, 0.04);
+    border-color: rgba(15, 23, 42, 0.1);
+    background: rgba(15, 23, 42, 0.045);
     color: #0f172a;
 }
 
@@ -192,8 +219,8 @@ select:not(:disabled) {
     background: rgba(15, 23, 42, 0.04);
     color: rgba(15, 23, 42, 0.65);
     transition:
-        color 200ms ease,
-        background-color 200ms ease;
+        color 180ms var(--ease-smooth),
+        background-color 180ms var(--ease-smooth);
 }
 
 .admin-nav-link:hover .admin-nav-icon {
@@ -214,8 +241,8 @@ select:not(:disabled) {
     opacity: 0;
     transform: translateX(-0.25rem);
     transition:
-        opacity 200ms ease,
-        transform 200ms ease;
+        opacity 180ms var(--ease-smooth),
+        transform 180ms var(--ease-smooth);
 }
 
 .admin-nav-link:hover .admin-nav-arrow,
@@ -228,26 +255,30 @@ select:not(:disabled) {
     border-color: rgba(15, 23, 42, 0.1);
     background: rgba(255, 255, 255, 0.86);
     backdrop-filter: blur(14px);
-    box-shadow: 0 14px 35px -30px rgba(15, 23, 42, 0.08);
+    box-shadow:
+        0 1px 0 rgba(15, 23, 42, 0.04),
+        0 14px 35px -30px rgba(15, 23, 42, 0.1);
 }
 
 .portal-surface,
 .admin-surface {
-    border-color: rgba(15, 23, 42, 0.12);
+    border-color: rgba(15, 23, 42, 0.13);
     background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.9));
     box-shadow:
+        0 1px 1px rgba(15, 23, 42, 0.03),
         0 24px 54px -42px rgba(15, 23, 42, 0.08),
         inset 0 1px 0 rgba(255, 255, 255, 0.8);
     transition:
-        border-color 220ms ease,
-        box-shadow 220ms ease;
+        border-color 220ms var(--ease-smooth),
+        box-shadow 220ms var(--ease-smooth);
 }
 
 .portal-surface:hover,
 .admin-surface:hover {
-    border-color: rgba(62, 231, 194, 0.32);
+    border-color: rgba(62, 231, 194, 0.34);
     box-shadow:
-        0 30px 62px -44px rgba(15, 23, 42, 0.1),
+        0 1px 1px rgba(15, 23, 42, 0.04),
+        0 30px 62px -40px rgba(15, 23, 42, 0.12),
         inset 0 1px 0 rgba(255, 255, 255, 1);
 }
 
@@ -290,19 +321,22 @@ select:not(:disabled) {
 
 .portal-metric {
     box-shadow:
+        0 1px 1px rgba(15, 23, 42, 0.03),
         0 18px 40px -34px rgba(15, 23, 42, 0.06),
         inset 0 1px 0 rgba(255, 255, 255, 0.8);
     transition:
-        border-color 180ms ease,
-        box-shadow 180ms ease,
-        transform 180ms ease;
+        border-color 180ms var(--ease-smooth),
+        box-shadow 180ms var(--ease-smooth),
+        transform 180ms var(--ease-smooth);
 }
 
 .portal-metric:hover {
-    border-color: rgba(62, 231, 194, 0.3);
+    border-color: rgba(62, 231, 194, 0.32);
     box-shadow:
-        0 24px 42px -32px rgba(15, 23, 42, 0.08),
+        0 1px 1px rgba(15, 23, 42, 0.04),
+        0 26px 44px -30px rgba(15, 23, 42, 0.1),
         inset 0 1px 0 rgba(255, 255, 255, 1);
+    transform: translateY(-2px);
 }
 
 .portal-safe-content {
@@ -493,15 +527,15 @@ select:not(:disabled) {
 
 .ui-page-enter,
 .ui-fade-in {
-    animation: ui-fade-in 200ms ease-out both;
+    animation: ui-fade-in 220ms var(--ease-smooth) both;
 }
 
 .ui-slide-in-left {
-    animation: ui-slide-in-left 220ms ease-out both;
+    animation: ui-slide-in-left 240ms var(--ease-smooth) both;
 }
 
 .ui-opacity-in {
-    animation: ui-opacity-in 220ms ease-out both;
+    animation: ui-opacity-in 220ms var(--ease-smooth) both;
 }
 
 .ui-loader-bar {
@@ -509,20 +543,21 @@ select:not(:disabled) {
 }
 
 .ui-grow-x {
-    animation: ui-grow-x 700ms ease-out both;
+    animation: ui-grow-x 700ms var(--ease-smooth) both;
 }
 
 .ui-grow-height {
-    animation: ui-grow-height 600ms ease-out both;
+    animation: ui-grow-height 600ms var(--ease-smooth) both;
 }
 
 .ui-press {
     transition:
-        transform 120ms ease,
-        box-shadow 150ms ease,
-        background-color 150ms ease,
-        border-color 150ms ease,
-        color 150ms ease;
+        transform 120ms var(--ease-smooth),
+        box-shadow 150ms var(--ease-smooth),
+        background-color 150ms var(--ease-smooth),
+        border-color 150ms var(--ease-smooth),
+        color 150ms var(--ease-smooth),
+        left 300ms var(--ease-smooth);
 }
 
 .ui-press:active:not(:disabled) {

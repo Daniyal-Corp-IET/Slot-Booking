@@ -1,7 +1,23 @@
-import { Bell, Menu } from "lucide-react";
+import { Bell, ChevronDown, Menu } from "lucide-react";
+import { useLogin } from "../../context/LoginContext";
+import { AdminAccountMenu } from "../Admin/AdminAccountMenu";
 
 // Sticky top bar shared by both roles: mobile menu button, page title, notifications, user avatar
 export function Navbar({ identity, onMenuOpen, onNotificationsOpen, page }) {
+    const { user } = useLogin();
+    const isAdmin = user?.role === "admin";
+    const avatar = (
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[linear-gradient(145deg,#128a93,#0d6169)] text-xs font-black text-white shadow-[0_10px_22px_-14px_rgba(13,97,105,0.65)]">
+            {identity.initials}
+        </span>
+    );
+    const nameBlock = (
+        <div className="hidden text-left xl:block">
+            <p className="text-xs font-bold text-itx-ink">{identity.name}</p>
+            <p className="text-[11px] text-slate-500">{identity.subtitle}</p>
+        </div>
+    );
+
     return (
         <header className="shell-topbar sticky top-0 z-30 border-b shadow-[0_14px_35px_-32px_rgba(15,23,42,0.12)] backdrop-blur-2xl">
             <div className="flex min-h-18 items-center gap-4 px-4 sm:px-6 lg:px-8 xl:min-h-20 xl:px-10">
@@ -28,13 +44,22 @@ export function Navbar({ identity, onMenuOpen, onNotificationsOpen, page }) {
                         <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-[#e3ac5c] shadow-[0_0_9px_rgba(227,172,92,0.7)] ring-2 ring-white" />
                     </button>
                     <div className="hidden items-center gap-3 border-l border-itx-border pl-3 sm:flex">
-                        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[linear-gradient(145deg,#128a93,#0d6169)] text-xs font-black text-white shadow-[0_10px_22px_-14px_rgba(13,97,105,0.65)]">
-                            {identity.initials}
-                        </span>
-                        <div className="hidden xl:block">
-                            <p className="text-xs font-bold text-itx-ink">{identity.name}</p>
-                            <p className="text-[11px] text-slate-500">{identity.subtitle}</p>
-                        </div>
+                        {isAdmin ? (
+                            <AdminAccountMenu
+                                trigger={
+                                    <>
+                                        {avatar}
+                                        {nameBlock}
+                                        <ChevronDown className="hidden size-3.5 shrink-0 text-slate-400 xl:block" />
+                                    </>
+                                }
+                            />
+                        ) : (
+                            <>
+                                {avatar}
+                                {nameBlock}
+                            </>
+                        )}
                     </div>
                 </div>
             </div>

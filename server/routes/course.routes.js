@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { getDatabase } from "../config/database.js";
 import { requireLogin, requireRole } from "../middleware/auth.js";
+import { notifyCoursesChanged } from "../services/socket.service.js";
 
 const router = Router();
 
@@ -52,6 +53,7 @@ router.post("/", requireLogin, requireRole("admin"), async (request, response, n
             data: { name, abbreviation },
         });
 
+        notifyCoursesChanged();
         response.status(201).json({
             message: "Course added successfully.",
             course,

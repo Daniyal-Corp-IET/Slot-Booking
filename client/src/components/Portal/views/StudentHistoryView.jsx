@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { CalendarX2, Check, Monitor, Play, TimerReset } from "lucide-react";
 import { useLab } from "../../../context/LabContext";
 import { formatBookingDate, formatBookingTime, hasPassedHalfwayWithoutStart } from "../../../context/LabContext.helpers";
+import { cn } from "../../../utils/cn";
 import { AppDialog, EmptyState } from "../../Feedback/Feedback";
-import { cn, formatDuration, getMonthlyBalances, getSessionUsage } from "../StudentPortal.helpers";
+import { StatusBadge } from "../../ui/StatusBadge";
+import { formatDuration, getMonthlyBalances, getSessionUsage } from "../StudentPortal.helpers";
 
 function formatStartedAt(startedAt) {
     if (!startedAt) return "";
@@ -362,8 +364,8 @@ export function HistoryView({ student }) {
                     >
                         <div className="flex items-center justify-between xl:block">
                             <p className="text-sm font-bold text-itx-ink">{session.date}</p>
-                            <span className={cn("w-fit rounded-full px-2.5 py-1.5 text-[11px] font-bold xl:hidden", badgeClasses[session.status])}>
-                                {session.status}
+                            <span className="xl:hidden">
+                                <StatusBadge emphasis="bold" label={session.status} toneClassName={badgeClasses[session.status]} />
                             </span>
                         </div>
                         <div>
@@ -391,8 +393,8 @@ export function HistoryView({ student }) {
                                 {session.balanceAfter ? `${session.balanceAfter} remaining` : "Updates on completion"}
                             </p>
                         </div>
-                        <span className={cn("hidden w-fit rounded-full px-2.5 py-1.5 text-[11px] font-bold xl:block", badgeClasses[session.status])}>
-                            {session.status}
+                        <span className="hidden xl:inline-block">
+                            <StatusBadge emphasis="bold" label={session.status} toneClassName={badgeClasses[session.status]} />
                         </span>
                         {session.status === "Upcoming" && session.startsAt - currentTime >= policy.cancelBeforeMinutes * 60_000 && (
                             <button

@@ -1,33 +1,11 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { SOCKET_EVENTS } from "../constants/socketEvents";
+import { apiRequest } from "../utils/apiClient";
+import { prepareStudent } from "../utils/prepareStudent";
 import { useLogin } from "./LoginContext";
 
-const API_URL = import.meta.env.VITE_API_URL || "/api";
 let socket;
-
-async function apiRequest(path, method = "GET", values) {
-    let response;
-
-    try {
-        const options = {
-            method,
-            credentials: "include",
-            headers: { "Content-Type": "application/json" },
-        };
-        if (values) options.body = JSON.stringify(values);
-
-        response = await fetch(`${API_URL}${path}`, options);
-    } catch {
-        throw new Error("Unable to connect to the server. Please start the backend and try again.");
-    }
-
-    if (response.status === 204) return {};
-
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.message || "Something went wrong. Please try again.");
-    return data;
-}
 
 function connectSocket() {
     if (!socket) {
@@ -65,6 +43,26 @@ async function getSystems() {
 async function getPolicy() {
     const data = await apiRequest("/policy");
     return data.policy;
+}
+
+async function getCourses() {
+    const data = await apiRequest("/courses");
+    return data.courses;
+}
+
+async function createCourseRequest(course) {
+    const data = await apiRequest("/courses", "POST", course);
+    return data.course;
+}
+
+async function getStudents() {
+    const data = await apiRequest("/students");
+    return data.students.map(prepareStudent);
+}
+
+async function createStudentRequest(student) {
+    const data = await apiRequest("/students", "POST", student);
+    return prepareStudent(data.student);
 }
 
 function getBookingStart(booking) {
@@ -187,6 +185,12 @@ export function LabProvider({ children }) {
     const [policy, setPolicy] = useState(DEFAULT_POLICY);
     const [systemOutages, setSystemOutages] = useState([]);
     const [earlyEndNotice, setEarlyEndNotice] = useState(null);
+    const [courses, setCourses] = useState([]);
+    const [coursesLoading, setCoursesLoading] = useState(true);
+    const [coursesError, setCoursesError] = useState("");
+    const [students, setStudents] = useState([]);
+    const [studentsLoading, setStudentsLoading] = useState(true);
+    const [studentsError, setStudentsError] = useState("");
 
     const loadBookings = useCallback(async () => {
         try {
@@ -222,6 +226,34 @@ export function LabProvider({ children }) {
         }
     }, []);
 
+    const loadCourses = useCallback(async () => {
+        if (user?.role !== "admin") return;
+
+        try {
+            setCoursesLoading(true);
+            setCoursesError("");
+            setCourses(await getCourses());
+        } catch (error) {
+            setCoursesError(error.message);
+        } finally {
+            setCoursesLoading(false);
+        }
+    }, [user]);
+
+    const loadStudents = useCallback(async () => {
+        if (user?.role !== "admin") return;
+
+        try {
+            setStudentsLoading(true);
+            setStudentsError("");
+            setStudents(await getStudents());
+        } catch (error) {
+            setStudentsError(error.message);
+        } finally {
+            setStudentsLoading(false);
+        }
+    }, [user]);
+
     useEffect(() => {
         if (!user) return;
 
@@ -230,10 +262,21 @@ export function LabProvider({ children }) {
             loadBookingHolds();
             loadSystems();
             loadPolicy();
+            loadCourses();
+            loadStudents();
         }, 0);
 
         return () => window.clearTimeout(timer);
-    }, [loadBookingHolds, loadBookings, loadPolicy, loadSystems, user]);
+    }, [loadBookingHolds, loadBookings, loadCourses, loadPolicy, loadStudents, loadSystems, user]);
+
+    // Keeps each student's monthly usage figures current as their bookings change.
+    useEffect(() => {
+        const timer = window.setTimeout(() => {
+            loadStudents();
+        }, 0);
+
+        return () => window.clearTimeout(timer);
+    }, [bookings, policy.monthlyLimitHours, loadStudents]);
 
     useEffect(() => {
         if (!user) return;
@@ -242,24 +285,33 @@ export function LabProvider({ children }) {
         const refreshEverything = () => {
             loadBookings();
             loadSystems();
+            loadBookingHolds();
             loadPolicy();
+            loadCourses();
+            loadStudents();
         };
 
         socket.on("connect", refreshEverything);
         socket.on(SOCKET_EVENTS.BOOKINGS_CHANGED, loadBookings);
         socket.on(SOCKET_EVENTS.SYSTEMS_CHANGED, loadSystems);
+        socket.on(SOCKET_EVENTS.HOLDS_CHANGED, loadBookingHolds);
         socket.on(SOCKET_EVENTS.POLICY_CHANGED, loadPolicy);
+        socket.on(SOCKET_EVENTS.STUDENTS_CHANGED, loadStudents);
+        socket.on(SOCKET_EVENTS.COURSES_CHANGED, loadCourses);
         socket.on(SOCKET_EVENTS.SESSION_ENDED_EARLY, setEarlyEndNotice);
 
         return () => {
             socket.off("connect", refreshEverything);
             socket.off(SOCKET_EVENTS.BOOKINGS_CHANGED, loadBookings);
             socket.off(SOCKET_EVENTS.SYSTEMS_CHANGED, loadSystems);
+            socket.off(SOCKET_EVENTS.HOLDS_CHANGED, loadBookingHolds);
             socket.off(SOCKET_EVENTS.POLICY_CHANGED, loadPolicy);
+            socket.off(SOCKET_EVENTS.STUDENTS_CHANGED, loadStudents);
+            socket.off(SOCKET_EVENTS.COURSES_CHANGED, loadCourses);
             socket.off(SOCKET_EVENTS.SESSION_ENDED_EARLY, setEarlyEndNotice);
             disconnectSocket();
         };
-    }, [loadBookings, loadPolicy, loadSystems, user]);
+    }, [loadBookingHolds, loadBookings, loadCourses, loadPolicy, loadStudents, loadSystems, user]);
 
     useEffect(() => {
         const timer = window.setInterval(() => {
@@ -273,6 +325,18 @@ export function LabProvider({ children }) {
 
         return () => window.clearInterval(timer);
     }, []);
+
+    async function addCourse(course) {
+        const savedCourse = await createCourseRequest(course);
+        setCourses((current) => [...current, savedCourse].sort((first, second) => first.name.localeCompare(second.name)));
+        return savedCourse;
+    }
+
+    async function addStudent(studentDetails) {
+        const savedStudent = await createStudentRequest(studentDetails);
+        setStudents((current) => [savedStudent, ...current]);
+        return savedStudent;
+    }
 
     async function addBooking(details) {
         const booking = await createBookingRequest(details);
@@ -357,6 +421,12 @@ export function LabProvider({ children }) {
         systems,
         systemOutages,
         earlyEndNotice,
+        courses,
+        coursesLoading,
+        coursesError,
+        students,
+        studentsLoading,
+        studentsError,
         addSystem,
         addBooking,
         holdSystem,
@@ -370,6 +440,10 @@ export function LabProvider({ children }) {
         removeSystem,
         updatePolicy,
         clearEarlyEndNotice,
+        addCourse,
+        loadCourses,
+        addStudent,
+        loadStudents,
     };
 
     return <LabContext.Provider value={value}>{children}</LabContext.Provider>;

@@ -2,10 +2,10 @@ import { useState } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLab } from "../../../context/LabContext";
+import { cn } from "../../../utils/cn";
 import { EmptyState } from "../../Feedback/Feedback";
 import { SystemDayTimeline } from "../../SystemCanvas/SystemDayTimeline";
 import {
-    cn,
     formatDuration,
     getBookingDates,
     getCoveredMinutes,

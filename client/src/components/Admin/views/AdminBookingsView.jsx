@@ -1,11 +1,17 @@
 import { useEffect, useState } from "react";
-import { Activity, CalendarDays, Clock3, Monitor, MoreHorizontal, Search, SlidersHorizontal } from "lucide-react";
+import { Activity, CalendarDays, Clock3, Monitor, MoreHorizontal, SlidersHorizontal } from "lucide-react";
 import { useOutletContext } from "react-router-dom";
 import { useLab } from "../../../context/LabContext";
 import { formatBookingDate, formatBookingTime } from "../../../context/LabContext.helpers";
+import { useToast } from "../../../hooks/useToast";
 import { AppDialog, ConfirmDialog, EmptyState, Toast } from "../../Feedback/Feedback";
-import { BOOKING_BADGES, displayBooking, joinClasses } from "../AdminPanel.helpers";
-import { AdminReveal, MetricCard, surface } from "../AdminPanel.view";
+import { cn } from "../../../utils/cn";
+import { BOOKING_BADGES, displayBooking } from "../AdminPanel.helpers";
+import { AdminReveal, surface } from "../AdminPanel.view";
+import { MetricCard } from "../../ui/MetricCard";
+import { SearchField } from "../../ui/SearchField";
+import { StatusBadge } from "../../ui/StatusBadge";
+import { SELECT_FIELD_CLASS } from "../../ui/fieldStyles";
 
 function formatStartedAt(startedAt) {
     if (!startedAt) return "Not started by student";
@@ -29,7 +35,7 @@ export function BookingsView() {
     const [timePeriod, setTimePeriod] = useState("All");
     const [pendingCancel, setPendingCancel] = useState("");
     const [detailsId, setDetailsId] = useState("");
-    const [toast, setToast] = useState("");
+    const { dismissToast, showToast, toastMessage } = useToast();
     const visible = [];
     const searchText = query.toLowerCase();
 
@@ -88,9 +94,9 @@ export function BookingsView() {
     const confirmCancel = async () => {
         try {
             await cancelBooking(pendingCancel);
-            setToast("Booking cancelled. System availability has been updated.");
+            showToast("Booking cancelled. System availability has been updated.");
         } catch (error) {
-            setToast(error.message);
+            showToast(error.message);
         } finally {
             setPendingCancel("");
         }
@@ -109,7 +115,7 @@ export function BookingsView() {
                 <MetricCard accent="bg-[#e4a541]" icon={Clock3} label="Next slot" note={`${upcomingCount} bookings scheduled`} value={nextSlot} />
             </AdminReveal>
 
-            <AdminReveal className={joinClasses(surface, "overflow-hidden")}>
+            <AdminReveal className={cn(surface, "overflow-hidden")}>
                 <div className="relative overflow-hidden border-b border-itx-border bg-slate-50 p-5 sm:p-6">
                     <div className="relative flex flex-wrap items-start justify-between gap-3">
                         <div className="flex items-start gap-3">
@@ -126,19 +132,15 @@ export function BookingsView() {
                         </span>
                     </div>
                     <div className="mt-4 grid gap-2 sm:grid-cols-2 xl:grid-cols-[minmax(16rem,1fr)_auto_auto_auto]">
-                        <label className="relative">
-                            <span className="sr-only">Search bookings</span>
-                            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                            <input
-                                className="h-11 w-full rounded-xl border border-itx-border bg-white pl-10 pr-3 text-sm font-semibold text-itx-ink shadow-sm outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-[#128a93] focus:ring-4 focus:ring-[#128a93]/10"
-                                onChange={(event) => setQuery(event.target.value)}
-                                placeholder="Booking reference, student or system"
-                                value={query}
-                            />
-                        </label>
+                        <SearchField
+                            label="Search bookings"
+                            onChange={(event) => setQuery(event.target.value)}
+                            placeholder="Booking reference, student or system"
+                            value={query}
+                        />
                         <select
                             aria-label="Filter by status"
-                            className="h-11 rounded-xl border border-itx-border bg-white px-3 text-sm font-bold text-slate-600 shadow-sm outline-none transition hover:border-slate-300 focus:border-[#128a93] focus:ring-4 focus:ring-[#128a93]/10"
+                            className={SELECT_FIELD_CLASS}
                             onChange={(event) => setStatus(event.target.value)}
                             value={status}
                         >
@@ -148,7 +150,7 @@ export function BookingsView() {
                         </select>
                         <select
                             aria-label="Filter by program"
-                            className="h-11 rounded-xl border border-itx-border bg-white px-3 text-sm font-bold text-slate-600 shadow-sm outline-none transition hover:border-slate-300 focus:border-[#128a93] focus:ring-4 focus:ring-[#128a93]/10"
+                            className={SELECT_FIELD_CLASS}
                             onChange={(event) => setProgram(event.target.value)}
                             value={program}
                         >
@@ -159,7 +161,7 @@ export function BookingsView() {
                         </select>
                         <select
                             aria-label="Filter by time period"
-                            className="h-11 rounded-xl border border-itx-border bg-white px-3 text-sm font-bold text-slate-600 shadow-sm outline-none transition hover:border-slate-300 focus:border-[#128a93] focus:ring-4 focus:ring-[#128a93]/10"
+                            className={SELECT_FIELD_CLASS}
                             onChange={(event) => setTimePeriod(event.target.value)}
                             value={timePeriod}
                         >
@@ -215,14 +217,7 @@ export function BookingsView() {
                                         </span>
                                     </td>
                                     <td className="px-4 py-4">
-                                        <span
-                                            className={joinClasses(
-                                                "rounded-full px-2.5 py-1.5 text-[10px] font-extrabold uppercase",
-                                                BOOKING_BADGES[booking.status],
-                                            )}
-                                        >
-                                            {booking.status}
-                                        </span>
+                                        <StatusBadge label={booking.status} toneClassName={BOOKING_BADGES[booking.status]} />
                                     </td>
                                     <td className="px-6 py-4 text-right">
                                         {booking.status === "Upcoming" ? (
@@ -262,9 +257,7 @@ export function BookingsView() {
                                     <p className="mt-1 text-sm text-slate-500">{booking.studentId}</p>
                                     <p className="mt-1 text-sm font-bold text-[#0d6169]">{booking.program}</p>
                                 </div>
-                                <span className={joinClasses("rounded-full px-2.5 py-1.5 text-xs font-extrabold uppercase", BOOKING_BADGES[booking.status])}>
-                                    {booking.status}
-                                </span>
+                                <StatusBadge label={booking.status} toneClassName={BOOKING_BADGES[booking.status]} />
                             </div>
                             <div className="mt-4 grid grid-cols-2 gap-3 rounded-xl bg-slate-50 p-3 text-sm">
                                 <div>
@@ -361,7 +354,7 @@ export function BookingsView() {
                     </dl>
                 </AppDialog>
             )}
-            {toast && <Toast message={toast} onClose={() => setToast("")} />}
+            {toastMessage && <Toast message={toastMessage} onClose={dismissToast} />}
         </div>
     );
 }

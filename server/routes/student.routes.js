@@ -1,9 +1,9 @@
 import bcrypt from "bcryptjs";
 import { Router } from "express";
 import { getDatabase } from "../config/database.js";
-import { env } from "../config/env.js";
 import { requireLogin, requireRole } from "../middleware/auth.js";
 import { getPolicy } from "../services/policy.service.js";
+import { notifyStudentsChanged } from "../services/socket.service.js";
 import { lockCourse } from "../services/databaseLocks.js";
 import { getLabMonthRange } from "../utils/time.js";
 
@@ -208,6 +208,7 @@ router.post("/", requireLogin, requireRole("admin"), async (request, response, n
             { isolationLevel: "Serializable" },
         );
 
+        notifyStudentsChanged();
         response.status(201).json({
             message: "Student added successfully.",
             initialPassword: student.id,
@@ -218,84 +219,6 @@ router.post("/", requireLogin, requireRole("admin"), async (request, response, n
             response.status(409).json({ message: "This email address is already registered." });
             return;
         }
-        next(error);
-    }
-});
-
-router.post("/:studentId/reset-password", requireLogin, requireRole("admin"), async (request, response, next) => {
-    try {
-        const studentId = request.params.studentId.toUpperCase();
-        const database = getDatabase();
-        const student = await database.student.findUnique({
-            where: { id: studentId },
-            select: { id: true },
-        });
-
-        if (!student) {
-            response.status(404).json({ message: "Student not found." });
-            return;
-        }
-
-        await database.student.update({
-            where: { id: student.id },
-            data: {
-                passwordHash: await bcrypt.hash(studentId, 10),
-                sessionVersion: { increment: 1 },
-            },
-        });
-
-        response.json({ message: "Password reset successfully." });
-    } catch (error) {
-        next(error);
-    }
-});
-
-router.post("/:studentId/change-password", requireLogin, async (request, response, next) => {
-    try {
-        const studentId = request.params.studentId.toUpperCase();
-        const currentPassword = request.body.currentPassword;
-        const newPassword = request.body.newPassword;
-
-        if (request.user.role !== "student" || request.user.username.toUpperCase() !== studentId) {
-            response.status(403).json({ message: "You can only change your own password." });
-            return;
-        }
-
-        if (!currentPassword || !newPassword || newPassword.length < 6) {
-            response.status(400).json({ message: "The new password must contain at least 6 characters." });
-            return;
-        }
-
-        const database = getDatabase();
-        const student = await database.student.findUnique({
-            where: { id: studentId },
-        });
-
-        if (!student || !(await bcrypt.compare(currentPassword, student.passwordHash))) {
-            response.status(400).json({ message: "The current password is incorrect." });
-            return;
-        }
-
-        if (currentPassword === newPassword) {
-            response.status(400).json({ message: "Choose a password different from your current password." });
-            return;
-        }
-
-        await database.student.update({
-            where: { id: student.id },
-            data: {
-                passwordHash: await bcrypt.hash(newPassword, 10),
-                sessionVersion: { increment: 1 },
-            },
-        });
-
-        response.clearCookie("authToken", {
-            httpOnly: true,
-            sameSite: "lax",
-            secure: env.NODE_ENV === "production",
-        });
-        response.json({ message: "Password updated. Please log in again." });
-    } catch (error) {
         next(error);
     }
 });

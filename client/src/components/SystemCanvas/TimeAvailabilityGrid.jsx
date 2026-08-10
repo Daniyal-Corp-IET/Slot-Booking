@@ -31,7 +31,7 @@ export function TimeAvailabilityGrid({ intervalMinutes, onSelect, options, selec
                     return (
                         <button
                             aria-pressed={selected}
-                            className={`ui-press relative isolate min-h-13 overflow-hidden rounded-xl px-1.5 py-2 text-center outline-none transition-colors focus-visible:ring-4 focus-visible:ring-[#128a93]/15 sm:px-2 ${tabStyle}`}
+                            className={`ui-press relative isolate min-h-13 overflow-hidden rounded-xl px-1 py-2 text-center outline-none transition-colors focus-visible:ring-4 focus-visible:ring-[#128a93]/15 sm:px-2 ${tabStyle}`}
                             key={period.id}
                             onClick={() => setPeriodId(period.id)}
                             type="button"
@@ -42,7 +42,7 @@ export function TimeAvailabilityGrid({ intervalMinutes, onSelect, options, selec
                                     className="absolute inset-0 -z-10 rounded-xl bg-gradient-to-br from-[#128a93] to-[#0d6169] shadow-inner shadow-white/10"
                                 />
                             )}
-                            <span className="relative block text-[13px] font-bold">{period.label}</span>
+                            <span className="relative block break-words text-[11px] leading-tight font-bold sm:text-[13px] sm:leading-normal">{period.label}</span>
                             <span className="relative mt-0.5 hidden text-[11px] font-medium opacity-75 sm:block">{period.detail}</span>
                         </button>
                     );

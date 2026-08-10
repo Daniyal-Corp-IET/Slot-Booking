@@ -1,34 +1,21 @@
 import { useEffect, useState } from "react";
-import { AlertTriangle, Check, Eye, EyeOff, Plus, ShieldCheck, SlidersHorizontal, UserRound } from "lucide-react";
+import { AlertTriangle, Check, Plus, ShieldCheck, SlidersHorizontal } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLab } from "../../../context/LabContext";
+import { useToast } from "../../../hooks/useToast";
 import { AppDialog, Toast } from "../../Feedback/Feedback";
-import { joinClasses, minutesToTime, timeToMinutes } from "../AdminPanel.helpers";
+import { apiRequest } from "../../../utils/apiClient";
+import { cn } from "../../../utils/cn";
+import { minutesToTime, timeToMinutes } from "../AdminPanel.helpers";
 import { AdminReveal, surface } from "../AdminPanel.view";
-
-const API_URL = import.meta.env.VITE_API_URL || "/api";
+import { PasswordField } from "../../ui/PasswordField";
+import { FORM_FIELD_CLASS } from "../../ui/fieldStyles";
 
 async function createAdmin(admin) {
-    let response;
-
-    try {
-        response = await fetch(`${API_URL}/admins`, {
-            method: "POST",
-            credentials: "include",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(admin),
-        });
-    } catch {
-        throw new Error("Unable to connect to the server. Please start the backend and try again.");
-    }
-
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.message || "Unable to add the administrator.");
+    const data = await apiRequest("/admins", "POST", admin, { fallbackErrorMessage: "Unable to add the administrator." });
     return data.admin;
 }
 
-const formField =
-    "h-12 w-full rounded-xl border border-itx-border bg-white px-3.5 text-sm font-semibold text-itx-ink outline-none transition focus:border-[#128a93] focus:ring-4 focus:ring-[#128a93]/10";
 const BOOKING_INCREMENT_OPTIONS = [5, 10, 15, 30];
 
 function roundToIncrement(value, increment) {
@@ -47,18 +34,16 @@ function SettingRow({ children, description, title }) {
     );
 }
 function AdminFormDialog({ onClose, onCreated, open }) {
-    const [form, setForm] = useState({ email: "", username: "", password: "" });
+    const [form, setForm] = useState({ fullName: "", email: "", username: "", phoneNumber: "", password: "" });
     const [message, setMessage] = useState("");
     const [saving, setSaving] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
     const changeField = (event) => {
         setForm((current) => ({ ...current, [event.target.name]: event.target.value }));
         setMessage("");
     };
     const closeDialog = () => {
-        setForm({ email: "", username: "", password: "" });
+        setForm({ fullName: "", email: "", username: "", phoneNumber: "", password: "" });
         setMessage("");
-        setShowPassword(false);
         onClose();
     };
     const submit = async (event) => {
@@ -66,8 +51,10 @@ function AdminFormDialog({ onClose, onCreated, open }) {
         try {
             setSaving(true);
             const admin = await createAdmin({
+                fullName: form.fullName.trim(),
                 email: form.email.trim(),
                 username: form.username.trim(),
+                phoneNumber: form.phoneNumber.trim(),
                 password: form.password,
             });
             closeDialog();
@@ -103,15 +90,34 @@ function AdminFormDialog({ onClose, onCreated, open }) {
         >
             <form className="space-y-4" id="add-admin-form" onSubmit={submit}>
                 <label className="block text-sm font-bold text-slate-600">
+                    Full name
+                    <input
+                        autoComplete="name"
+                        className={cn(FORM_FIELD_CLASS, "mt-2")}
+                        name="fullName"
+                        onChange={changeField}
+                        required
+                        value={form.fullName}
+                    />
+                </label>
+                <label className="block text-sm font-bold text-slate-600">
                     Email
-                    <input autoComplete="email" className={`${formField} mt-2`} name="email" onChange={changeField} required type="email" value={form.email} />
+                    <input
+                        autoComplete="email"
+                        className={cn(FORM_FIELD_CLASS, "mt-2")}
+                        name="email"
+                        onChange={changeField}
+                        required
+                        type="email"
+                        value={form.email}
+                    />
                 </label>
                 <label className="block text-sm font-bold text-slate-600">
                     Username
                     <input
                         autoCapitalize="none"
                         autoComplete="username"
-                        className={`${formField} mt-2`}
+                        className={cn(FORM_FIELD_CLASS, "mt-2")}
                         minLength="3"
                         name="username"
                         onChange={changeField}
@@ -121,32 +127,27 @@ function AdminFormDialog({ onClose, onCreated, open }) {
                     />
                     <span className="mt-1.5 block text-xs font-medium text-slate-400">Use 3 to 30 letters, numbers, dots, dashes, or underscores.</span>
                 </label>
+                <label className="block text-sm font-bold text-slate-600">
+                    Phone number <span className="font-medium text-slate-400">(optional)</span>
+                    <input
+                        autoComplete="tel"
+                        className={cn(FORM_FIELD_CLASS, "mt-2")}
+                        name="phoneNumber"
+                        onChange={changeField}
+                        type="tel"
+                        value={form.phoneNumber}
+                    />
+                </label>
                 <div>
-                    <label className="block text-sm font-bold text-slate-600" htmlFor="admin-password">
-                        Password
-                    </label>
-                    <div className="relative mt-2">
-                        <input
-                            autoComplete="new-password"
-                            className={`${formField} pr-12`}
-                            id="admin-password"
-                            minLength="8"
-                            name="password"
-                            onChange={changeField}
-                            required
-                            type={showPassword ? "text" : "password"}
-                            value={form.password}
-                        />
-                        <button
-                            aria-label={showPassword ? "Hide password" : "Show password"}
-                            aria-pressed={showPassword}
-                            className="absolute right-2 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-lg text-slate-500 transition hover:bg-[#128a93]/10 hover:text-[#128a93]"
-                            onClick={() => setShowPassword((visible) => !visible)}
-                            type="button"
-                        >
-                            {showPassword ? <EyeOff aria-hidden="true" className="size-4.5" /> : <Eye aria-hidden="true" className="size-4.5" />}
-                        </button>
-                    </div>
+                    <PasswordField
+                        autoComplete="new-password"
+                        id="admin-password"
+                        label="Password"
+                        minLength="8"
+                        name="password"
+                        onChange={changeField}
+                        value={form.password}
+                    />
                     <span className="mt-1.5 block text-xs font-medium text-slate-400">Use at least 8 characters.</span>
                 </div>
                 {message && (
@@ -172,9 +173,9 @@ export function SettingsView() {
     const [sundayHoliday, setSundayHoliday] = useState(policy.sundayHoliday);
     const [saved, setSaved] = useState(false);
     const [saving, setSaving] = useState(false);
-    const [message, setMessage] = useState("");
+    const { dismissToast: dismissMessage, showToast: setMessage, toastMessage: message } = useToast();
     const [adminDialogOpen, setAdminDialogOpen] = useState(false);
-    const [adminToast, setAdminToast] = useState("");
+    const { dismissToast: dismissAdminToast, showToast: setAdminToast, toastMessage: adminToast } = useToast();
     const fieldClass =
         "h-11 min-w-0 w-full rounded-xl border border-itx-border bg-white px-3 text-right text-sm font-bold text-itx-ink outline-none focus:border-[#128a93] focus:ring-4 focus:ring-[#128a93]/10 sm:w-32";
     const unavailableSystems = systemOutages.map((outage) => String(outage.systemId).padStart(2, "0"));
@@ -242,7 +243,7 @@ export function SettingsView() {
     };
     return (
         <div className="mx-auto max-w-300 space-y-5">
-            <AdminReveal className={joinClasses(surface, "p-5 md:p-6 xl:p-7")}>
+            <AdminReveal className={cn(surface, "p-5 md:p-6 xl:p-7")}>
                 <div className="flex items-center gap-4 border-b border-itx-border pb-5">
                     <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#128a93]/12 text-[#128a93]">
                         <SlidersHorizontal className="h-5 w-5" />
@@ -276,7 +277,7 @@ export function SettingsView() {
                         {BOOKING_INCREMENT_OPTIONS.map((minutes) => (
                             <button
                                 aria-pressed={bookingIncrement === minutes}
-                                className={joinClasses(
+                                className={cn(
                                     "min-h-10 rounded-xl px-3 text-sm font-bold transition-colors",
                                     bookingIncrement === minutes
                                         ? "bg-[#128a93] text-white shadow-sm"
@@ -357,16 +358,16 @@ export function SettingsView() {
                 <SettingRow description="Prevents Sunday bookings and marks the lab as closed." title="Sunday holiday">
                     <button
                         aria-checked={sundayHoliday}
-                        className={joinClasses("relative h-7 w-13 rounded-full p-1 transition", sundayHoliday ? "bg-[#128a93]" : "bg-slate-200")}
+                        className={cn("relative h-7 w-13 rounded-full p-1 transition", sundayHoliday ? "bg-[#128a93]" : "bg-slate-200")}
                         onClick={() => setSundayHoliday((current) => !current)}
                         role="switch"
                         type="button"
                     >
-                        <span className={joinClasses("block h-5 w-5 rounded-full bg-white shadow-sm transition", sundayHoliday && "translate-x-6")} />
+                        <span className={cn("block h-5 w-5 rounded-full bg-white shadow-sm transition", sundayHoliday && "translate-x-6")} />
                     </button>
                 </SettingRow>
             </AdminReveal>
-            <AdminReveal className={joinClasses(surface, "p-5 sm:p-6")}>
+            <AdminReveal className={cn(surface, "p-5 sm:p-6")}>
                 <div className="flex flex-col gap-4 text-itx-ink sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex items-start gap-4">
                         <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-[#128a93]/12 text-[#128a93]">
@@ -388,7 +389,7 @@ export function SettingsView() {
                     </button>
                 </div>
             </AdminReveal>
-            <AdminReveal className={joinClasses(surface, "p-5 sm:p-7")}>
+            <AdminReveal className={cn(surface, "p-5 sm:p-7")}>
                 <div className="flex items-center gap-4 text-itx-ink">
                     <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-itx-warning/15 text-[#8a5a13]">
                         <AlertTriangle className="h-5 w-5" />
@@ -429,20 +430,8 @@ export function SettingsView() {
                 onCreated={(admin) => setAdminToast(`${admin.username} was added as an administrator.`)}
                 open={adminDialogOpen}
             />
-            {message && <Toast message={message} onClose={() => setMessage("")} />}
-            {adminToast && <Toast message={adminToast} onClose={() => setAdminToast("")} />}
-        </div>
-    );
-}
-export function NotFoundView() {
-    return (
-        <div className={joinClasses(surface, "mx-auto max-w-xl p-10 text-center text-itx-ink")}>
-            <UserRound className="mx-auto h-10 w-10 text-slate-400" />
-            <h2 className="mt-4 text-xl font-bold">Admin page not found</h2>
-            <p className="mt-2 text-sm text-slate-500">Return to the operations overview to continue.</p>
-            <Link className="mt-5 inline-flex rounded-xl bg-[#128a93] px-4 py-2.5 text-xs font-bold text-white" to="/admin">
-                Back to overview
-            </Link>
+            {message && <Toast message={message} onClose={dismissMessage} />}
+            {adminToast && <Toast message={adminToast} onClose={dismissAdminToast} />}
         </div>
     );
 }

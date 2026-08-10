@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { LoginView } from "./LoginForm.helpers";
+import { LoginView } from "./LoginView";
 
 export default function LoginForm({ onLogin }) {
     const [formData, setFormData] = useState({ username: "", password: "" });

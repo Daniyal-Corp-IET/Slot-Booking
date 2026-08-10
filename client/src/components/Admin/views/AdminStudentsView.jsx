@@ -1,32 +1,15 @@
 import { useEffect, useRef, useState } from "react";
-import { AlertTriangle, CalendarDays, ChevronRight, KeyRound, Mail, Phone, Plus, Search, ShieldCheck, UserPlus, UsersRound } from "lucide-react";
+import { AlertTriangle, CalendarDays, ChevronRight, KeyRound, Mail, Phone, Plus, ShieldCheck, UserPlus, UsersRound } from "lucide-react";
 import { useOutletContext } from "react-router-dom";
-import { AppDialog, ConfirmDialog, EmptyState, Toast } from "../../Feedback/Feedback";
-import { MONTH_OPTIONS, PROGRAM_STYLES, joinClasses, monthLabel, shiftMonth, termDuration } from "../AdminPanel.helpers";
-import { AdminAction, AdminReveal, MetricCard, surface } from "../AdminPanel.view";
-
-const API_URL = import.meta.env.VITE_API_URL || "/api";
-
-async function apiRequest(path, method = "GET") {
-    let response;
-
-    try {
-        response = await fetch(`${API_URL}${path}`, {
-            method,
-            credentials: "include",
-            headers: { "Content-Type": "application/json" },
-        });
-    } catch {
-        throw new Error("Unable to connect to the server. Please start the backend and try again.");
-    }
-
-    const data = await response.json();
-    if (!response.ok) {
-        throw new Error(data.message || "Something went wrong. Please try again.");
-    }
-
-    return data;
-}
+import { AppDialog, ConfirmDialog, EmptyState, LoadingState, Toast } from "../../Feedback/Feedback";
+import { useToast } from "../../../hooks/useToast";
+import { apiRequest } from "../../../utils/apiClient";
+import { cn } from "../../../utils/cn";
+import { MONTH_OPTIONS, PROGRAM_STYLES, monthLabel, shiftMonth, termDuration } from "../AdminPanel.helpers";
+import { AdminAction, AdminReveal, surface } from "../AdminPanel.view";
+import { MetricCard } from "../../ui/MetricCard";
+import { SearchField } from "../../ui/SearchField";
+import { FORM_FIELD_CLASS, SELECT_FIELD_CLASS } from "../../ui/fieldStyles";
 
 async function getNextStudentId(courseId) {
     const data = await apiRequest(`/students/next-id?courseId=${courseId}`);
@@ -36,9 +19,6 @@ async function getNextStudentId(courseId) {
 function resetStudentPassword(studentId) {
     return apiRequest(`/students/${studentId}/reset-password`, "POST");
 }
-
-const formField =
-    "h-12 w-full rounded-xl border border-itx-border bg-white px-3.5 text-sm font-semibold text-itx-ink outline-none transition focus:border-[#128a93] focus:ring-4 focus:ring-[#128a93]/10";
 
 function TermRangePicker({ end, onChange, start }) {
     const [open, setOpen] = useState(false);
@@ -93,7 +73,7 @@ function TermRangePicker({ end, onChange, start }) {
                         {index === 1 && <span className="hidden text-xs font-black uppercase tracking-[0.1em] text-slate-400 sm:block">to</span>}
                         <button
                             aria-expanded={open && activeField === item.field}
-                            className={joinClasses(
+                            className={cn(
                                 "flex min-h-16 items-center gap-3 rounded-2xl border px-3.5 text-left transition",
                                 open && activeField === item.field
                                     ? "border-[#128a93] bg-white ring-4 ring-[#128a93]/10"
@@ -103,7 +83,7 @@ function TermRangePicker({ end, onChange, start }) {
                             type="button"
                         >
                             <span
-                                className={joinClasses(
+                                className={cn(
                                     "flex size-10 shrink-0 items-center justify-center rounded-xl",
                                     item.value ? "bg-[#128a93] text-white" : "bg-slate-100 text-[#128a93]",
                                 )}
@@ -112,11 +92,11 @@ function TermRangePicker({ end, onChange, start }) {
                             </span>
                             <span className="min-w-0 flex-1">
                                 <span className="block text-xs font-bold uppercase tracking-[0.08em] text-slate-500">{item.label}</span>
-                                <span className={joinClasses("mt-1 block text-sm font-extrabold", item.value ? "text-itx-ink" : "text-slate-400")}>
+                                <span className={cn("mt-1 block text-sm font-extrabold", item.value ? "text-itx-ink" : "text-slate-400")}>
                                     {monthLabel(item.value)}
                                 </span>
                             </span>
-                            <ChevronRight className={joinClasses("size-4 text-slate-500 transition", open && activeField === item.field && "rotate-90")} />
+                            <ChevronRight className={cn("size-4 text-slate-500 transition", open && activeField === item.field && "rotate-90")} />
                         </button>
                     </div>
                 ))}
@@ -149,7 +129,7 @@ function TermRangePicker({ end, onChange, start }) {
                         <div className="mt-2 grid grid-cols-2 gap-2">
                             {[baseYear, baseYear + 1].map((option) => (
                                 <button
-                                    className={joinClasses(
+                                    className={cn(
                                         "rounded-xl px-3 py-2 text-xs font-extrabold transition",
                                         year === option
                                             ? "bg-[#128a93] text-white"
@@ -180,7 +160,7 @@ function TermRangePicker({ end, onChange, start }) {
                                 return (
                                     <button
                                         aria-pressed={startSelected || endSelected}
-                                        className={joinClasses(
+                                        className={cn(
                                             "min-h-11 rounded-xl text-xs font-bold transition",
                                             monthStyle,
                                         )}
@@ -317,15 +297,15 @@ function StudentFormDialog({ courses, onAddStudent, onClose, open }) {
             <form className="grid gap-4 sm:grid-cols-2" id="add-student-form" onSubmit={submit}>
                 <label className="text-sm font-bold text-slate-600">
                     First name
-                    <input className={`${formField} mt-2`} name="firstName" onChange={changeField} required value={form.firstName} />
+                    <input className={`${FORM_FIELD_CLASS} mt-2`} name="firstName" onChange={changeField} required value={form.firstName} />
                 </label>
                 <label className="text-sm font-bold text-slate-600">
                     Last name
-                    <input className={`${formField} mt-2`} name="lastName" onChange={changeField} required value={form.lastName} />
+                    <input className={`${FORM_FIELD_CLASS} mt-2`} name="lastName" onChange={changeField} required value={form.lastName} />
                 </label>
                 <label className="text-sm font-bold text-slate-600 sm:col-span-2">
                     Course
-                    <select className={`${formField} mt-2`} name="program" onChange={changeField} required value={form.program}>
+                    <select className={`${FORM_FIELD_CLASS} mt-2`} name="program" onChange={changeField} required value={form.program}>
                         <option value="">Select a course</option>
                         {courses.map((course) => (
                             <option key={course.abbreviation} value={course.abbreviation}>
@@ -353,7 +333,7 @@ function StudentFormDialog({ courses, onAddStudent, onClose, open }) {
                         start={form.termStart}
                     />
                     <div
-                        className={joinClasses(
+                        className={cn(
                             "mt-4 flex flex-col gap-1 rounded-2xl px-4 py-3 sm:flex-row sm:items-center sm:justify-between",
                             duration ? "bg-itx-success/12 text-itx-success" : "bg-white text-slate-500",
                         )}
@@ -366,11 +346,11 @@ function StudentFormDialog({ courses, onAddStudent, onClose, open }) {
                 </div>
                 <label className="text-sm font-bold text-slate-600 sm:col-span-2">
                     Email
-                    <input className={`${formField} mt-2`} name="email" onChange={changeField} required type="email" value={form.email} />
+                    <input className={`${FORM_FIELD_CLASS} mt-2`} name="email" onChange={changeField} required type="email" value={form.email} />
                 </label>
                 <label className="text-sm font-bold text-slate-600 sm:col-span-2">
                     Phone number <span className="font-medium text-slate-400">(optional)</span>
-                    <input className={`${formField} mt-2`} name="phone" onChange={changeField} type="tel" value={form.phone} />
+                    <input className={`${FORM_FIELD_CLASS} mt-2`} name="phone" onChange={changeField} type="tel" value={form.phone} />
                 </label>
                 {formComplete && (
                     <div className="rounded-2xl border border-itx-success/25 bg-itx-success/10 px-4 py-3 text-center sm:col-span-2">
@@ -394,7 +374,7 @@ export function CoursesView() {
     const [name, setName] = useState("");
     const [abbreviation, setAbbreviation] = useState("");
     const [message, setMessage] = useState("");
-    const [toast, setToast] = useState("");
+    const { dismissToast, showToast, toastMessage } = useToast();
     const [saving, setSaving] = useState(false);
 
     const submit = async (event) => {
@@ -415,7 +395,7 @@ export function CoursesView() {
             setAbbreviation("");
             setMessage("");
             setDialogOpen(false);
-            setToast("Course added successfully.");
+            showToast("Course added successfully.");
         } catch (error) {
             setMessage(error.message);
         } finally {
@@ -463,16 +443,9 @@ export function CoursesView() {
                     </AdminAction>
                 </div>
             </AdminReveal>
-            {loading && (
-                <AdminReveal className={joinClasses(surface, "p-8 text-center text-sm font-semibold text-slate-500")}>
-                    <span className="inline-flex items-center gap-3">
-                        <span className="size-2 rounded-full bg-[#128a93]" />
-                        Loading courses...
-                    </span>
-                </AdminReveal>
-            )}
+            {loading && <LoadingState message="Loading courses..." />}
             {!loading && error && (
-                <AdminReveal className={joinClasses(surface, "p-8 text-center")}>
+                <AdminReveal className={cn(surface, "p-8 text-center")}>
                     <p className="text-sm font-semibold text-itx-danger">{error}</p>
                     <button className="mt-4 rounded-xl bg-[#128a93] px-4 py-2.5 text-sm font-bold text-white" onClick={onRetry} type="button">
                         Try again
@@ -487,7 +460,7 @@ export function CoursesView() {
                         const colors = ["bg-[#128a93]", "bg-[#6376b8]", "bg-[#d89b3b]", "bg-[#17a870]"];
                         return (
                             <article
-                                className={joinClasses(surface, "group relative overflow-hidden p-5 text-itx-ink transition-colors duration-150 hover:border-[#128a93]/25")}
+                                className={cn(surface, "group relative overflow-hidden p-5 text-itx-ink transition-colors duration-150 hover:border-[#128a93]/25")}
                                 key={course.abbreviation}
                             >
                                 <span className={`absolute inset-x-0 top-0 h-1.5 ${colors[index % colors.length]}`} />
@@ -521,7 +494,7 @@ export function CoursesView() {
                     <label className="block text-sm font-bold text-slate-600">
                         Course name
                         <input
-                            className={`${formField} mt-2`}
+                            className={`${FORM_FIELD_CLASS} mt-2`}
                             onChange={(event) => {
                                 setName(event.target.value);
                                 setMessage("");
@@ -534,7 +507,7 @@ export function CoursesView() {
                     <label className="block text-sm font-bold text-slate-600">
                         Abbreviation
                         <input
-                            className={`${formField} mt-2 uppercase`}
+                            className={`${FORM_FIELD_CLASS} mt-2 uppercase`}
                             maxLength={6}
                             onChange={(event) => {
                                 setAbbreviation(event.target.value.replace(/[^a-z0-9]/gi, ""));
@@ -553,7 +526,7 @@ export function CoursesView() {
                     )}
                 </form>
             </AppDialog>
-            {toast && <Toast message={toast} onClose={() => setToast("")} />}
+            {toastMessage && <Toast message={toastMessage} onClose={dismissToast} />}
         </div>
     );
 }
@@ -566,7 +539,7 @@ export function StudentsView() {
     const [sortBy, setSortBy] = useState("name");
     const [formOpen, setFormOpen] = useState(false);
     const [resetStudentId, setResetStudentId] = useState("");
-    const [toast, setToast] = useState("");
+    const { dismissToast, showToast, toastMessage } = useToast();
     const visible = students
         .filter((student) => `${student.name} ${student.id} ${student.program} ${student.email} ${student.phone}`.toLowerCase().includes(query.toLowerCase()))
         .filter((student) => programFilter === "all" || student.program === programFilter)
@@ -577,7 +550,7 @@ export function StudentsView() {
         });
     const addStudent = async (studentDetails) => {
         const student = await onAddStudent(studentDetails);
-        setToast(`${student.name} added. ID and initial password: ${student.id}.`);
+        showToast(`${student.name} added. ID and initial password: ${student.id}.`);
         return student;
     };
     const studentToReset = students.find((student) => student.id === resetStudentId);
@@ -585,10 +558,10 @@ export function StudentsView() {
         if (!studentToReset) return;
         try {
             await resetStudentPassword(studentToReset.id);
-            setToast(`${studentToReset.name}'s password was reset to ${studentToReset.id}.`);
+            showToast(`${studentToReset.name}'s password was reset to ${studentToReset.id}.`);
             setResetStudentId("");
         } catch (error) {
-            setToast(error.message);
+            showToast(error.message);
         }
     };
     return (
@@ -633,7 +606,7 @@ export function StudentsView() {
                     value={students.filter((student) => student.status === "Near limit").length}
                 />
             </AdminReveal>
-            <AdminReveal className={joinClasses(surface, "overflow-hidden")}>
+            <AdminReveal className={cn(surface, "overflow-hidden")}>
                 <div className="relative overflow-hidden border-b border-itx-border bg-slate-50 p-5 sm:p-6">
                     <div className="relative flex flex-wrap items-end justify-between gap-3">
                         <div className="flex items-start gap-3">
@@ -650,20 +623,16 @@ export function StudentsView() {
                         </span>
                     </div>
                     <div className="mt-4 grid gap-3 lg:grid-cols-[minmax(0,1fr)_14rem_12rem]">
-                        <label className="relative">
-                            <span className="sr-only">Search students</span>
-                            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                            <input
-                                className="h-11 w-full rounded-xl border border-itx-border bg-white pl-10 pr-3 text-sm font-semibold text-itx-ink shadow-sm outline-none transition hover:border-slate-300 focus:border-[#128a93] focus:ring-4 focus:ring-[#128a93]/10"
-                                onChange={(event) => setQuery(event.target.value)}
-                                placeholder="Search name, ID or email"
-                                value={query}
-                            />
-                        </label>
+                        <SearchField
+                            label="Search students"
+                            onChange={(event) => setQuery(event.target.value)}
+                            placeholder="Search name, ID or email"
+                            value={query}
+                        />
                         <label>
                             <span className="sr-only">Filter by program</span>
                             <select
-                                className="h-11 w-full rounded-xl border border-itx-border bg-white px-3 text-sm font-bold text-slate-600 shadow-sm outline-none transition hover:border-slate-300 focus:border-[#128a93] focus:ring-4 focus:ring-[#128a93]/10"
+                                className={cn(SELECT_FIELD_CLASS, "w-full")}
                                 onChange={(event) => setProgramFilter(event.target.value)}
                                 value={programFilter}
                             >
@@ -677,11 +646,7 @@ export function StudentsView() {
                         </label>
                         <label>
                             <span className="sr-only">Sort students</span>
-                            <select
-                                className="h-11 w-full rounded-xl border border-itx-border bg-white px-3 text-sm font-bold text-slate-600 shadow-sm outline-none transition hover:border-slate-300 focus:border-[#128a93] focus:ring-4 focus:ring-[#128a93]/10"
-                                onChange={(event) => setSortBy(event.target.value)}
-                                value={sortBy}
-                            >
+                            <select className={cn(SELECT_FIELD_CLASS, "w-full")} onChange={(event) => setSortBy(event.target.value)} value={sortBy}>
                                 <option value="name">Name A-Z</option>
                                 <option value="program">Program A-Z</option>
                                 <option value="recent">Recently added</option>
@@ -689,7 +654,7 @@ export function StudentsView() {
                         </label>
                     </div>
                 </div>
-                {loading && <div className="p-8 text-center text-sm font-semibold text-slate-500">Loading students...</div>}
+                {loading && <LoadingState message="Loading students..." />}
                 {!loading && error && (
                     <div className="p-8 text-center">
                         <p className="text-sm font-semibold text-itx-danger">{error}</p>
@@ -704,13 +669,13 @@ export function StudentsView() {
                             const programStyle = PROGRAM_STYLES[student.program] ?? PROGRAM_STYLES.default;
                             return (
                                 <article
-                                    className={joinClasses(surface, "group relative overflow-hidden p-5 text-itx-ink transition-colors duration-150 hover:border-[#128a93]/25")}
+                                    className={cn(surface, "group relative overflow-hidden p-5 text-itx-ink transition-colors duration-150 hover:border-[#128a93]/25")}
                                     key={student.id}
                                 >
-                                    <span className={joinClasses("absolute inset-x-0 top-0 h-1.5", programStyle.accent)} />
+                                    <span className={cn("absolute inset-x-0 top-0 h-1.5", programStyle.accent)} />
                                     <div className="flex items-start gap-4">
                                         <span
-                                            className={joinClasses(
+                                            className={cn(
                                                 "flex size-13 shrink-0 items-center justify-center rounded-2xl text-sm font-black text-white shadow-[0_12px_24px_-16px_rgba(15,23,42,0.3)]",
                                                 programStyle.avatar,
                                             )}
@@ -724,7 +689,7 @@ export function StudentsView() {
                                                     <p className="mt-1 text-sm font-semibold text-slate-500">{student.id}</p>
                                                 </div>
                                                 <span
-                                                    className={joinClasses(
+                                                    className={cn(
                                                         "rounded-full px-3 py-1.5 text-xs font-extrabold uppercase",
                                                         student.status === "Near limit" ? "bg-itx-warning/15 text-[#8a5a13]" : "bg-itx-success/12 text-itx-success",
                                                     )}
@@ -735,7 +700,7 @@ export function StudentsView() {
                                         </div>
                                     </div>
                                     <div className="mt-5 rounded-2xl border border-itx-border bg-slate-50 p-4">
-                                        <span className={joinClasses("inline-flex rounded-lg px-2.5 py-1.5 text-xs font-extrabold", programStyle.badge)}>
+                                        <span className={cn("inline-flex rounded-lg px-2.5 py-1.5 text-xs font-extrabold", programStyle.badge)}>
                                             {student.program}
                                         </span>
                                         <p className="mt-3 text-xs font-bold uppercase tracking-[0.08em] text-slate-500">Term</p>
@@ -773,7 +738,7 @@ export function StudentsView() {
                                         </div>
                                         <div className="h-2.5 overflow-hidden rounded-full bg-slate-100 shadow-inner">
                                             <div
-                                                className={joinClasses(
+                                                className={cn(
                                                     "h-full rounded-full shadow-[0_0_12px_rgba(18,138,147,0.2)]",
                                                     student.percent >= 85 ? "bg-itx-warning" : programStyle.accent,
                                                 )}
@@ -813,7 +778,7 @@ export function StudentsView() {
                 open={Boolean(studentToReset)}
                 title="Reset student password?"
             />
-            {toast && <Toast message={toast} onClose={() => setToast("")} />}
+            {toastMessage && <Toast message={toastMessage} onClose={dismissToast} />}
         </div>
     );
 }

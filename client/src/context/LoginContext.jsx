@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 
 const API_URL = import.meta.env.VITE_API_URL || "/api";
 
@@ -24,7 +24,7 @@ async function apiRequest(path, method = "GET", values) {
 }
 
 function getCurrentUser() {
-    return apiRequest("/auth/me");
+    return apiRequest("/auth/verify");
 }
 
 function loginRequest(username, password) {
@@ -41,43 +41,44 @@ export function LoginProvider({ children }) {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    const clearSession = () => {
+    const clearSession = useCallback(() => {
         setUser(null);
         window.localStorage.setItem("itx-auth-change", String(Date.now()));
-    };
+    }, []);
+
+    const restoreSession = useCallback(async () => {
+        try {
+            const data = await getCurrentUser();
+            setUser(data.user);
+        } catch {
+            setUser(null);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    const verifySession = useCallback(async () => {
+        try {
+            const data = await getCurrentUser();
+            setUser((currentUser) => {
+                const sameId = currentUser?.id === data.user.id;
+                const sameRole = currentUser?.role === data.user.role;
+                const sameUsername = currentUser?.username === data.user.username;
+                if (sameId && sameRole && sameUsername) return currentUser;
+                return data.user;
+            });
+        } catch {
+            clearSession();
+        }
+    }, [clearSession]);
 
     useEffect(() => {
-        async function restoreSession() {
-            try {
-                const data = await getCurrentUser();
-                setUser(data.user);
-            } catch {
-                setUser(null);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        restoreSession();
-    }, []);
+        Promise.resolve().then(() => restoreSession());
+    }, [restoreSession]);
 
     useEffect(() => {
         if (!user) return undefined;
 
-        const verifySession = async () => {
-            try {
-                const data = await getCurrentUser();
-                setUser((currentUser) => {
-                    const sameId = currentUser?.id === data.user.id;
-                    const sameRole = currentUser?.role === data.user.role;
-                    const sameUsername = currentUser?.username === data.user.username;
-                    if (sameId && sameRole && sameUsername) return currentUser;
-                    return data.user;
-                });
-            } catch {
-                clearSession();
-            }
-        };
         const handleAuthChange = (event) => {
             if (event.key === "itx-auth-change") setUser(null);
         };
@@ -91,23 +92,27 @@ export function LoginProvider({ children }) {
             window.removeEventListener("focus", verifySession);
             window.removeEventListener("storage", handleAuthChange);
         };
-    }, [user]);
+    }, [user, verifySession]);
 
-    const login = async (username, password) => {
+    const login = useCallback(async (username, password) => {
         const data = await loginRequest(username, password);
         setUser(data.user);
         return data.user;
-    };
+    }, []);
 
-    const logout = async () => {
+    const logout = useCallback(async () => {
         try {
             await logoutRequest();
         } finally {
             clearSession();
         }
-    };
+    }, [clearSession]);
 
-    return <LoginContext.Provider value={{ clearSession, loading, login, logout, user }}>{children}</LoginContext.Provider>;
+    const updateUser = useCallback((patch) => {
+        setUser((currentUser) => (currentUser ? { ...currentUser, ...patch } : currentUser));
+    }, []);
+
+    return <LoginContext.Provider value={{ clearSession, loading, login, logout, updateUser, user }}>{children}</LoginContext.Provider>;
 }
 
 // eslint-disable-next-line react-refresh/only-export-components

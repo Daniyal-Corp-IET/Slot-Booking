@@ -3,37 +3,15 @@ import { Check, Monitor, Plus, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLab } from "../../../context/LabContext";
 import { isSystemUnavailable } from "../../../context/LabContext.helpers";
+import { useToast } from "../../../hooks/useToast";
+import { apiRequest } from "../../../utils/apiClient";
+import { cn } from "../../../utils/cn";
 import { formatActivityMinutes } from "../../../utils/sessionActivity";
-import { AppDialog, ConfirmDialog, EmptyState, Toast } from "../../Feedback/Feedback";
+import { AppDialog, ConfirmDialog, EmptyState, LoadingState, Toast } from "../../Feedback/Feedback";
 import { EditableSystemTimeline } from "../../SystemCanvas/EditableSystemTimeline";
-import { SYSTEM_STYLES, formatMinutes, historyDates, joinClasses } from "../AdminPanel.helpers";
+import { SYSTEM_STYLES, formatMinutes, historyDates } from "../AdminPanel.helpers";
 import { AdminAction, AdminReveal, surface } from "../AdminPanel.view";
-
-const API_URL = import.meta.env.VITE_API_URL || "/api";
-
-async function apiRequest(path, method = "GET", values) {
-    let response;
-    const requestOptions = {
-        method,
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-    };
-
-    if (values) requestOptions.body = JSON.stringify(values);
-
-    try {
-        response = await fetch(`${API_URL}${path}`, requestOptions);
-    } catch {
-        throw new Error("Unable to connect to the server. Please start the backend and try again.");
-    }
-
-    const data = await response.json();
-    if (!response.ok) {
-        throw new Error(data.message || "Something went wrong. Please try again.");
-    }
-
-    return data;
-}
+import { StatusBadge } from "../../ui/StatusBadge";
 
 function getSystemHistory(systemId, date) {
     return apiRequest(`/systems/${systemId}/history?date=${date}`);
@@ -62,7 +40,7 @@ export function SystemsView() {
     const [pendingTimelineAction, setPendingTimelineAction] = useState(null);
     const [historyVisible, setHistoryVisible] = useState(false);
     const [now, setNow] = useState(() => Date.now());
-    const [toast, setToast] = useState("");
+    const { dismissToast, showToast, toastMessage } = useToast();
     const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
     const [historySegments, setHistorySegments] = useState([]);
     const [historyLoading, setHistoryLoading] = useState(true);
@@ -116,7 +94,7 @@ export function SystemsView() {
                 const data = await getSystemHistory(selected.id, historyDate);
                 if (pageIsOpen) setHistorySegments(data.segments);
             } catch (error) {
-                if (pageIsOpen) setToast(error.message);
+                if (pageIsOpen) showToast(error.message);
             } finally {
                 if (pageIsOpen) setHistoryLoading(false);
             }
@@ -127,7 +105,7 @@ export function SystemsView() {
         return () => {
             pageIsOpen = false;
         };
-    }, [bookings, historyDate, historyVisible, selected?.id, systemOutages]);
+    }, [bookings, historyDate, historyVisible, selected?.id, showToast, systemOutages]);
     const refreshHistory = async (systemId = selected.id) => {
         if (!historyVisible) return;
         const data = await getSystemHistory(systemId, historyDate);
@@ -139,9 +117,9 @@ export function SystemsView() {
             setSelectedId(system.id);
             await markSystemAvailable(system.id);
             await refreshHistory(system.id);
-            setToast(`System ${String(system.id).padStart(2, "0")} is available again.`);
+            showToast(`System ${String(system.id).padStart(2, "0")} is available again.`);
         } catch (error) {
-            setToast(error.message);
+            showToast(error.message);
         }
     };
     const openStatusDialog = (system = selected) => {
@@ -158,9 +136,9 @@ export function SystemsView() {
             await markSystemUnavailable(selected.id, null);
             await refreshHistory(selected.id);
             setStatusDialogOpen(false);
-            setToast(`System ${String(selected.id).padStart(2, "0")} is now unavailable.`);
+            showToast(`System ${String(selected.id).padStart(2, "0")} is now unavailable.`);
         } catch (error) {
-            setToast(error.message);
+            showToast(error.message);
         }
     };
     const saveTimelineAction = async () => {
@@ -191,9 +169,9 @@ export function SystemsView() {
             }
             setPendingTimelineAction(null);
             await refreshHistory(selected.id);
-            setToast(`${actionMessage} for System ${String(selected.id).padStart(2, "0")}.`);
+            showToast(`${actionMessage} for System ${String(selected.id).padStart(2, "0")}.`);
         } catch (error) {
-            setToast(error.message);
+            showToast(error.message);
         }
     };
     const addNewSystem = async () => {
@@ -202,9 +180,9 @@ export function SystemsView() {
             const system = await addSystem();
             setSelectedId(system.id);
             setFilter("all");
-            setToast(`System ${String(system.id).padStart(2, "0")} was added.`);
+            showToast(`System ${String(system.id).padStart(2, "0")} was added.`);
         } catch (error) {
-            setToast(error.message);
+            showToast(error.message);
         } finally {
             setSaving(false);
         }
@@ -216,10 +194,10 @@ export function SystemsView() {
 
             const nextSystem = systems.find((system) => system.id !== selected.id);
             setSelectedId(nextSystem?.id ?? 0);
-            setToast(`System ${String(selected.id).padStart(2, "0")} was removed.`);
+            showToast(`System ${String(selected.id).padStart(2, "0")} was removed.`);
         } catch (error) {
             setRemoveDialogOpen(false);
-            setToast(error.message);
+            showToast(error.message);
         }
     };
     const currentDateTime = new Date(now);
@@ -231,7 +209,7 @@ export function SystemsView() {
     return (
         <div className="mx-auto max-w-400 space-y-5">
             <AdminReveal className="grid gap-5 2xl:grid-cols-[1.35fr_0.65fr]">
-                <section className={joinClasses(surface, "overflow-hidden p-5 text-itx-ink sm:p-6")}>
+                <section className={cn(surface, "overflow-hidden p-5 text-itx-ink sm:p-6")}>
                     <div className="relative -mx-5 -mt-5 overflow-hidden border-b border-itx-border bg-slate-50 p-5 sm:-mx-6 sm:-mt-6 sm:p-6">
                         <div className="relative flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                             <div>
@@ -253,7 +231,7 @@ export function SystemsView() {
                     <div className="mt-5 flex flex-wrap gap-2 rounded-2xl border border-itx-border bg-slate-50 p-1.5 shadow-inner">
                         {["all", "available", "offline"].map((option) => (
                             <button
-                                className={joinClasses(
+                                className={cn(
                                     "relative min-h-9 overflow-hidden rounded-xl px-3 py-2 text-xs font-bold capitalize transition",
                                     filter === option
                                         ? "text-white shadow-[0_8px_18px_-12px_rgba(18,138,147,0.6)]"
@@ -285,7 +263,7 @@ export function SystemsView() {
                                     const hasBookings = systemHasBookings(system.id);
                                     return (
                                         <tr
-                                            className={joinClasses(
+                                            className={cn(
                                                 "group cursor-pointer snap-start transition-colors duration-150 hover:bg-slate-50",
                                                 selected.id === system.id && "bg-[#128a93]/8 shadow-[inset_3px_0_0_#128a93]",
                                             )}
@@ -308,20 +286,12 @@ export function SystemsView() {
                                                 </button>
                                             </td>
                                             <td className="px-4 py-4">
-                                                <span
-                                                    className={joinClasses(
-                                                        "inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold",
-                                                        system.status === "available" ? "bg-itx-success/12 text-itx-success" : "bg-slate-100 text-slate-500",
-                                                    )}
-                                                >
-                                                    <span
-                                                        className={joinClasses(
-                                                            "size-2 rounded-full",
-                                                            system.status === "available" ? "bg-itx-success" : "bg-slate-400",
-                                                        )}
-                                                    />
-                                                    {system.status === "available" ? "Available" : "Unavailable"}
-                                                </span>
+                                                <StatusBadge
+                                                    dotClassName={system.status === "available" ? "bg-itx-success" : "bg-slate-400"}
+                                                    emphasis="medium"
+                                                    label={system.status === "available" ? "Available" : "Unavailable"}
+                                                    toneClassName={system.status === "available" ? "bg-itx-success/12 text-itx-success" : "bg-slate-100 text-slate-500"}
+                                                />
                                             </td>
                                             <td className="px-4 py-4 text-sm font-medium text-slate-500">
                                                 {outage
@@ -334,7 +304,7 @@ export function SystemsView() {
                                                 <div className="flex justify-end gap-2">
                                                     {system.status === "available" ? (
                                                         <button
-                                                            className={joinClasses(
+                                                            className={cn(
                                                                 "rounded-xl px-3 py-2 text-xs font-bold transition",
                                                                 hasBookings
                                                                     ? "bg-itx-warning/15 text-[#8a5a13] hover:bg-itx-warning/25"
@@ -371,7 +341,7 @@ export function SystemsView() {
                     <div className="mt-3 grid max-h-104 snap-y gap-3 overflow-y-auto pr-1 md:hidden">
                         {visibleSystems.map((system) => (
                             <button
-                                className={joinClasses(
+                                className={cn(
                                     "flex snap-start items-center gap-3 rounded-2xl border p-4 text-left shadow-[0_12px_30px_-26px_rgba(15,23,42,0.15)] transition-colors duration-150",
                                     selected.id === system.id
                                         ? "border-[#128a93] bg-[#128a93]/8 ring-2 ring-[#128a93]/15"
@@ -391,7 +361,7 @@ export function SystemsView() {
                                     </span>
                                 </span>
                                 <span
-                                    className={joinClasses(
+                                    className={cn(
                                         "size-2.5 rounded-full shadow-[0_0_9px_currentColor]",
                                         system.status === "available" ? "bg-itx-success text-itx-success" : "bg-slate-300 text-slate-300",
                                     )}
@@ -406,41 +376,35 @@ export function SystemsView() {
                     )}
                 </section>
 
-                <aside className={joinClasses(surface, "h-fit overflow-hidden 2xl:sticky 2xl:top-28")}>
+                <aside className={cn(surface, "h-fit overflow-hidden 2xl:sticky 2xl:top-28")}>
                     <div className="premium-hero relative overflow-hidden p-6 text-itx-ink">
                         <div className="flex items-start justify-between">
                             <span className="relative flex h-13 w-13 items-center justify-center rounded-2xl border border-itx-border bg-white/70 shadow-inner backdrop-blur-sm">
                                 <Monitor className="h-6 w-6" />
                             </span>
-                            <span
-                                className={joinClasses(
-                                    "relative inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[10px] font-extrabold uppercase",
+                            <StatusBadge
+                                className="relative border"
+                                dotClassName={selected.status === "available" ? "bg-itx-success shadow-[0_0_9px_rgba(23,168,112,0.6)]" : "bg-slate-400"}
+                                label={SYSTEM_STYLES[selected.status].label}
+                                toneClassName={
                                     selected.status === "available"
                                         ? "border-itx-success/20 bg-itx-success/12 text-itx-success"
-                                        : "border-itx-border bg-white/70 text-slate-600",
-                                )}
-                            >
-                                <span
-                                    className={joinClasses(
-                                        "size-1.5 rounded-full",
-                                        selected.status === "available" ? "bg-itx-success shadow-[0_0_9px_rgba(23,168,112,0.6)]" : "bg-slate-400",
-                                    )}
-                                />
-                                {SYSTEM_STYLES[selected.status].label}
-                            </span>
+                                        : "border-itx-border bg-white/70 text-slate-600"
+                                }
+                            />
                         </div>
                         <p className="mt-6 text-xs font-semibold text-slate-600">Selected workstation</p>
                         <h3 className="mt-1 text-3xl font-bold tracking-[-0.05em] text-itx-ink">System {String(selected.id).padStart(2, "0")}</h3>
                     </div>
                     <div className="p-6">
                         <div
-                            className={joinClasses(
+                            className={cn(
                                 "rounded-2xl border p-4",
                                 selected.status === "available" ? "border-itx-success/25 bg-itx-success/10" : "border-itx-border bg-slate-50",
                             )}
                         >
                             <div className="flex items-center gap-3">
-                                <span className={joinClasses("size-3 rounded-full", selected.status === "available" ? "bg-itx-success" : "bg-slate-400")} />
+                                <span className={cn("size-3 rounded-full", selected.status === "available" ? "bg-itx-success" : "bg-slate-400")} />
                                 <div>
                                     <p className="text-sm font-bold text-itx-ink">{selected.status === "available" ? "Ready for bookings" : "Not available to students"}</p>
                                     <p className="mt-1 text-xs leading-5 text-slate-500">
@@ -465,7 +429,7 @@ export function SystemsView() {
                             )}
                             {selected.status === "available" && (
                                 <AdminAction
-                                    className={joinClasses(
+                                    className={cn(
                                         "min-h-12 w-full rounded-2xl border px-4 text-sm font-bold transition",
                                         selectedHasBookings
                                             ? "border-itx-warning/30 bg-itx-warning/15 text-[#8a5a13] hover:bg-itx-warning/25"
@@ -489,7 +453,7 @@ export function SystemsView() {
                 </aside>
             </AdminReveal>
             {historyVisible && (
-                <AdminReveal className={joinClasses(surface, "overflow-hidden p-5 text-itx-ink sm:p-6")}>
+                <AdminReveal className={cn(surface, "overflow-hidden p-5 text-itx-ink sm:p-6")}>
                     <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                         <div>
                             <p className="text-xs font-extrabold uppercase tracking-[0.12em] text-[#128a93]">Next seven days</p>
@@ -508,7 +472,7 @@ export function SystemsView() {
                         {historyDates().map((date) => (
                             <button
                                 aria-pressed={historyDate === date.key}
-                                className={joinClasses(
+                                className={cn(
                                     "min-w-21 rounded-xl border px-3 py-2.5 text-left transition",
                                     historyDate === date.key ? "border-[#128a93] bg-[#128a93]/12 text-[#0d6169]" : "border-itx-border bg-slate-50 text-slate-500",
                                 )}
@@ -525,8 +489,8 @@ export function SystemsView() {
                         ))}
                     </div>
                     {historyLoading ? (
-                        <div className="mt-5 flex min-h-48 items-center justify-center rounded-2xl border border-itx-border bg-slate-50 text-sm font-bold text-slate-500">
-                            Loading day history...
+                        <div className="mt-5">
+                            <LoadingState message="Loading day history..." />
                         </div>
                     ) : (
                         <div className="mt-5 grid gap-5 2xl:grid-cols-[1.15fr_0.85fr]">
@@ -603,16 +567,15 @@ export function SystemsView() {
                                                         {formatMinutes(segment.endMinutes)}
                                                     </td>
                                                     <td className="px-4 py-3">
-                                                        <span
-                                                            className={joinClasses(
-                                                                "inline-flex rounded-full px-2.5 py-1.5 text-[11px] font-extrabold uppercase tracking-[0.05em]",
+                                                        <StatusBadge
+                                                            className="tracking-[0.05em]"
+                                                            label={segment.status}
+                                                            toneClassName={cn(
                                                                 segment.status === "available" && "bg-itx-success/12 text-itx-success",
                                                                 segment.status === "booked" && "bg-itx-info/12 text-itx-info",
                                                                 segment.status === "unavailable" && "bg-itx-danger/12 text-itx-danger",
                                                             )}
-                                                        >
-                                                            {segment.status}
-                                                        </span>
+                                                        />
                                                     </td>
                                                 </tr>
                                             ))}
@@ -687,7 +650,7 @@ export function SystemsView() {
                 open={removeDialogOpen}
                 title="Remove this system?"
             />
-            {toast && <Toast message={toast} onClose={() => setToast("")} />}
+            {toastMessage && <Toast message={toastMessage} onClose={dismissToast} />}
         </div>
     );
 }

@@ -340,7 +340,3 @@ export function formatCurrentWeek(referenceDate = new Date()) {
     const endLabel = end.toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" });
     return `${startLabel} – ${endLabel}`;
 }
-
-export function cn(...classes) {
-    return classes.filter(Boolean).join(" ");
-}

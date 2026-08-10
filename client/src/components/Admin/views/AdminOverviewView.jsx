@@ -5,8 +5,10 @@ import { useLab } from "../../../context/LabContext";
 import { EmptyState } from "../../Feedback/Feedback";
 import { LabFloorCanvas } from "../../SystemCanvas/LabFloorCanvas";
 import { formatBookingDate, isSystemUnavailable } from "../../../context/LabContext.helpers";
-import { displayBooking, getAdminCanvasItems, joinClasses } from "../AdminPanel.helpers";
-import { AdminReveal, MetricCard, StatusLegend, surface } from "../AdminPanel.view";
+import { cn } from "../../../utils/cn";
+import { displayBooking, getAdminCanvasItems } from "../AdminPanel.helpers";
+import { AdminReveal, StatusLegend, surface } from "../AdminPanel.view";
+import { MetricCard } from "../../ui/MetricCard";
 
 // Overview page
 export function OverviewView() {
@@ -90,7 +92,7 @@ export function OverviewView() {
             </AdminReveal>
 
             <AdminReveal className="grid gap-5 2xl:grid-cols-[1.3fr_0.7fr]">
-                <article className={joinClasses(surface, "group overflow-hidden p-5 text-itx-ink transition-colors duration-150 hover:border-[#128a93]/25 sm:p-6")}>
+                <article className={cn(surface, "group overflow-hidden p-5 text-itx-ink transition-colors duration-150 hover:border-[#128a93]/25 sm:p-6")}>
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                         <div>
                             <p className="text-lg font-bold tracking-[-0.025em]">Live system map</p>
@@ -109,7 +111,7 @@ export function OverviewView() {
                     </Link>
                 </article>
 
-                <article className={joinClasses(surface, "relative overflow-hidden p-5 text-itx-ink transition-colors duration-150 hover:border-[#128a93]/25 sm:p-6")}>
+                <article className={cn(surface, "relative overflow-hidden p-5 text-itx-ink transition-colors duration-150 hover:border-[#128a93]/25 sm:p-6")}>
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-lg font-bold tracking-[-0.025em]">Schedule for {formatBookingDate(currentTime)}</p>
@@ -140,7 +142,7 @@ export function OverviewView() {
                                             <p className="mt-1 text-xs text-slate-500">{booking.time}</p>
                                         </div>
                                         <span
-                                            className={joinClasses(
+                                            className={cn(
                                                 "rounded-full px-2 py-1 text-[10px] font-extrabold uppercase",
                                                 booking.status === "Active" ? "bg-itx-success/12 text-itx-success" : "bg-itx-info/12 text-itx-info",
                                             )}

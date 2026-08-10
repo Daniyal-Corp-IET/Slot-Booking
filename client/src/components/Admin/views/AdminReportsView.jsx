@@ -2,8 +2,10 @@ import { Activity, Clock3, Download, Laptop, UsersRound } from "lucide-react";
 import { useOutletContext } from "react-router-dom";
 import { useLab } from "../../../context/LabContext";
 import { formatBookingDate, formatBookingTime } from "../../../context/LabContext.helpers";
-import { getReportMetrics, joinClasses } from "../AdminPanel.helpers";
-import { AdminAction, AdminReveal, MetricCard, surface } from "../AdminPanel.view";
+import { cn } from "../../../utils/cn";
+import { getReportMetrics } from "../AdminPanel.helpers";
+import { AdminAction, AdminReveal, surface } from "../AdminPanel.view";
+import { MetricCard } from "../../ui/MetricCard";
 
 // Reports page
 export function ReportsView() {
@@ -65,7 +67,7 @@ export function ReportsView() {
                 <MetricCard accent="bg-[#e4a541]" icon={Laptop} label="Peak demand" note={report.peakLabel} value={`${report.peak}%`} />
             </AdminReveal>
             <AdminReveal className="grid gap-5 2xl:grid-cols-[1.25fr_0.75fr]">
-                <article className={joinClasses(surface, "overflow-hidden p-5 text-itx-ink sm:p-6")}>
+                <article className={cn(surface, "overflow-hidden p-5 text-itx-ink sm:p-6")}>
                     <div className="flex items-start justify-between">
                         <div>
                             <h2 className="text-lg font-bold">Weekly utilisation</h2>
@@ -91,7 +93,7 @@ export function ReportsView() {
                         ))}
                     </div>
                 </article>
-                <article className={joinClasses(surface, "p-5 text-itx-ink sm:p-6")}>
+                <article className={cn(surface, "p-5 text-itx-ink sm:p-6")}>
                     <h2 className="text-lg font-bold">Students by program</h2>
                     <p className="mt-1 text-xs text-slate-500">{students.length} active student accounts</p>
                     <div className="mt-7 space-y-5">
@@ -103,7 +105,7 @@ export function ReportsView() {
                                 </div>
                                 <div className="h-2.5 overflow-hidden rounded-full bg-slate-100">
                                     <div
-                                        className={joinClasses(
+                                        className={cn(
                                             "h-full rounded-full",
                                             ["bg-[#128a93]", "bg-[#6577b9]", "bg-[#e2a54b]", "bg-[#17a870]"][index % 4],
                                         )}

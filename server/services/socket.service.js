@@ -13,6 +13,18 @@ export function notifyBookingsChanged() {
     emitUpdate(SOCKET_EVENTS.BOOKINGS_CHANGED);
 }
 
+export function notifyHoldsChanged() {
+    emitUpdate(SOCKET_EVENTS.HOLDS_CHANGED);
+}
+
+export function notifyStudentsChanged() {
+    emitUpdate(SOCKET_EVENTS.STUDENTS_CHANGED);
+}
+
+export function notifyCoursesChanged() {
+    emitUpdate(SOCKET_EVENTS.COURSES_CHANGED);
+}
+
 export function notifyPolicyChanged() {
     emitUpdate(SOCKET_EVENTS.POLICY_CHANGED);
 }

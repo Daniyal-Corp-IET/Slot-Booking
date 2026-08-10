@@ -10,17 +10,26 @@ router.use(requireLogin, requireRole("admin"));
 function publicAdmin(admin) {
     return {
         id: admin.id,
+        fullName: admin.fullName,
         email: admin.email,
         username: admin.username,
+        phoneNumber: admin.phoneNumber,
         createdAt: admin.createdAt,
     };
 }
 
 router.post("/", async (request, response, next) => {
     try {
+        const fullName = request.body.fullName?.trim();
         const email = request.body.email?.trim().toLowerCase();
         const username = request.body.username?.trim();
+        const phoneNumber = request.body.phoneNumber?.trim() || null;
         const password = request.body.password;
+
+        if (!fullName) {
+            response.status(400).json({ message: "Full name is required." });
+            return;
+        }
 
         if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
             response.status(400).json({ message: "A valid email address is required." });
@@ -61,8 +70,10 @@ router.post("/", async (request, response, next) => {
 
         const admin = await database.admin.create({
             data: {
+                fullName,
                 email,
                 username,
+                phoneNumber,
                 passwordHash: await bcrypt.hash(password, 10),
             },
         });

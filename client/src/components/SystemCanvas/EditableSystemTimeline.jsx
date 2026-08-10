@@ -228,7 +228,7 @@ export function EditableSystemTimeline({ closeMinutes, currentTime, editable, mi
                 tabIndex={0}
             >
                 <div
-                    className={`relative min-w-72 select-none ${editable ? "cursor-crosshair" : "cursor-default"}`}
+                    className={`relative select-none ${editable ? "cursor-crosshair" : "cursor-default"}`}
                     onPointerCancel={cancelSelecting}
                     onPointerDown={startSelecting}
                     onPointerMove={continueSelecting}
@@ -245,7 +245,7 @@ export function EditableSystemTimeline({ closeMinutes, currentTime, editable, mi
                                 style={{ top: `${((minutes - openMinutes) / totalMinutes) * 100}%` }}
                             >
                                 <span
-                                    className={`w-20 px-2 text-right font-extrabold tabular-nums text-slate-500 sm:w-24 sm:px-3 ${showTimestamp ? "-translate-y-2 text-xs sm:text-sm" : "text-transparent"}`}
+                                    className={`w-14 px-1.5 text-right font-extrabold tabular-nums text-slate-500 sm:w-24 sm:px-3 ${showTimestamp ? "-translate-y-2 text-[11px] sm:text-sm" : "text-transparent"}`}
                                 >
                                     {showTimestamp ? formatTime(minutes) : "·"}
                                 </span>
@@ -256,16 +256,16 @@ export function EditableSystemTimeline({ closeMinutes, currentTime, editable, mi
 
                     <div
                         aria-hidden="true"
-                        className="pointer-events-none absolute bottom-0 left-20 right-3 top-0 rounded-xl border border-itx-border bg-white shadow-inner shadow-white/60 sm:left-24 sm:right-4"
+                        className="pointer-events-none absolute bottom-0 left-14 right-2 top-0 rounded-xl border border-itx-border bg-white shadow-inner shadow-white/60 sm:left-24 sm:right-4"
                     />
 
                     {passedMinutes > openMinutes && (
                         <div
                             aria-label="Elapsed time is unavailable"
-                            className="pointer-events-none absolute left-20 right-3 top-0 z-[2] rounded-t-xl border border-itx-border bg-slate-100 text-slate-400 sm:left-24 sm:right-4"
+                            className="pointer-events-none absolute left-14 right-2 top-0 z-[2] rounded-t-xl border border-itx-border bg-slate-100 text-slate-400 sm:left-24 sm:right-4"
                             style={{ height: `${((passedMinutes - openMinutes) / totalMinutes) * 100}%` }}
                         >
-                            <span className="absolute bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-slate-600 bg-slate-700 px-3 py-1.5 text-xs font-extrabold text-white/90">
+                            <span className="absolute bottom-3 left-1/2 max-w-[calc(100%-1.25rem)] -translate-x-1/2 rounded-xl border border-slate-600 bg-slate-700 px-2.5 py-1.5 text-center text-[10px] font-extrabold leading-tight text-white/90 sm:max-w-none sm:whitespace-nowrap sm:rounded-full sm:px-3 sm:text-xs">
                                 Time passed · unavailable for booking
                             </span>
                         </div>
@@ -273,7 +273,7 @@ export function EditableSystemTimeline({ closeMinutes, currentTime, editable, mi
                     {passedMinutes > openMinutes && passedMinutes < closeMinutes && (
                         <div
                             aria-hidden="true"
-                            className="pointer-events-none absolute left-20 right-3 z-[11] h-0.5 bg-slate-400 sm:left-24 sm:right-4"
+                            className="pointer-events-none absolute left-14 right-2 z-[11] h-0.5 bg-slate-400 sm:left-24 sm:right-4"
                             style={{ top: `${((passedMinutes - openMinutes) / totalMinutes) * 100}%` }}
                         />
                     )}
@@ -291,14 +291,14 @@ export function EditableSystemTimeline({ closeMinutes, currentTime, editable, mi
 
                         return (
                             <div
-                                className={`pointer-events-none absolute left-20 right-3 z-[3] overflow-hidden rounded-lg border px-3 ${style} sm:left-24 sm:right-4`}
+                                className={`pointer-events-none absolute left-14 right-2 z-[3] overflow-hidden rounded-lg border px-2 ${style} sm:left-24 sm:right-4 sm:px-3`}
                                 key={`${segment.startMinutes}-${segment.status}-${index}`}
                                 style={{
                                     height: `${(duration / totalMinutes) * 100}%`,
                                     top: `${((start - openMinutes) / totalMinutes) * 100}%`,
                                 }}
                             >
-                                <div className="flex h-full items-center justify-between gap-3">
+                                <div className="flex h-full items-center justify-between gap-2 sm:gap-3">
                                     <span className="min-w-0">
                                         <span className="block text-xs font-extrabold uppercase tracking-[0.06em]">
                                             {segment.status === "booked" ? "Booked" : "Unavailable"}
@@ -338,7 +338,7 @@ export function EditableSystemTimeline({ closeMinutes, currentTime, editable, mi
 
                     {visibleSelection && (
                         <div
-                            className="pointer-events-none absolute left-20 right-3 z-20 flex items-center justify-end gap-3 overflow-hidden rounded-lg border-2 border-itx-danger bg-itx-danger/10 px-2 text-[#9c3f4d] shadow-lg sm:left-24 sm:right-4 sm:justify-between sm:px-3"
+                            className="pointer-events-none absolute left-14 right-2 z-20 flex items-center justify-end gap-3 overflow-hidden rounded-lg border-2 border-itx-danger bg-itx-danger/10 px-2 text-[#9c3f4d] shadow-lg sm:left-24 sm:right-4 sm:justify-between sm:px-3"
                             style={{
                                 height: `${((visibleSelection.endMinutes - visibleSelection.startMinutes) / totalMinutes) * 100}%`,
                                 top: `${((visibleSelection.startMinutes - openMinutes) / totalMinutes) * 100}%`,
@@ -355,7 +355,7 @@ export function EditableSystemTimeline({ closeMinutes, currentTime, editable, mi
                     )}
                     {drag && (
                         <div
-                            className="pointer-events-none absolute left-24 z-30 rounded-lg bg-slate-800 px-3 py-2 text-xs font-bold tabular-nums text-white shadow-lg sm:left-28"
+                            className="pointer-events-none absolute left-14 z-30 rounded-lg bg-slate-800 px-3 py-2 text-xs font-bold tabular-nums text-white shadow-lg sm:left-28"
                             style={{
                                 top: `clamp(0.25rem, calc(${((drag.startMinutes - openMinutes) / totalMinutes) * 100}% - 2.75rem), calc(100% - 2.75rem))`,
                             }}

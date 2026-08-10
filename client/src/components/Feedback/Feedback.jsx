@@ -149,3 +149,15 @@ export function EmptyState({ message }) {
         </div>
     );
 }
+export function LoadingState({ message }) {
+    return (
+        <div className="relative overflow-hidden rounded-3xl border border-dashed border-slate-200 bg-slate-50 px-6 py-12 text-center">
+            <span className="relative mx-auto flex size-12 items-center justify-center rounded-2xl border border-itx-border bg-white text-[#128a93] shadow-[0_14px_30px_-22px_rgba(15,23,42,0.15)]">
+                <span aria-hidden="true" className="size-2.5 animate-pulse rounded-full bg-current" />
+            </span>
+            <p className="relative mt-4 text-sm font-semibold text-slate-500" role="status">
+                {message}
+            </p>
+        </div>
+    );
+}

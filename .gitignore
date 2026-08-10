@@ -10,3 +10,5 @@ server/backups/
 .idea/
 .vscode/
 .agents/
+**/*.md
+!**/README.md

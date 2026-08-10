@@ -2,11 +2,11 @@ import { useState } from "react";
 import { ArrowDown, Check, ChevronLeft, ChevronRight, CircleCheck, Clock3, Sparkles, Timer } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useLab } from "../../../context/LabContext";
+import { cn } from "../../../utils/cn";
 import { TimeAvailabilityGrid } from "../../SystemCanvas/TimeAvailabilityGrid";
 import {
     BOOKING_FLOW_STEPS,
     DURATION_PRESETS,
-    cn,
     formatDuration,
     getBookedSystems,
     getBookingDates,
@@ -660,11 +660,6 @@ export function BookSlotView({ student }) {
                                             unavailableSystems={unavailableSystems}
                                         />
                                     </div>
-                                    {selectedHoldId && (
-                                        <p className="mt-4 rounded-2xl border border-itx-success/25 bg-itx-success/10 px-4 py-3 text-sm font-semibold text-itx-success">
-                                            System {String(selectedSystem).padStart(2, "0")} is held for you for 5 minutes. Continue to confirm the booking.
-                                        </p>
-                                    )}
                                     {limitMessage && (
                                         <p className="mt-4 rounded-2xl border border-itx-warning/25 bg-itx-warning/10 px-4 py-3 text-sm font-semibold text-[#8a5a13]" role="alert">
                                             {limitMessage}

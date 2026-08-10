@@ -13,7 +13,9 @@ export async function findAccountByLoginId(loginId) {
         return {
             id: admin.id,
             username: admin.username,
-            name: admin.username,
+            name: admin.fullName,
+            email: admin.email,
+            phoneNumber: admin.phoneNumber,
             passwordHash: admin.passwordHash,
             role: "admin",
             sessionVersion: null,
@@ -43,6 +45,8 @@ export function getPublicUser(user) {
         id: user.id,
         username: user.username,
         name: user.name,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
         role: user.role,
     };
 }

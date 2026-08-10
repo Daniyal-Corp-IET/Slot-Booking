@@ -28,14 +28,14 @@ export function SystemDayTimeline({ blocks, closeMinutes, openMinutes }) {
                 className="max-h-120 overflow-y-auto overscroll-contain scroll-smooth py-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#128a93] motion-reduce:scroll-auto"
                 tabIndex={0}
             >
-                <div className="relative min-w-80" style={{ height: `${(totalMinutes / 60) * 6}rem`, minHeight: "36rem" }}>
+                <div className="relative" style={{ height: `${(totalMinutes / 60) * 6}rem`, minHeight: "36rem" }}>
                     {hours.map((minutes) => (
                         <div
                             className="absolute inset-x-0 flex items-start"
                             key={minutes}
                             style={{ top: `${((minutes - openMinutes) / totalMinutes) * 100}%` }}
                         >
-                            <span className="w-20 -translate-y-2 px-2 text-right text-xs font-extrabold tabular-nums text-slate-500 sm:w-24 sm:px-3 sm:text-sm">
+                            <span className="w-14 -translate-y-2 px-1.5 text-right text-[11px] font-extrabold tabular-nums text-slate-500 sm:w-24 sm:px-3 sm:text-sm">
                                 {formatHour(minutes)}
                             </span>
                             <span className="h-px flex-1 bg-itx-border" />
@@ -43,7 +43,7 @@ export function SystemDayTimeline({ blocks, closeMinutes, openMinutes }) {
                     ))}
                     <div
                         aria-hidden="true"
-                        className="absolute bottom-0 left-20 right-0 top-0 sm:left-24"
+                        className="absolute bottom-0 left-14 right-0 top-0 sm:left-24"
                         style={{
                             backgroundImage:
                                 "linear-gradient(to bottom, transparent 24%, rgba(15,23,42,.045) 25%, transparent 26%, transparent 49%, rgba(15,23,42,.045) 50%, transparent 51%, transparent 74%, rgba(15,23,42,.045) 75%, transparent 76%)",
@@ -71,7 +71,7 @@ export function SystemDayTimeline({ blocks, closeMinutes, openMinutes }) {
                         }
                         return (
                             <div
-                                className={`absolute left-20 right-3 flex min-h-14 flex-col justify-center overflow-hidden rounded-xl border px-3 py-2 shadow-[0_12px_25px_-20px_rgba(15,23,42,0.2)] sm:left-24 sm:right-4 sm:px-4 ${blockStyle}`}
+                                className={`absolute left-14 right-2 flex min-h-14 flex-col justify-center overflow-hidden rounded-xl border px-2 py-2 shadow-[0_12px_25px_-20px_rgba(15,23,42,0.2)] sm:left-24 sm:right-4 sm:px-4 ${blockStyle}`}
                                 key={`${block.startMinutes}-${block.endMinutes}-${index}`}
                                 style={{
                                     height: `${((end - start) / totalMinutes) * 100}%`,
@@ -79,8 +79,8 @@ export function SystemDayTimeline({ blocks, closeMinutes, openMinutes }) {
                                 }}
                             >
                                 <span aria-hidden="true" className={`absolute inset-y-2 left-1 w-1 rounded-full ${accentStyle}`} />
-                                <p className="relative text-xs font-extrabold uppercase tracking-[0.08em]">{block.title ?? "Booked"}</p>
-                                <p className="relative mt-1 text-sm font-bold tabular-nums sm:text-base">{block.label}</p>
+                                <p className="relative truncate text-[11px] font-extrabold uppercase tracking-[0.08em] sm:text-xs">{block.title ?? "Booked"}</p>
+                                <p className="relative mt-1 truncate text-xs font-bold tabular-nums sm:text-base">{block.label}</p>
                             </div>
                         );
                     })}

@@ -1,53 +1,24 @@
 import { useEffect, useState } from "react";
-import { ArrowUpRight, CalendarCheck, CircleCheck, Clock3, Eye, EyeOff, KeyRound, Monitor, Play, Sparkles, TimerReset } from "lucide-react";
+import { ArrowUpRight, CalendarCheck, CircleCheck, Clock3, KeyRound, Monitor, Play, Sparkles, TimerReset } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLab } from "../../../context/LabContext";
 import { formatBookingDate, formatBookingTime, hasPassedHalfwayWithoutStart } from "../../../context/LabContext.helpers";
+import { apiRequest } from "../../../utils/apiClient";
+import { cn } from "../../../utils/cn";
 import { AppDialog } from "../../Feedback/Feedback";
-import { cn, formatCurrentDate, formatDuration } from "../StudentPortal.helpers";
+import { MetricCard } from "../../ui/MetricCard";
+import { PasswordField } from "../../ui/PasswordField";
+import { formatCurrentDate, formatDuration } from "../StudentPortal.helpers";
 
-const API_URL = import.meta.env.VITE_API_URL || "/api";
-
-async function changeStudentPassword(studentId, currentPassword, newPassword) {
-    let response;
-
-    try {
-        response = await fetch(`${API_URL}/students/${studentId}/change-password`, {
-            method: "POST",
-            credentials: "include",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ currentPassword, newPassword }),
-        });
-    } catch {
-        throw new Error("Unable to connect to the server. Please start the backend and try again.");
-    }
-
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.message || "Unable to change the password.");
-    return data;
-}
-
-function MetricCard({ accent, icon: Icon, label, note, surface, value }) {
-    return (
-        <article
-            className={cn(
-                "ui-fade-in portal-metric group relative overflow-hidden rounded-3xl border p-4 shadow-lg shadow-[#17333e]/4 transition-colors duration-150 hover:border-[#b9dcda] xl:p-5",
-                surface,
-            )}
-        >
-            <div className="flex items-start justify-between gap-3">
-                <div>
-                    <p className="text-sm font-bold text-slate-500">{label}</p>
-                    <p className="mt-3 text-xl font-semibold tracking-[-0.04em] text-itx-ink sm:text-2xl">{value}</p>
-                    <p className="mt-1.5 text-xs font-semibold leading-5 text-slate-400">{note}</p>
-                </div>
-                <div className={cn("flex size-11 items-center justify-center rounded-2xl shadow-sm", accent)}>
-                    <Icon className="size-5" />
-                </div>
-            </div>
-        </article>
+function changeStudentPassword(studentId, currentPassword, newPassword) {
+    return apiRequest(
+        `/students/${studentId}/change-password`,
+        "POST",
+        { currentPassword, newPassword },
+        { fallbackErrorMessage: "Unable to change the password." },
     );
 }
+
 function MonthlyUsageCard({ student }) {
     return (
         <article className="ui-fade-in premium-hero group relative overflow-hidden rounded-4xl border border-itx-border p-5 text-itx-ink shadow-2xl shadow-[#102f3d]/8 md:p-6 xl:p-7">
@@ -347,27 +318,30 @@ export function DashboardHome({ onPasswordChanged, student }) {
             <section className="grid gap-4 md:grid-cols-3">
                 <MetricCard
                     accent="bg-[#e8f5f4] text-[#128a93]"
+                    className="border-[#dfe6e2] bg-white/90"
                     icon={Clock3}
                     label="Total lab time"
                     note={`Across ${completedCount} completed sessions`}
-                    surface="border-[#dfe6e2] bg-white/90"
                     value={formatDuration(totalMinutes)}
+                    variant="fill"
                 />
                 <MetricCard
                     accent="bg-[#fff3df] text-[#bc7924]"
+                    className="border-[#dfe6e2] bg-white/90"
                     icon={CalendarCheck}
                     label="Last seven days"
                     note="Completed lab usage"
-                    surface="border-[#dfe6e2] bg-white/90"
                     value={formatDuration(recentMinutes)}
+                    variant="fill"
                 />
                 <MetricCard
                     accent="bg-[#edf1fa] text-[#526aa5]"
+                    className="border-[#dfe6e2] bg-white/90"
                     icon={Monitor}
                     label="Upcoming sessions"
                     note="Current booking schedule"
-                    surface="border-[#dfe6e2] bg-white/90"
                     value={`${upcomingCount} sessions`}
+                    variant="fill"
                 />
             </section>
 
@@ -378,49 +352,11 @@ export function DashboardHome({ onPasswordChanged, student }) {
         </div>
     );
 }
-const PASSWORD_FIELD_CLASS =
-    "h-12 w-full rounded-xl border border-[#d9e3e0] bg-white px-4 pr-12 text-sm font-semibold outline-none focus:border-[#128a93] focus:ring-4 focus:ring-[#128a93]/10";
-
-function PasswordField({ autoComplete, label, minLength, name, onChange, onToggle, value, visible }) {
-    const Icon = visible ? EyeOff : Eye;
-    return (
-        <div>
-            <label className="block text-sm font-bold text-slate-600" htmlFor={name}>
-                {label}
-            </label>
-            <div className="relative mt-2">
-                <input
-                    autoComplete={autoComplete}
-                    className={PASSWORD_FIELD_CLASS}
-                    id={name}
-                    minLength={minLength}
-                    name={name}
-                    onChange={onChange}
-                    required
-                    type={visible ? "text" : "password"}
-                    value={value}
-                />
-                <button
-                    aria-label={`${visible ? "Hide" : "Show"} ${label.toLowerCase()}`}
-                    aria-pressed={visible}
-                    className="absolute right-2 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-lg text-slate-400 transition hover:bg-[#eaf5f4] hover:text-[#128a93]"
-                    onClick={onToggle}
-                    type="button"
-                >
-                    <Icon aria-hidden="true" className="size-4.5" />
-                </button>
-            </div>
-        </div>
-    );
-}
-
 function ChangePasswordDialog({ onChanged, onClose, open, student }) {
     const [form, setForm] = useState({ currentPassword: "", newPassword: "", confirmPassword: "" });
     const [message, setMessage] = useState("");
-    const [visible, setVisible] = useState({ currentPassword: false, newPassword: false, confirmPassword: false });
     const closeDialog = () => {
         setForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
-        setVisible({ currentPassword: false, newPassword: false, confirmPassword: false });
         setMessage("");
         onClose();
     };
@@ -471,9 +407,7 @@ function ChangePasswordDialog({ onChanged, onClose, open, student }) {
                     label="Current password"
                     name="currentPassword"
                     onChange={changeField}
-                    onToggle={() => setVisible((current) => ({ ...current, currentPassword: !current.currentPassword }))}
                     value={form.currentPassword}
-                    visible={visible.currentPassword}
                 />
                 <PasswordField
                     autoComplete="new-password"
@@ -481,9 +415,7 @@ function ChangePasswordDialog({ onChanged, onClose, open, student }) {
                     minLength="6"
                     name="newPassword"
                     onChange={changeField}
-                    onToggle={() => setVisible((current) => ({ ...current, newPassword: !current.newPassword }))}
                     value={form.newPassword}
-                    visible={visible.newPassword}
                 />
                 <PasswordField
                     autoComplete="new-password"
@@ -491,9 +423,7 @@ function ChangePasswordDialog({ onChanged, onClose, open, student }) {
                     minLength="6"
                     name="confirmPassword"
                     onChange={changeField}
-                    onToggle={() => setVisible((current) => ({ ...current, confirmPassword: !current.confirmPassword }))}
                     value={form.confirmPassword}
-                    visible={visible.confirmPassword}
                 />
                 <p className="text-xs leading-5 text-slate-500">
                     Use at least 6 characters. Forgot your password? Please contact the lab administrator to have it reset.

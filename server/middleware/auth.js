@@ -16,7 +16,7 @@ export async function requireLogin(request, response, next) {
         if (tokenUser.role === "student") {
             const student = await getDatabase().student.findUnique({
                 where: { id: tokenUser.id },
-                select: { sessionVersion: true },
+                select: { firstName: true, lastName: true, sessionVersion: true },
             });
 
             if (!student || student.sessionVersion !== tokenUser.sessionVersion) {
@@ -24,10 +24,12 @@ export async function requireLogin(request, response, next) {
                 response.status(401).json({ message: "Your password changed. Please log in again." });
                 return;
             }
+
+            request.user = { id: tokenUser.id, role: "student", username: tokenUser.id, name: `${student.firstName} ${student.lastName}` };
         } else if (tokenUser.role === "admin") {
             const admin = await getDatabase().admin.findUnique({
                 where: { id: tokenUser.id },
-                select: { id: true },
+                select: { fullName: true, email: true, username: true, phoneNumber: true },
             });
 
             if (!admin) {
@@ -35,13 +37,20 @@ export async function requireLogin(request, response, next) {
                 response.status(401).json({ message: "Your administrator account is no longer available." });
                 return;
             }
+
+            request.user = {
+                id: tokenUser.id,
+                role: "admin",
+                username: admin.username,
+                name: admin.fullName,
+                email: admin.email,
+                phoneNumber: admin.phoneNumber,
+            };
         } else {
             response.status(401).json({ message: "Your session is invalid. Please log in again." });
             return;
         }
 
-        const { sessionVersion, ...publicUser } = tokenUser;
-        request.user = publicUser;
         next();
     } catch {
         response.status(401).json({ message: "Your session has expired. Please log in again." });
