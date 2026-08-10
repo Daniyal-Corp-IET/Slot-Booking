@@ -2,14 +2,14 @@ import { BarChart3, BookOpen, CalendarClock, LayoutDashboard, MonitorCog, Settin
 import { formatBookingDate, formatBookingTime, hasPassedHalfwayWithoutStart } from "../../context/LabContext.helpers";
 
 export const SYSTEM_STYLES = {
-    available: { label: "Available", dot: "bg-[#3ddc97]" },
-    offline: { label: "Unavailable", dot: "bg-white/35" },
+    available: { label: "Available", dot: "bg-itx-success" },
+    offline: { label: "Unavailable", dot: "bg-slate-300" },
 };
 
 export const BOOKING_BADGES = {
     Active: "bg-[#e5f6f1] text-[#257c62]",
     Ready: "bg-[#ddf5ef] text-[#247b62]",
-    Upcoming: "bg-[#e6f5f7] text-[#117f8d]",
+    Upcoming: "bg-[#e6f5f7] text-[#0d6169]",
     Completed: "bg-[#edf0f1] text-[#64757a]",
     Cancelled: "bg-[#fdecee] text-[#b55460]",
 };
@@ -17,12 +17,12 @@ export const BOOKING_BADGES = {
 export const MONTH_OPTIONS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 export const PROGRAM_STYLES = {
-    "Data Science": { accent: "bg-[#1aa7b6]", badge: "bg-[#e8f7f8] text-[#137f8c]", avatar: "bg-[#167f8c]" },
+    "Data Science": { accent: "bg-[#128a93]", badge: "bg-[#e8f7f8] text-[#0d6169]", avatar: "bg-[#0d6169]" },
     "Full Stack Development": { accent: "bg-[#6376b8]", badge: "bg-[#eef0fb] text-[#596cad]", avatar: "bg-[#5d6fae]" },
     "Python Full Stack": { accent: "bg-[#6376b8]", badge: "bg-[#eef0fb] text-[#596cad]", avatar: "bg-[#5d6fae]" },
     "Cyber Security": { accent: "bg-[#e4a541]", badge: "bg-[#fff5e4] text-[#956316]", avatar: "bg-[#a87525]" },
     "Cloud Computing": { accent: "bg-[#45a982]", badge: "bg-[#e9f7f1] text-[#28795f]", avatar: "bg-[#398c6d]" },
-    default: { accent: "bg-[#1aa7b6]", badge: "bg-[#e8f7f8] text-[#137f8c]", avatar: "bg-[#167f8c]" },
+    default: { accent: "bg-[#128a93]", badge: "bg-[#e8f7f8] text-[#0d6169]", avatar: "bg-[#0d6169]" },
 };
 
 export const ADMIN_NAVIGATION = [

@@ -28,7 +28,7 @@ async function createAdmin(admin) {
 }
 
 const formField =
-    "h-12 w-full rounded-xl border border-white/15 bg-[#0f2f38]/60 px-3.5 text-sm font-semibold text-white outline-none transition focus:border-[#2f9db0] focus:ring-4 focus:ring-[#2f9db0]/10";
+    "h-12 w-full rounded-xl border border-itx-border bg-white px-3.5 text-sm font-semibold text-itx-ink outline-none transition focus:border-[#128a93] focus:ring-4 focus:ring-[#128a93]/10";
 const BOOKING_INCREMENT_OPTIONS = [5, 10, 15, 30];
 
 function roundToIncrement(value, increment) {
@@ -37,10 +37,10 @@ function roundToIncrement(value, increment) {
 
 function SettingRow({ children, description, title }) {
     return (
-        <div className="-mx-3 flex flex-col gap-4 rounded-2xl border-b border-white/10 px-3 py-5 text-white transition-colors duration-150 last:border-0 hover:bg-white/5 sm:flex-row sm:items-center sm:justify-between">
+        <div className="-mx-3 flex flex-col gap-4 rounded-2xl border-b border-itx-border px-3 py-5 text-itx-ink transition-colors duration-150 last:border-0 hover:bg-slate-50 sm:flex-row sm:items-center sm:justify-between">
             <div className="max-w-xl">
                 <p className="text-sm font-bold">{title}</p>
-                <p className="mt-1 text-xs leading-5 text-white/60">{description}</p>
+                <p className="mt-1 text-xs leading-5 text-slate-500">{description}</p>
             </div>
             <div className="w-full sm:w-auto sm:shrink-0">{children}</div>
         </div>
@@ -80,11 +80,11 @@ function AdminFormDialog({ onClose, onCreated, open }) {
     };
     const footer = (
         <>
-            <button className="h-12 rounded-2xl border border-white/20 px-5 text-sm font-bold text-white transition hover:bg-white/10" onClick={closeDialog} type="button">
+            <button className="h-12 rounded-2xl border border-itx-border px-5 text-sm font-bold text-itx-ink transition hover:bg-slate-100" onClick={closeDialog} type="button">
                 Cancel
             </button>
             <button
-                className="h-12 rounded-2xl bg-[#3ee7c2] px-5 text-sm font-bold text-[#082330] transition hover:bg-[#6ee2cb] disabled:cursor-not-allowed disabled:opacity-60"
+                className="h-12 rounded-2xl bg-[#128a93] px-5 text-sm font-bold text-white transition hover:bg-[#0d6169] disabled:cursor-not-allowed disabled:opacity-60"
                 disabled={saving}
                 form="add-admin-form"
                 type="submit"
@@ -102,11 +102,11 @@ function AdminFormDialog({ onClose, onCreated, open }) {
             title="Add administrator"
         >
             <form className="space-y-4" id="add-admin-form" onSubmit={submit}>
-                <label className="block text-sm font-bold text-white/80">
+                <label className="block text-sm font-bold text-slate-600">
                     Email
                     <input autoComplete="email" className={`${formField} mt-2`} name="email" onChange={changeField} required type="email" value={form.email} />
                 </label>
-                <label className="block text-sm font-bold text-white/80">
+                <label className="block text-sm font-bold text-slate-600">
                     Username
                     <input
                         autoCapitalize="none"
@@ -119,10 +119,10 @@ function AdminFormDialog({ onClose, onCreated, open }) {
                         required
                         value={form.username}
                     />
-                    <span className="mt-1.5 block text-xs font-medium text-white/50">Use 3 to 30 letters, numbers, dots, dashes, or underscores.</span>
+                    <span className="mt-1.5 block text-xs font-medium text-slate-400">Use 3 to 30 letters, numbers, dots, dashes, or underscores.</span>
                 </label>
                 <div>
-                    <label className="block text-sm font-bold text-white/80" htmlFor="admin-password">
+                    <label className="block text-sm font-bold text-slate-600" htmlFor="admin-password">
                         Password
                     </label>
                     <div className="relative mt-2">
@@ -140,17 +140,17 @@ function AdminFormDialog({ onClose, onCreated, open }) {
                         <button
                             aria-label={showPassword ? "Hide password" : "Show password"}
                             aria-pressed={showPassword}
-                            className="absolute right-2 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-lg text-white/60 transition hover:bg-[#2f9db0]/10 hover:text-[#2f9db0]"
+                            className="absolute right-2 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-lg text-slate-500 transition hover:bg-[#128a93]/10 hover:text-[#128a93]"
                             onClick={() => setShowPassword((visible) => !visible)}
                             type="button"
                         >
                             {showPassword ? <EyeOff aria-hidden="true" className="size-4.5" /> : <Eye aria-hidden="true" className="size-4.5" />}
                         </button>
                     </div>
-                    <span className="mt-1.5 block text-xs font-medium text-white/50">Use at least 8 characters.</span>
+                    <span className="mt-1.5 block text-xs font-medium text-slate-400">Use at least 8 characters.</span>
                 </div>
                 {message && (
-                    <p className="rounded-xl bg-[#f0576a]/15 px-3 py-2.5 text-sm font-semibold text-[#f29aa4]" role="alert">
+                    <p className="rounded-xl bg-itx-danger/15 px-3 py-2.5 text-sm font-semibold text-itx-danger" role="alert">
                         {message}
                     </p>
                 )}
@@ -176,7 +176,7 @@ export function SettingsView() {
     const [adminDialogOpen, setAdminDialogOpen] = useState(false);
     const [adminToast, setAdminToast] = useState("");
     const fieldClass =
-        "h-11 min-w-0 w-full rounded-xl border border-white/15 bg-[#0f2f38]/60 px-3 text-right text-sm font-bold text-white outline-none focus:border-[#2f9db0] focus:ring-4 focus:ring-[#2f9db0]/10 sm:w-32";
+        "h-11 min-w-0 w-full rounded-xl border border-itx-border bg-white px-3 text-right text-sm font-bold text-itx-ink outline-none focus:border-[#128a93] focus:ring-4 focus:ring-[#128a93]/10 sm:w-32";
     const unavailableSystems = systemOutages.map((outage) => String(outage.systemId).padStart(2, "0"));
     useEffect(() => {
         // Keep the editable form in sync when another administrator changes the saved policy.
@@ -243,23 +243,23 @@ export function SettingsView() {
     return (
         <div className="mx-auto max-w-300 space-y-5">
             <AdminReveal className={joinClasses(surface, "p-5 md:p-6 xl:p-7")}>
-                <div className="flex items-center gap-4 border-b border-white/10 pb-5">
-                    <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#2f9db0]/15 text-[#2f9db0]">
+                <div className="flex items-center gap-4 border-b border-itx-border pb-5">
+                    <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#128a93]/12 text-[#128a93]">
                         <SlidersHorizontal className="h-5 w-5" />
                     </span>
                     <div>
-                        <h2 className="text-lg font-bold text-white">Booking policy</h2>
-                        <p className="mt-1 text-xs text-white/60">Rules applied to all student bookings.</p>
+                        <h2 className="text-lg font-bold text-itx-ink">Booking policy</h2>
+                        <p className="mt-1 text-xs text-slate-500">Rules applied to all student bookings.</p>
                     </div>
                 </div>
                 <SettingRow description="Maximum lab time available to each student during a calendar month." title="Monthly usage limit">
-                    <label className="flex items-center gap-2 text-sm font-semibold text-white/70">
+                    <label className="flex items-center gap-2 text-sm font-semibold text-slate-600">
                         <input className={fieldClass} min="1" onChange={(event) => setMonthlyLimit(event.target.value)} type="number" value={monthlyLimit} />{" "}
                         hours
                     </label>
                 </SettingRow>
                 <SettingRow description="Maximum time one student can reserve or use on the same date." title="Daily usage limit">
-                    <label className="flex items-center gap-2 text-sm font-semibold text-white/70">
+                    <label className="flex items-center gap-2 text-sm font-semibold text-slate-600">
                         <input
                             className={fieldClass}
                             max="24"
@@ -272,15 +272,15 @@ export function SettingsView() {
                     </label>
                 </SettingRow>
                 <SettingRow description="All start times and durations follow this interval." title="Booking increment">
-                    <div className="grid grid-cols-4 gap-1.5 rounded-2xl border border-white/12 bg-white/5 p-1.5">
+                    <div className="grid grid-cols-4 gap-1.5 rounded-2xl border border-itx-border bg-slate-50 p-1.5">
                         {BOOKING_INCREMENT_OPTIONS.map((minutes) => (
                             <button
                                 aria-pressed={bookingIncrement === minutes}
                                 className={joinClasses(
                                     "min-h-10 rounded-xl px-3 text-sm font-bold transition-colors",
                                     bookingIncrement === minutes
-                                        ? "bg-[#2f9db0] text-[#082330] shadow-sm"
-                                        : "text-white/70 hover:bg-white/10 hover:text-white",
+                                        ? "bg-[#128a93] text-white shadow-sm"
+                                        : "text-slate-600 hover:bg-slate-100 hover:text-itx-ink",
                                 )}
                                 key={minutes}
                                 onClick={() => setBookingIncrement(minutes)}
@@ -292,7 +292,7 @@ export function SettingsView() {
                     </div>
                 </SettingRow>
                 <SettingRow description="Shortest session a student can reserve." title="Minimum session">
-                    <label className="flex items-center gap-2 text-sm font-semibold text-white/70">
+                    <label className="flex items-center gap-2 text-sm font-semibold text-slate-600">
                         <input
                             className={fieldClass}
                             min={bookingIncrement}
@@ -305,7 +305,7 @@ export function SettingsView() {
                     </label>
                 </SettingRow>
                 <SettingRow description="Longest session a student can reserve at once." title="Maximum session">
-                    <label className="flex items-center gap-2 text-sm font-semibold text-white/70">
+                    <label className="flex items-center gap-2 text-sm font-semibold text-slate-600">
                         <input
                             className={fieldClass}
                             min={bookingIncrement}
@@ -327,7 +327,7 @@ export function SettingsView() {
                             type="time"
                             value={openingTime}
                         />
-                        <span className="text-sm font-semibold text-white/70">to</span>
+                        <span className="text-sm font-semibold text-slate-600">to</span>
                         <input
                             aria-label="Lab closing time"
                             className={fieldClass}
@@ -342,7 +342,7 @@ export function SettingsView() {
                     description="Students may cancel until this many minutes before a slot starts. Use 0 to allow cancellation until start time."
                     title="Cancellation cutoff"
                 >
-                    <label className="flex items-center gap-2 text-sm font-semibold text-white/70">
+                    <label className="flex items-center gap-2 text-sm font-semibold text-slate-600">
                         <input
                             className={fieldClass}
                             min="0"
@@ -357,7 +357,7 @@ export function SettingsView() {
                 <SettingRow description="Prevents Sunday bookings and marks the lab as closed." title="Sunday holiday">
                     <button
                         aria-checked={sundayHoliday}
-                        className={joinClasses("relative h-7 w-13 rounded-full p-1 transition", sundayHoliday ? "bg-[#2f9db0]" : "bg-white/15")}
+                        className={joinClasses("relative h-7 w-13 rounded-full p-1 transition", sundayHoliday ? "bg-[#128a93]" : "bg-slate-200")}
                         onClick={() => setSundayHoliday((current) => !current)}
                         role="switch"
                         type="button"
@@ -367,20 +367,20 @@ export function SettingsView() {
                 </SettingRow>
             </AdminReveal>
             <AdminReveal className={joinClasses(surface, "p-5 sm:p-6")}>
-                <div className="flex flex-col gap-4 text-white sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex flex-col gap-4 text-itx-ink sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex items-start gap-4">
-                        <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-[#2f9db0]/15 text-[#2f9db0]">
+                        <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-[#128a93]/12 text-[#128a93]">
                             <ShieldCheck className="size-5" />
                         </span>
                         <div>
                             <h2 className="text-base font-bold">Administrator access</h2>
-                            <p className="mt-1 max-w-xl text-sm leading-6 text-white/60">
+                            <p className="mt-1 max-w-xl text-sm leading-6 text-slate-500">
                                 Add another administrator using a unique email and username. Passwords are stored securely.
                             </p>
                         </div>
                     </div>
                     <button
-                        className="inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-2xl bg-[#3ee7c2] px-5 text-sm font-bold text-[#082330] transition hover:bg-[#6ee2cb]"
+                        className="inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-2xl bg-[#128a93] px-5 text-sm font-bold text-white transition hover:bg-[#0d6169]"
                         onClick={() => setAdminDialogOpen(true)}
                         type="button"
                     >
@@ -389,20 +389,20 @@ export function SettingsView() {
                 </div>
             </AdminReveal>
             <AdminReveal className={joinClasses(surface, "p-5 sm:p-7")}>
-                <div className="flex items-center gap-4 text-white">
-                    <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#f0b65e]/15 text-[#f0b65e]">
+                <div className="flex items-center gap-4 text-itx-ink">
+                    <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-itx-warning/15 text-[#8a5a13]">
                         <AlertTriangle className="h-5 w-5" />
                     </span>
                     <div className="flex-1">
                         <h2 className="text-sm font-bold">Unavailable systems</h2>
-                        <p className="mt-1 text-xs leading-5 text-white/60">
+                        <p className="mt-1 text-xs leading-5 text-slate-500">
                             {unavailableSystems.length
                                 ? `Systems ${unavailableSystems.join(", ")} are not available for booking.`
                                 : `All ${systems.length} systems are currently available.`}
                         </p>
                     </div>
                     <Link
-                        className="hidden rounded-xl border border-white/15 px-4 py-2.5 text-xs font-bold text-white transition hover:border-[#2f9db0]/40 hover:text-[#2f9db0] sm:block"
+                        className="hidden rounded-xl border border-itx-border px-4 py-2.5 text-xs font-bold text-itx-ink transition hover:border-[#128a93]/40 hover:text-[#128a93] sm:block"
                         to="/admin/systems"
                     >
                         Open systems
@@ -411,11 +411,11 @@ export function SettingsView() {
             </AdminReveal>
             <div className="flex min-h-12 items-center justify-end gap-3" aria-live="polite">
                 {saved && !hasChanges && (
-                    <span className="ui-fade-in rounded-full bg-[#3ee7c2]/15 px-4 py-2 text-xs font-bold text-[#5fe3b8]">Settings saved successfully</span>
+                    <span className="ui-fade-in rounded-full bg-itx-success/12 px-4 py-2 text-xs font-bold text-itx-success">Settings saved successfully</span>
                 )}
                 {hasChanges && (
                     <button
-                        className="ui-fade-in ui-press inline-flex items-center gap-2 rounded-2xl bg-[#3ee7c2] px-5 py-3 text-sm font-bold text-[#082330] shadow-lg shadow-[#3ee7c2]/20 transition hover:bg-[#6ee2cb] disabled:cursor-wait disabled:opacity-60"
+                        className="ui-fade-in ui-press inline-flex items-center gap-2 rounded-2xl bg-[#128a93] px-5 py-3 text-sm font-bold text-white shadow-lg shadow-[#128a93]/20 transition hover:bg-[#0d6169] disabled:cursor-wait disabled:opacity-60"
                         disabled={saving}
                         onClick={save}
                         type="button"
@@ -436,11 +436,11 @@ export function SettingsView() {
 }
 export function NotFoundView() {
     return (
-        <div className={joinClasses(surface, "mx-auto max-w-xl p-10 text-center text-white")}>
-            <UserRound className="mx-auto h-10 w-10 text-white/45" />
+        <div className={joinClasses(surface, "mx-auto max-w-xl p-10 text-center text-itx-ink")}>
+            <UserRound className="mx-auto h-10 w-10 text-slate-400" />
             <h2 className="mt-4 text-xl font-bold">Admin page not found</h2>
-            <p className="mt-2 text-sm text-white/60">Return to the operations overview to continue.</p>
-            <Link className="mt-5 inline-flex rounded-xl bg-[#3ee7c2] px-4 py-2.5 text-xs font-bold text-[#082330]" to="/admin">
+            <p className="mt-2 text-sm text-slate-500">Return to the operations overview to continue.</p>
+            <Link className="mt-5 inline-flex rounded-xl bg-[#128a93] px-4 py-2.5 text-xs font-bold text-white" to="/admin">
                 Back to overview
             </Link>
         </div>

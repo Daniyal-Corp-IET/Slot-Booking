@@ -136,7 +136,7 @@ function AdminShell({ children }) {
     }
 
     return (
-        <div className="admin-canvas relative min-h-screen text-white">
+        <div className="admin-canvas relative min-h-screen text-itx-ink">
             <aside className="portal-sidebar absolute inset-y-0 left-0 z-40 hidden w-72 xl:block">
                 <div className="sticky top-0 h-screen overflow-hidden">
                     <Sidebar identity={identity} />
@@ -145,11 +145,11 @@ function AdminShell({ children }) {
 
             {menuOpen && (
                 <div className="ui-fade-in fixed inset-0 z-50 xl:hidden">
-                    <button aria-label="Close navigation" className="absolute inset-0 bg-[#071c28]/70 backdrop-blur-sm" onClick={closeMenu} type="button" />
+                    <button aria-label="Close navigation" className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={closeMenu} type="button" />
                     <aside className="portal-sidebar ui-slide-in-left relative h-full w-72 max-w-[85vw] overflow-hidden shadow-2xl">
                         <button
                             aria-label="Close navigation"
-                            className="absolute right-3 top-3 z-10 rounded-xl bg-white/8 p-2 text-white"
+                            className="absolute right-3 top-3 z-10 rounded-xl border border-itx-border bg-white p-2 text-itx-ink shadow-sm"
                             onClick={closeMenu}
                             type="button"
                         >
@@ -165,10 +165,10 @@ function AdminShell({ children }) {
                 <main className="px-4 py-5 sm:px-6 sm:py-6 lg:px-8 xl:px-10 xl:py-7">
                     {earlyEndNotice && (
                         <div
-                            className="portal-surface ui-fade-in mx-auto mb-5 flex max-w-400 items-start gap-3 overflow-hidden rounded-2xl px-4 py-3 text-sm font-semibold leading-6 text-[#5fe3b8] shadow-[0_16px_32px_-25px_rgba(2,10,14,0.7)]"
+                            className="portal-surface ui-fade-in mx-auto mb-5 flex max-w-400 items-start gap-3 overflow-hidden rounded-2xl px-4 py-3 text-sm font-semibold leading-6 text-itx-success shadow-[0_16px_32px_-25px_rgba(15,23,42,0.1)]"
                             role="status"
                         >
-                            <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-xl bg-[#3ee7c2]/15 text-[#5fe3b8]">
+                            <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-xl bg-itx-success/12 text-itx-success">
                                 <TimerReset className="h-4 w-4" />
                             </span>
                             <span>
@@ -191,21 +191,20 @@ export function MetricCard({ accent, icon: Icon, label, note, value }) {
             className={joinClasses(
                 "ui-fade-in",
                 surface,
-                "portal-metric group relative overflow-hidden p-4 text-white transition-colors duration-150 hover:border-[#3ee7c2]/30 xl:p-5",
+                "portal-metric group relative overflow-hidden p-4 text-itx-ink transition-colors duration-150 hover:border-[#128a93]/25 xl:p-5",
             )}
         >
-            <span aria-hidden="true" className="absolute -right-8 -top-10 size-28 rounded-full bg-itx-teal/8 blur-xl" />
             <span className={joinClasses("absolute inset-x-0 top-0 h-1", accent)} />
             <div className="flex items-start justify-between gap-3">
                 <div className="relative">
-                    <p className="text-xs font-extrabold uppercase tracking-[0.08em] text-white/60">{label}</p>
-                    <p className="mt-2 text-2xl font-bold tracking-tighter text-white xl:text-3xl">{value}</p>
+                    <p className="text-xs font-extrabold uppercase tracking-[0.08em] text-slate-500">{label}</p>
+                    <p className="mt-2 text-2xl font-bold tracking-tighter text-itx-ink xl:text-3xl">{value}</p>
                 </div>
-                <span className="relative flex h-10 w-10 items-center justify-center rounded-2xl border border-white/12 bg-white/5 text-[#2f9db0] shadow-[0_10px_22px_-16px_rgba(2,10,14,0.75)] xl:h-11 xl:w-11">
+                <span className="relative flex h-10 w-10 items-center justify-center rounded-2xl border border-itx-border bg-slate-50 text-[#128a93] shadow-[0_10px_22px_-16px_rgba(15,23,42,0.15)] xl:h-11 xl:w-11">
                     <Icon className="h-5 w-5" strokeWidth={1.8} />
                 </span>
             </div>
-            <p className="relative mt-3 inline-flex rounded-full bg-white/5 px-2.5 py-1 text-[11px] font-semibold text-white/60">{note}</p>
+            <p className="relative mt-3 inline-flex rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold text-slate-500">{note}</p>
         </article>
     );
 }
@@ -213,7 +212,7 @@ export function StatusLegend() {
     return (
         <div className="flex flex-wrap gap-x-4 gap-y-2">
             {Object.entries(SYSTEM_STYLES).map(([status, styles]) => (
-                <span className="flex items-center gap-1.5 text-[11px] font-semibold text-white/60" key={status}>
+                <span className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-500" key={status}>
                     <span className={joinClasses("h-2 w-2 rounded-full", styles.dot)} />
                     {styles.label}
                 </span>

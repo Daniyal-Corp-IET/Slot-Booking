@@ -101,17 +101,17 @@ export function HistoryView({ student }) {
     const cancellingBooking = pendingAction?.type === "cancel";
     let keepActionLabel = "Keep session";
     let confirmActionLabel = "End session now";
-    let confirmActionStyle = "bg-amber-500";
+    let confirmActionStyle = "bg-itx-warning";
     let dialogTitle = "End this session now?";
-    let explanationStyle = "border-amber-400/25 bg-amber-400/10 text-amber-200";
+    let explanationStyle = "border-itx-warning/25 bg-itx-warning/10 text-[#8a5a13]";
     let explanation = "Only the time you used will be deducted.";
 
     if (cancellingBooking) {
         keepActionLabel = "Keep booking";
         confirmActionLabel = "Cancel booking";
-        confirmActionStyle = "bg-rose-500";
+        confirmActionStyle = "bg-itx-danger";
         dialogTitle = "Cancel this booking?";
-        explanationStyle = "border-rose-400/25 bg-rose-500/10 text-rose-200";
+        explanationStyle = "border-itx-danger/25 bg-itx-danger/10 text-itx-danger";
         explanation = "The system and time will be released for another student. No monthly hours will be deducted.";
     } else if (pendingUsage) {
         explanation = `If you end now, ${formatDuration(pendingUsage.usedMinutes)} will be deducted and the remaining ${formatDuration(pendingUsage.remainingMinutes)} will immediately become available to other students.`;
@@ -176,23 +176,23 @@ export function HistoryView({ student }) {
         }
     };
     const badgeClasses = {
-        Upcoming: "bg-[#2f9db0]/15 text-[#7fe0e8]",
-        Ready: "bg-emerald-400/15 text-emerald-300",
-        Ongoing: "bg-amber-400/15 text-amber-300",
-        Completed: "bg-emerald-400/10 text-emerald-300/80",
+        Upcoming: "bg-[#e6f5f7] text-[#0d6169]",
+        Ready: "bg-[#ddf5ef] text-[#247b62]",
+        Ongoing: "bg-[#e5f6f1] text-[#257c62]",
+        Completed: "bg-[#edf0f1] text-[#64757a]",
     };
     return (
         <div className="space-y-6">
             <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
-                <p className="text-sm text-white/55">Track your upcoming, ongoing, and completed computer lab sessions.</p>
-                <span className="w-fit rounded-full bg-white/8 px-3 py-2 text-[10px] font-bold text-white/60 shadow-sm">
+                <p className="text-sm text-slate-500">Track your upcoming, ongoing, and completed computer lab sessions.</p>
+                <span className="w-fit rounded-full bg-slate-100 px-3 py-2 text-[10px] font-bold text-slate-500 shadow-sm">
                     {policy.monthlyLimitHours} monthly hours
                 </span>
             </div>
 
             {cancelledSlot && (
                 <div
-                    className="flex items-center gap-3 rounded-2xl border border-emerald-400/25 bg-emerald-400/10 px-4 py-3 text-xs font-semibold text-emerald-300"
+                    className="flex items-center gap-3 rounded-2xl border border-itx-success/25 bg-itx-success/10 px-4 py-3 text-xs font-semibold text-itx-success"
                     role="status"
                 >
                     <Check className="size-4 shrink-0" /> Booking for {cancelledSlot} was cancelled.
@@ -200,7 +200,7 @@ export function HistoryView({ student }) {
             )}
             {earlyEndMessage && (
                 <div
-                    className="flex items-start gap-3 rounded-2xl border border-[#2f9db0]/25 bg-[#2f9db0]/10 px-4 py-3 text-xs font-semibold leading-5 text-[#7fe0e8]"
+                    className="flex items-start gap-3 rounded-2xl border border-[#128a93]/25 bg-[#128a93]/10 px-4 py-3 text-xs font-semibold leading-5 text-[#0d6169]"
                     role="status"
                 >
                     <TimerReset className="mt-0.5 size-4 shrink-0" />
@@ -208,44 +208,43 @@ export function HistoryView({ student }) {
                 </div>
             )}
             {startMessage && (
-                <div className="flex items-start gap-3 rounded-2xl border border-emerald-400/25 bg-emerald-400/10 px-4 py-3 text-sm font-semibold text-emerald-300" role="status">
+                <div className="flex items-start gap-3 rounded-2xl border border-itx-success/25 bg-itx-success/10 px-4 py-3 text-sm font-semibold text-itx-success" role="status">
                     <Play className="mt-0.5 size-4 shrink-0" />
                     {startMessage}
                 </div>
             )}
             {actionError && (
-                <div className="rounded-2xl border border-rose-400/25 bg-rose-500/10 px-4 py-3 text-sm font-semibold text-rose-300" role="alert">
+                <div className="rounded-2xl border border-itx-danger/25 bg-itx-danger/10 px-4 py-3 text-sm font-semibold text-itx-danger" role="alert">
                     {actionError}
                 </div>
             )}
 
             {featuredSession && (
-                <section className="premium-hero relative overflow-hidden rounded-4xl p-5 text-white md:p-6 xl:p-7">
-                    <div aria-hidden="true" className="absolute -right-16 -top-20 h-56 w-56 rounded-full border border-[#41c0ca]/15" />
+                <section className="premium-hero relative overflow-hidden rounded-4xl p-5 text-itx-ink md:p-6 xl:p-7">
                     <div className="relative grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
                         <div>
-                            <div className="flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#64d0d8]">
-                                <span className="h-2 w-2 rounded-full bg-[#61d4b0]" /> {featuredIsReady ? "Ready to start" : "Next booking"}
+                            <div className="flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#0d6169]">
+                                <span className="h-2 w-2 rounded-full bg-itx-success" /> {featuredIsReady ? "Ready to start" : "Next booking"}
                             </div>
-                            <h2 className="mt-3 text-2xl font-semibold tracking-[-0.04em] md:text-3xl">
+                            <h2 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-itx-ink md:text-3xl">
                                 {featuredSession.date} · {featuredSession.time}
                             </h2>
-                            <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-semibold text-white/60">
+                            <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-semibold text-slate-600">
                                 <span className="flex items-center gap-2">
-                                    <Monitor className="size-4 text-[#52c4ce]" />
+                                    <Monitor className="size-4 text-[#0d6169]" />
                                     {featuredSession.system}
                                 </span>
                                 <span className="flex items-center gap-2">
-                                    <TimerReset className="size-4 text-[#52c4ce]" />
+                                    <TimerReset className="size-4 text-[#0d6169]" />
                                     {featuredSession.duration}
                                 </span>
-                                <span className="rounded-lg border border-white/10 bg-white/8 px-2.5 py-1 font-bold tracking-wide text-white/75">
+                                <span className="rounded-lg border border-itx-border bg-white/70 px-2.5 py-1 font-bold tracking-wide text-slate-600">
                                     {featuredSession.reference}
                                 </span>
                             </div>
                             {featuredIsReady && featuredSession.startWarning && (
                                 <div
-                                    className="mt-5 max-w-2xl rounded-2xl border border-[#f3ca75]/35 bg-[#e5a83a]/15 px-4 py-3 text-sm font-semibold leading-6 text-[#ffe2a4]"
+                                    className="mt-5 max-w-2xl rounded-2xl border border-itx-warning/35 bg-itx-warning/15 px-4 py-3 text-sm font-semibold leading-6 text-[#8a5a13]"
                                     role="alert"
                                 >
                                     Half of your booked session has already passed. Start now to use the remaining time. The full booked duration will still be charged.
@@ -255,7 +254,7 @@ export function HistoryView({ student }) {
                                 {featuredIsReady ? (
                                     <>
                                         <button
-                                            className="inline-flex h-12 items-center gap-2 rounded-2xl bg-[#65d4b0] px-6 text-sm font-bold text-[#082d36] shadow-lg shadow-black/15 transition-colors hover:bg-[#7ce0be] disabled:cursor-wait disabled:opacity-60"
+                                            className="inline-flex h-12 items-center gap-2 rounded-2xl bg-itx-success px-6 text-sm font-bold text-white shadow-lg shadow-itx-success/20 transition-colors hover:bg-[#128a5c] disabled:cursor-wait disabled:opacity-60"
                                             disabled={startingId === featuredSession.id}
                                             onClick={() => startSessionNow(featuredSession.id)}
                                             type="button"
@@ -263,21 +262,21 @@ export function HistoryView({ student }) {
                                             <Play className="size-4.5 fill-current" />
                                             {startingId === featuredSession.id ? "Starting..." : "Start session"}
                                         </button>
-                                        <span className="max-w-md text-xs font-medium leading-5 text-white/50">
+                                        <span className="max-w-md text-xs font-medium leading-5 text-slate-500">
                                             Starting late does not reduce the booked charge or extend the scheduled end time.
                                         </span>
                                     </>
                                 ) : (
                                     <>
                                         <button
-                                            className="inline-flex h-12 items-center gap-2 rounded-2xl border border-rose-200/20 bg-white/10 px-5 text-sm font-bold text-white transition-colors duration-150 enabled:hover:border-rose-200/40 enabled:hover:bg-rose-400/15 disabled:cursor-not-allowed disabled:opacity-45"
+                                            className="inline-flex h-12 items-center gap-2 rounded-2xl border border-itx-danger/25 bg-white px-5 text-sm font-bold text-itx-ink transition-colors duration-150 enabled:hover:border-itx-danger/40 enabled:hover:bg-itx-danger/10 disabled:cursor-not-allowed disabled:opacity-45"
                                             disabled={!canCancelNext}
                                             onClick={() => setPendingAction({ type: "cancel", sessionId: featuredSession.id })}
                                             type="button"
                                         >
-                                            <CalendarX2 className="size-4.5 text-rose-200" /> Cancel booking
+                                            <CalendarX2 className="size-4.5 text-itx-danger" /> Cancel booking
                                         </button>
-                                        <span className="text-xs font-medium text-white/40">
+                                        <span className="text-xs font-medium text-slate-400">
                                             {canCancelNext
                                                 ? policy.cancelBeforeMinutes
                                                     ? `Available until ${policy.cancelBeforeMinutes} minutes before start`
@@ -288,27 +287,27 @@ export function HistoryView({ student }) {
                                 )}
                             </div>
                         </div>
-                        <div className="rounded-3xl border border-white/10 bg-white/7 p-4 backdrop-blur-sm sm:min-w-72">
+                        <div className="rounded-3xl border border-itx-border bg-white/70 p-4 backdrop-blur-sm sm:min-w-72">
                             {featuredIsReady ? (
                                 <>
-                                    <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-white/50">Session window is open</p>
-                                    <p className="mt-3 text-xl font-semibold tracking-[-0.03em]">Start when you arrive</p>
-                                    <p className="mt-2 text-xs font-medium leading-5 text-white/45">
+                                    <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-slate-500">Session window is open</p>
+                                    <p className="mt-3 text-xl font-semibold tracking-[-0.03em] text-itx-ink">Start when you arrive</p>
+                                    <p className="mt-2 text-xs font-medium leading-5 text-slate-500">
                                         Your actual start time will be recorded for you and the lab administrator.
                                     </p>
                                 </>
                             ) : (
                                 <>
-                                    <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-white/50">Starts in</p>
+                                    <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-slate-500">Starts in</p>
                                     <div className="mt-3 grid grid-cols-3 gap-2 text-center">
                                         {[
                                             { label: "Hours", value: countdownHours },
                                             { label: "Minutes", value: countdownMinutes },
                                             { label: "Seconds", value: countdownSeconds },
                                         ].map((unit) => (
-                                            <div className="rounded-2xl bg-white/8 px-2 py-3" key={unit.label}>
-                                                <span className="block text-2xl font-bold tabular-nums tracking-[-0.04em]">{String(unit.value).padStart(2, "0")}</span>
-                                                <span className="mt-1 block text-[10px] font-bold uppercase tracking-wide text-white/45">{unit.label}</span>
+                                            <div className="rounded-2xl bg-white/70 px-2 py-3" key={unit.label}>
+                                                <span className="block text-2xl font-bold tabular-nums tracking-[-0.04em] text-itx-ink">{String(unit.value).padStart(2, "0")}</span>
+                                                <span className="mt-1 block text-[10px] font-bold uppercase tracking-wide text-slate-500">{unit.label}</span>
                                             </div>
                                         ))}
                                     </div>
@@ -320,17 +319,17 @@ export function HistoryView({ student }) {
             )}
 
             <section className="portal-surface overflow-hidden rounded-3xl border">
-                <div className="flex flex-col gap-4 border-b border-white/10 p-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+                <div className="flex flex-col gap-4 border-b border-itx-border p-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
                     <div>
-                        <h2 className="text-lg font-bold text-white">Booking history</h2>
-                        <p className="mt-1 text-sm text-white/55">Your balance updates after each completed session.</p>
+                        <h2 className="text-lg font-bold text-itx-ink">Booking history</h2>
+                        <p className="mt-1 text-sm text-slate-500">Your balance updates after each completed session.</p>
                     </div>
-                    <div className="flex flex-wrap gap-1.5 rounded-xl bg-white/5 p-1.5">
+                    <div className="flex flex-wrap gap-1.5 rounded-xl bg-slate-100 p-1.5">
                         {["All", "Upcoming", "Ready", "Ongoing", "Completed"].map((filter) => (
                             <button
                                 className={cn(
                                     "rounded-lg px-3 py-2 text-xs font-bold transition",
-                                    statusFilter === filter ? "bg-white/12 text-[#2f9db0] shadow-sm" : "text-white/55 hover:text-white/80",
+                                    statusFilter === filter ? "bg-white text-[#128a93] shadow-sm" : "text-slate-500 hover:text-itx-ink",
                                 )}
                                 key={filter}
                                 onClick={() => setStatusFilter(filter)}
@@ -342,7 +341,7 @@ export function HistoryView({ student }) {
                     </div>
                 </div>
 
-                <div className="hidden grid-cols-[0.65fr_0.8fr_1fr_0.65fr_0.65fr_1fr_0.65fr_0.9fr] gap-3 border-b border-white/10 bg-white/4 px-6 py-4 text-[11px] font-extrabold uppercase tracking-[0.08em] text-white/45 xl:grid">
+                <div className="hidden grid-cols-[0.65fr_0.8fr_1fr_0.65fr_0.65fr_1fr_0.65fr_0.9fr] gap-3 border-b border-itx-border bg-slate-50 px-6 py-4 text-[11px] font-extrabold uppercase tracking-[0.08em] text-slate-400 xl:grid">
                     <span>Date</span>
                     <span>Reference</span>
                     <span>Time</span>
@@ -355,40 +354,40 @@ export function HistoryView({ student }) {
                 {remainingSessions.map((session) => (
                     <article
                         className={cn(
-                            "grid gap-4 border-b border-white/10 p-5 last:border-0 xl:grid-cols-[0.65fr_0.8fr_1fr_0.65fr_0.65fr_1fr_0.65fr_0.9fr] xl:items-center xl:gap-3 xl:px-6",
-                            session.status === "Ready" && "bg-emerald-400/5",
-                            session.status === "Ongoing" && "bg-amber-400/5",
+                            "grid gap-4 border-b border-itx-border p-5 last:border-0 xl:grid-cols-[0.65fr_0.8fr_1fr_0.65fr_0.65fr_1fr_0.65fr_0.9fr] xl:items-center xl:gap-3 xl:px-6",
+                            session.status === "Ready" && "bg-itx-success/5",
+                            session.status === "Ongoing" && "bg-itx-warning/5",
                         )}
                         key={session.id}
                     >
                         <div className="flex items-center justify-between xl:block">
-                            <p className="text-sm font-bold text-white/80">{session.date}</p>
+                            <p className="text-sm font-bold text-itx-ink">{session.date}</p>
                             <span className={cn("w-fit rounded-full px-2.5 py-1.5 text-[11px] font-bold xl:hidden", badgeClasses[session.status])}>
                                 {session.status}
                             </span>
                         </div>
                         <div>
-                            <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-white/45 xl:hidden">Reference</p>
-                            <p className="mt-1 text-sm font-bold tracking-wide text-[#2f9db0] xl:mt-0">{session.reference}</p>
+                            <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-slate-400 xl:hidden">Reference</p>
+                            <p className="mt-1 text-sm font-bold tracking-wide text-[#128a93] xl:mt-0">{session.reference}</p>
                         </div>
                         <div>
-                            <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-white/45 xl:hidden">Time</p>
-                            <p className="mt-1 text-sm font-bold text-white xl:mt-0">{session.time}</p>
-                            {session.startedAt && <p className="mt-1 text-xs font-bold text-emerald-300">Started {formatStartedAt(session.startedAt)}</p>}
-                            {!session.startedAt && session.status === "Ready" && <p className="mt-1 text-xs font-bold text-emerald-300">Awaiting your start</p>}
-                            {session.startWarning && <p className="mt-1 text-xs font-bold text-amber-300">Warning: at least 50% of the slot has passed</p>}
+                            <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-slate-400 xl:hidden">Time</p>
+                            <p className="mt-1 text-sm font-bold text-itx-ink xl:mt-0">{session.time}</p>
+                            {session.startedAt && <p className="mt-1 text-xs font-bold text-itx-success">Started {formatStartedAt(session.startedAt)}</p>}
+                            {!session.startedAt && session.status === "Ready" && <p className="mt-1 text-xs font-bold text-itx-success">Awaiting your start</p>}
+                            {session.startWarning && <p className="mt-1 text-xs font-bold text-[#8a5a13]">Warning: at least 50% of the slot has passed</p>}
                         </div>
                         <div>
-                            <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-white/45 xl:hidden">System</p>
-                            <p className="mt-1 text-sm font-semibold text-white/55 xl:mt-0">{session.system}</p>
+                            <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-slate-400 xl:hidden">System</p>
+                            <p className="mt-1 text-sm font-semibold text-slate-500 xl:mt-0">{session.system}</p>
                         </div>
                         <div>
-                            <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-white/45 xl:hidden">Duration</p>
-                            <p className="mt-1 text-sm font-semibold text-white/55 xl:mt-0">{session.duration}</p>
+                            <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-slate-400 xl:hidden">Duration</p>
+                            <p className="mt-1 text-sm font-semibold text-slate-500 xl:mt-0">{session.duration}</p>
                         </div>
                         <div>
-                            <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-white/45 xl:hidden">Balance after session</p>
-                            <p className={cn("mt-1 text-sm font-bold xl:mt-0", session.balanceAfter ? "text-emerald-300" : "text-white/40")}>
+                            <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-slate-400 xl:hidden">Balance after session</p>
+                            <p className={cn("mt-1 text-sm font-bold xl:mt-0", session.balanceAfter ? "text-itx-success" : "text-slate-400")}>
                                 {session.balanceAfter ? `${session.balanceAfter} remaining` : "Updates on completion"}
                             </p>
                         </div>
@@ -397,7 +396,7 @@ export function HistoryView({ student }) {
                         </span>
                         {session.status === "Upcoming" && session.startsAt - currentTime >= policy.cancelBeforeMinutes * 60_000 && (
                             <button
-                                className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-rose-400/25 bg-rose-500/10 px-4 text-sm font-bold text-rose-300 transition active:scale-[0.98] hover:border-rose-400/40 hover:bg-rose-500/15 xl:ml-auto xl:h-10 xl:w-fit xl:px-3 xl:text-xs"
+                                className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-itx-danger/25 bg-itx-danger/10 px-4 text-sm font-bold text-itx-danger transition active:scale-[0.98] hover:border-itx-danger/40 hover:bg-itx-danger/15 xl:ml-auto xl:h-10 xl:w-fit xl:px-3 xl:text-xs"
                                 onClick={() => setPendingAction({ type: "cancel", sessionId: session.id })}
                                 type="button"
                             >
@@ -406,7 +405,7 @@ export function HistoryView({ student }) {
                         )}
                         {session.status === "Ready" && (
                             <button
-                                className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#2d9b78] px-4 text-sm font-bold text-white shadow-sm shadow-[#2d9b78]/20 transition-colors hover:bg-[#278568] disabled:cursor-wait disabled:opacity-60 xl:ml-auto xl:h-10 xl:w-fit xl:px-3 xl:text-xs"
+                                className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-itx-success px-4 text-sm font-bold text-white shadow-sm shadow-itx-success/20 transition-colors hover:bg-[#1f8a5f] disabled:cursor-wait disabled:opacity-60 xl:ml-auto xl:h-10 xl:w-fit xl:px-3 xl:text-xs"
                                 disabled={startingId === session.id}
                                 onClick={() => startSessionNow(session.id)}
                                 type="button"
@@ -423,7 +422,7 @@ export function HistoryView({ student }) {
                                 <TimerReset className="size-4" /> End session
                             </button>
                         )}
-                        {session.status === "Completed" && <span className="hidden text-right text-xs text-white/35 xl:block">—</span>}
+                        {session.status === "Completed" && <span className="hidden text-right text-xs text-slate-300 xl:block">—</span>}
                     </article>
                 ))}
                 {remainingSessions.length === 0 && <EmptyState message={`No ${statusFilter.toLowerCase()} sessions to show.`} />}
@@ -435,7 +434,7 @@ export function HistoryView({ student }) {
                     footer={
                         <>
                             <button
-                                className="h-12 rounded-2xl border border-white/15 px-5 text-sm font-bold text-white/60"
+                                className="h-12 rounded-2xl border border-itx-border px-5 text-sm font-bold text-slate-600"
                                 onClick={() => setPendingAction(undefined)}
                                 type="button"
                             >
@@ -454,32 +453,32 @@ export function HistoryView({ student }) {
                     open
                     title={dialogTitle}
                 >
-                    <div className="grid grid-cols-2 gap-3 rounded-3xl border border-white/10 bg-white/5 p-4">
+                    <div className="grid grid-cols-2 gap-3 rounded-3xl border border-itx-border bg-slate-50 p-4">
                         <div>
-                            <p className="text-[11px] font-bold uppercase tracking-wide text-white/45">System</p>
-                            <p className="mt-1 text-sm font-bold text-white/80">{pendingSession.system}</p>
+                            <p className="text-[11px] font-bold uppercase tracking-wide text-slate-400">System</p>
+                            <p className="mt-1 text-sm font-bold text-itx-ink">{pendingSession.system}</p>
                         </div>
                         <div>
-                            <p className="text-[11px] font-bold uppercase tracking-wide text-white/45">Duration</p>
-                            <p className="mt-1 text-sm font-bold text-white/80">{pendingSession.duration}</p>
+                            <p className="text-[11px] font-bold uppercase tracking-wide text-slate-400">Duration</p>
+                            <p className="mt-1 text-sm font-bold text-itx-ink">{pendingSession.duration}</p>
                         </div>
-                        <div className="col-span-2 border-t border-white/10 pt-3">
-                            <p className="text-[11px] font-bold uppercase tracking-wide text-white/45">Scheduled</p>
-                            <p className="mt-1 text-sm font-bold text-white/80">
+                        <div className="col-span-2 border-t border-itx-border pt-3">
+                            <p className="text-[11px] font-bold uppercase tracking-wide text-slate-400">Scheduled</p>
+                            <p className="mt-1 text-sm font-bold text-itx-ink">
                                 {pendingSession.date} · {pendingSession.time}
                             </p>
                         </div>
                     </div>
 
                     {pendingAction.type === "end" && pendingUsage && (
-                        <div className="mt-4 flex items-center justify-between gap-4 rounded-3xl border border-amber-400/25 bg-amber-400/10 p-4">
+                        <div className="mt-4 flex items-center justify-between gap-4 rounded-3xl border border-itx-warning/25 bg-itx-warning/10 p-4">
                             <div>
-                                <p className="text-[10px] font-extrabold uppercase tracking-widest text-amber-300/80">Time remaining</p>
-                                <p className="mt-1 text-2xl font-bold tracking-[-0.03em] text-amber-300">{formatDuration(pendingUsage.remainingMinutes)}</p>
+                                <p className="text-[10px] font-extrabold uppercase tracking-widest text-[#8a5a13]/80">Time remaining</p>
+                                <p className="mt-1 text-2xl font-bold tracking-[-0.03em] text-[#8a5a13]">{formatDuration(pendingUsage.remainingMinutes)}</p>
                             </div>
-                            <div className="border-l border-amber-400/20 pl-4 text-right">
-                                <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-amber-300/70">Used so far</p>
-                                <p className="mt-1 text-sm font-bold text-amber-200">{formatDuration(pendingUsage.usedMinutes)}</p>
+                            <div className="border-l border-itx-warning/25 pl-4 text-right">
+                                <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#8a5a13]/80">Used so far</p>
+                                <p className="mt-1 text-sm font-bold text-[#8a5a13]">{formatDuration(pendingUsage.usedMinutes)}</p>
                             </div>
                         </div>
                     )}

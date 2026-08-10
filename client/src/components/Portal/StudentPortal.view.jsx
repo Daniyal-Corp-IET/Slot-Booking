@@ -42,11 +42,11 @@ export function StudentPortalView({ onPasswordChanged, student }) {
 
             {menuOpen && (
                 <div className="ui-fade-in fixed inset-0 z-50 xl:hidden">
-                    <button aria-label="Close navigation" className="absolute inset-0 bg-[#071c28]/70 backdrop-blur-sm" onClick={closeMenu} type="button" />
+                    <button aria-label="Close navigation" className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={closeMenu} type="button" />
                     <aside className="portal-sidebar ui-slide-in-left relative h-full w-72 max-w-[85vw] overflow-hidden shadow-2xl">
                         <button
                             aria-label="Close navigation"
-                            className="absolute right-3 top-3 z-10 rounded-xl bg-white/8 p-2 text-white"
+                            className="absolute right-3 top-3 z-10 rounded-xl border border-itx-border bg-white p-2 text-itx-ink shadow-sm"
                             onClick={closeMenu}
                             type="button"
                         >

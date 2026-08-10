@@ -31,30 +31,20 @@ const LOGIN_STYLES = {
     label: "text-sm font-bold text-slate-700",
     help: "mt-2 rounded-xl bg-slate-100 px-3 py-2.5 text-xs leading-5 text-slate-600",
     forgotButton:
-        "rounded text-[11px] font-bold text-[#0ea5e9] outline-none transition hover:text-[#0284c7] focus-visible:ring-4 focus-visible:ring-[#0ea5e9]/20",
+        "rounded text-[11px] font-bold text-[#128a93] outline-none transition hover:text-[#0d6169] focus-visible:ring-4 focus-visible:ring-[#128a93]/20",
     passwordToggle:
-        "absolute right-2 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-lg text-slate-400 outline-none transition hover:bg-slate-100 hover:text-[#0ea5e9] focus-visible:ring-4 focus-visible:ring-[#0ea5e9]/20",
+        "absolute right-2 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-lg text-slate-400 outline-none transition hover:bg-slate-100 hover:text-[#128a93] focus-visible:ring-4 focus-visible:ring-[#128a93]/20",
     submitButton:
-        "group flex h-12 w-full items-center justify-between rounded-xl bg-[#0ea5e9] px-4 text-sm font-bold text-white shadow-[0_15px_30px_-15px_rgba(14,165,233,0.5)] outline-none transition-colors duration-150 hover:bg-[#0284c7] focus-visible:ring-4 focus-visible:ring-[#0ea5e9]/30 disabled:cursor-wait disabled:opacity-70",
-    input: "h-12 w-full rounded-xl border border-slate-200 bg-white px-3.5 text-sm font-semibold text-slate-900 outline-none transition duration-200 placeholder:font-medium placeholder:text-slate-400 hover:bg-slate-50 focus:border-[#0ea5e9] focus:bg-white focus:ring-4 focus:ring-[#0ea5e9]/20",
+        "group flex h-12 w-full items-center justify-between rounded-xl bg-[#128a93] px-4 text-sm font-bold text-white shadow-[0_15px_30px_-15px_rgba(18,138,147,0.5)] outline-none transition-colors duration-150 hover:bg-[#0d6169] focus-visible:ring-4 focus-visible:ring-[#128a93]/30 disabled:cursor-wait disabled:opacity-70",
+    input: "h-12 w-full rounded-xl border border-slate-200 bg-white px-3.5 text-sm font-semibold text-slate-900 outline-none transition duration-200 placeholder:font-medium placeholder:text-slate-400 hover:bg-slate-50 focus:border-[#128a93] focus:bg-white focus:ring-4 focus:ring-[#128a93]/20",
 };
-function LoginVisualBackdrop() {
-    return (
-        <>
-            <div aria-hidden="true" className="booking-orbit booking-orbit-one" />
-            <div aria-hidden="true" className="booking-orbit booking-orbit-two" />
-            <div aria-hidden="true" className="booking-capsule" />
-            <div aria-hidden="true" className="booking-glow" />
-        </>
-    );
-}
 function BookingOverview() {
     return (
         <section className="hidden text-slate-900 lg:block">
             <div className="max-w-131">
                 <div className="mb-7 inline-flex items-center gap-3 rounded-full border border-slate-200 bg-white/50 px-4 py-2 backdrop-blur-sm">
                     <span className="relative flex h-2.5 w-2.5">
-                        <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#10b981]" />
+                        <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#17a870]" />
                     </span>
                     <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-600">Computer lab booking portal</span>
                 </div>
@@ -65,8 +55,8 @@ function BookingOverview() {
                 <div className="mt-12 grid max-w-119 grid-cols-3 gap-3">
                     {BOOKING_STEPS.map((step, index) => (
                         <div
-                            className={`booking-step relative min-h-35 overflow-hidden rounded-[22px] border p-4 transition-colors duration-150 ${index === 1
-                                ? "translate-y-5 border-[#0ea5e9]/30 bg-[#0ea5e9]"
+                            className={`relative min-h-35 overflow-hidden rounded-[22px] border p-4 transition-colors duration-150 ${index === 1
+                                ? "translate-y-5 border-[#128a93]/30 bg-[#128a93]"
                                 : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50 shadow-sm"
                                 }`}
                             key={step.number}
@@ -84,7 +74,7 @@ function BookingOverview() {
 function BookingPass({ children }) {
     return (
         <>
-            <div aria-hidden="true" className="absolute inset-3 rotate-[2.5deg] rounded-[36px] bg-[#0ea5e9] sm:inset-4 sm:rounded-[44px]" />
+            <div aria-hidden="true" className="absolute inset-3 rotate-[2.5deg] rounded-[36px] bg-[#128a93] sm:inset-4 sm:rounded-[44px]" />
             <div aria-hidden="true" className="absolute -left-3 top-20 h-20 w-6 rounded-full bg-[#f59e0b] sm:-left-5 sm:h-28 sm:w-10" />
             <div className="booking-ticket relative rounded-[30px] border border-slate-100 bg-white px-5 py-6 shadow-[0_35px_90px_-30px_rgba(0,0,0,0.15)] sm:rounded-[40px] sm:px-10 sm:py-9 lg:px-12 lg:py-11">
                 {children}
@@ -98,16 +88,16 @@ function LoginCardHeader() {
             <div className="flex items-start justify-between gap-4" role="banner">
                 <div>
                     <img alt="ITX Learning Hub" className="h-auto w-51 max-w-[62vw] object-contain object-left sm:w-65" src={itxLogo} />
-                    <p className="mt-3 text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#0ea5e9] sm:text-[11px]">LabSlot · Secure access</p>
+                    <p className="mt-3 text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#128a93] sm:text-[11px]">LabSlot · Secure access</p>
                 </div>
-                <div className="hidden h-12 w-12 shrink-0 rotate-6 items-center justify-center rounded-2xl bg-[#f0f9ff] text-[#0ea5e9] shadow-[0_10px_22px_-12px_rgba(14,165,233,0.3)] sm:flex">
+                <div className="hidden h-12 w-12 shrink-0 rotate-6 items-center justify-center rounded-2xl bg-[#e8f6f7] text-[#128a93] shadow-[0_10px_22px_-12px_rgba(18,138,147,0.3)] sm:flex">
                     <Monitor aria-hidden="true" size={23} strokeWidth={2.2} />
                 </div>
             </div>
 
             <div className="my-6 flex items-center gap-3 sm:my-8">
                 <span className="h-px flex-1 bg-slate-200" />
-                <span className="h-2 w-2 rotate-45 bg-[#0ea5e9]" />
+                <span className="h-2 w-2 rotate-45 bg-[#128a93]" />
                 <span className="h-px w-12 bg-slate-200" />
             </div>
 
@@ -125,8 +115,6 @@ export function LoginView({ error, formData, isSubmitting, onChange, onForgotPas
     const { copy, ids } = LOGIN_FORM_CONFIG;
     return (
         <main className={LOGIN_STYLES.canvas}>
-            <LoginVisualBackdrop />
-
             <div className={LOGIN_STYLES.page}>
                 <div className={LOGIN_STYLES.layout}>
                     <BookingOverview />
@@ -206,7 +194,7 @@ export function LoginView({ error, formData, isSubmitting, onChange, onForgotPas
                                 </div>
 
                                 {error && (
-                                    <p className="rounded-xl border border-rose-400/25 bg-rose-500/10 px-4 py-3 text-sm font-semibold text-rose-300" role="alert">
+                                    <p className="rounded-xl border border-itx-danger/25 bg-itx-danger/10 px-4 py-3 text-sm font-semibold text-itx-danger" role="alert">
                                         {error}
                                     </p>
                                 )}

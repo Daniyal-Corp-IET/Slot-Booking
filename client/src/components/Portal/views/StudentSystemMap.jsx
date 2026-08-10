@@ -16,14 +16,14 @@ export function SystemMap({ bookedSystems, onSelect, selectedSystem, selectionPe
         <div>
             <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <p className="text-sm font-bold text-white">System availability</p>
-                    <p className="mt-1 text-sm font-medium text-white/55">
+                    <p className="text-sm font-bold text-itx-ink">System availability</p>
+                    <p className="mt-1 text-sm font-medium text-slate-500">
                         {selectionPending ? "Checking and holding your system..." : `${systems.length} systems match your selected date, time, and duration`}
                     </p>
                 </div>
-                <div className="flex flex-wrap gap-3 text-xs font-bold text-white/55">
+                <div className="flex flex-wrap gap-3 text-xs font-bold text-slate-500">
                     <span className="flex items-center gap-1.5">
-                        <span className="size-2.5 rounded-sm border border-white/25 bg-white/10" /> Available
+                        <span className="size-2.5 rounded-sm border border-itx-border bg-white" /> Available
                     </span>
                     <span className="flex items-center gap-1.5">
                         <span className="size-2.5 rounded-sm bg-[#2da56f]" /> Selected
@@ -33,9 +33,9 @@ export function SystemMap({ bookedSystems, onSelect, selectedSystem, selectionPe
             {systems.length ? (
                 <LabFloorCanvas ariaLabel="Choose an available computer system" items={systems} onSelect={onSelect} selectedId={selectedSystem} />
             ) : (
-                <div className="rounded-3xl border border-dashed border-white/12 bg-white/5 px-5 py-12 text-center">
-                    <p className="text-sm font-bold text-white/80">No systems are available for this booking.</p>
-                    <p className="mt-1 text-xs text-white/55">Return to Step 2 and choose another time or duration.</p>
+                <div className="rounded-3xl border border-dashed border-itx-border bg-slate-50 px-5 py-12 text-center">
+                    <p className="text-sm font-bold text-itx-ink">No systems are available for this booking.</p>
+                    <p className="mt-1 text-xs text-slate-500">Return to Step 2 and choose another time or duration.</p>
                 </div>
             )}
         </div>

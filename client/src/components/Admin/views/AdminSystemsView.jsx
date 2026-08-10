@@ -231,17 +231,16 @@ export function SystemsView() {
     return (
         <div className="mx-auto max-w-400 space-y-5">
             <AdminReveal className="grid gap-5 2xl:grid-cols-[1.35fr_0.65fr]">
-                <section className={joinClasses(surface, "overflow-hidden p-5 text-white sm:p-6")}>
-                    <div className="relative -mx-5 -mt-5 overflow-hidden border-b border-white/10 bg-white/5 p-5 sm:-mx-6 sm:-mt-6 sm:p-6">
-                        <span aria-hidden="true" className="absolute -right-14 -top-16 size-40 rounded-full bg-[#2f9db0]/10 blur-2xl" />
+                <section className={joinClasses(surface, "overflow-hidden p-5 text-itx-ink sm:p-6")}>
+                    <div className="relative -mx-5 -mt-5 overflow-hidden border-b border-itx-border bg-slate-50 p-5 sm:-mx-6 sm:-mt-6 sm:p-6">
                         <div className="relative flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                             <div>
-                                <p className="text-[10px] font-extrabold uppercase tracking-[0.13em] text-[#2f9db0]">Lab operations</p>
+                                <p className="text-[10px] font-extrabold uppercase tracking-[0.13em] text-[#128a93]">Lab operations</p>
                                 <h2 className="mt-2 text-lg font-bold">System inventory</h2>
-                                <p className="mt-1 text-sm text-white/60">{systems.length} workstations currently registered in the lab.</p>
+                                <p className="mt-1 text-sm text-slate-500">{systems.length} workstations currently registered in the lab.</p>
                             </div>
                             <AdminAction
-                                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[linear-gradient(110deg,#2f9db0,#128793)] px-4 text-sm font-bold text-[#082330] shadow-[0_14px_28px_-16px_rgba(31,184,196,0.75)] transition hover:shadow-[0_18px_30px_-16px_rgba(31,184,196,0.9)] disabled:opacity-60"
+                                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[linear-gradient(110deg,#128a93,#0d6169)] px-4 text-sm font-bold text-white shadow-[0_14px_28px_-16px_rgba(18,138,147,0.6)] transition hover:shadow-[0_18px_30px_-16px_rgba(18,138,147,0.75)] disabled:opacity-60"
                                 disabled={saving}
                                 onClick={addNewSystem}
                                 type="button"
@@ -251,28 +250,28 @@ export function SystemsView() {
                             </AdminAction>
                         </div>
                     </div>
-                    <div className="mt-5 flex flex-wrap gap-2 rounded-2xl border border-white/10 bg-white/5 p-1.5 shadow-inner">
+                    <div className="mt-5 flex flex-wrap gap-2 rounded-2xl border border-itx-border bg-slate-50 p-1.5 shadow-inner">
                         {["all", "available", "offline"].map((option) => (
                             <button
                                 className={joinClasses(
                                     "relative min-h-9 overflow-hidden rounded-xl px-3 py-2 text-xs font-bold capitalize transition",
                                     filter === option
-                                        ? "text-[#082330] shadow-[0_8px_18px_-12px_rgba(31,184,196,0.85)]"
-                                        : "text-white/60 hover:bg-white/10 hover:text-white",
+                                        ? "text-white shadow-[0_8px_18px_-12px_rgba(18,138,147,0.6)]"
+                                        : "text-slate-500 hover:bg-slate-100 hover:text-itx-ink",
                                 )}
                                 key={option}
                                 onClick={() => setFilter(option)}
                                 type="button"
                             >
-                                {filter === option && <span aria-hidden="true" className="absolute inset-0 bg-[linear-gradient(110deg,#2f9db0,#3ee7c2)]" />}
+                                {filter === option && <span aria-hidden="true" className="absolute inset-0 bg-[linear-gradient(110deg,#128a93,#17a870)]" />}
                                 <span className="relative">{option === "offline" ? "Unavailable" : option}</span>
                             </button>
                         ))}
                     </div>
-                    <p className="mt-3 text-xs font-semibold text-white/50">Around five systems are shown at once. Scroll inside the list for more.</p>
-                    <div className="mt-3 hidden max-h-104 snap-y overflow-auto rounded-2xl border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_16px_38px_-34px_rgba(2,10,14,0.85)] md:block">
+                    <p className="mt-3 text-xs font-semibold text-slate-500">Around five systems are shown at once. Scroll inside the list for more.</p>
+                    <div className="mt-3 hidden max-h-104 snap-y overflow-auto rounded-2xl border border-itx-border shadow-[inset_0_1px_0_rgba(255,255,255,0.6),0_16px_38px_-34px_rgba(15,23,42,0.2)] md:block">
                         <table className="w-full border-collapse text-left">
-                            <thead className="sticky top-0 z-10 bg-[#0f2f38] text-[11px] font-extrabold uppercase tracking-[0.09em] text-white/60">
+                            <thead className="sticky top-0 z-10 bg-slate-50 text-[11px] font-extrabold uppercase tracking-[0.09em] text-slate-500">
                                 <tr>
                                     <th className="px-4 py-3.5">System</th>
                                     <th className="px-4 py-3.5">Status</th>
@@ -280,15 +279,15 @@ export function SystemsView() {
                                     <th className="px-4 py-3.5 text-right">Action</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-white/10 bg-transparent">
+                            <tbody className="divide-y divide-slate-100 bg-transparent">
                                 {visibleSystems.map((system) => {
                                     const outage = systemOutages.find((item) => item.systemId === system.id && isSystemUnavailable([item], system.id, now));
                                     const hasBookings = systemHasBookings(system.id);
                                     return (
                                         <tr
                                             className={joinClasses(
-                                                "group cursor-pointer snap-start transition-colors duration-150 hover:bg-white/5",
-                                                selected.id === system.id && "bg-[#2f9db0]/10 shadow-[inset_3px_0_0_#2f9db0]",
+                                                "group cursor-pointer snap-start transition-colors duration-150 hover:bg-slate-50",
+                                                selected.id === system.id && "bg-[#128a93]/8 shadow-[inset_3px_0_0_#128a93]",
                                             )}
                                             key={system.id}
                                             onClick={() => showSystemHistory(system)}
@@ -302,29 +301,29 @@ export function SystemsView() {
                                                     }}
                                                     type="button"
                                                 >
-                                                    <span className="flex size-10 items-center justify-center rounded-xl border border-white/12 bg-white/5 text-[#2f9db0] shadow-sm transition-colors duration-150 group-hover:border-[#2f9db0]/40">
+                                                    <span className="flex size-10 items-center justify-center rounded-xl border border-itx-border bg-white text-[#128a93] shadow-sm transition-colors duration-150 group-hover:border-[#128a93]/40">
                                                         <Monitor className="size-4.5" />
                                                     </span>
-                                                    <span className="text-sm font-extrabold text-white">System {String(system.id).padStart(2, "0")}</span>
+                                                    <span className="text-sm font-extrabold text-itx-ink">System {String(system.id).padStart(2, "0")}</span>
                                                 </button>
                                             </td>
                                             <td className="px-4 py-4">
                                                 <span
                                                     className={joinClasses(
                                                         "inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold",
-                                                        system.status === "available" ? "bg-[#3ee7c2]/15 text-[#5fe3b8]" : "bg-white/10 text-white/60",
+                                                        system.status === "available" ? "bg-itx-success/12 text-itx-success" : "bg-slate-100 text-slate-500",
                                                     )}
                                                 >
                                                     <span
                                                         className={joinClasses(
                                                             "size-2 rounded-full",
-                                                            system.status === "available" ? "bg-[#3ddc97]" : "bg-white/40",
+                                                            system.status === "available" ? "bg-itx-success" : "bg-slate-400",
                                                         )}
                                                     />
                                                     {system.status === "available" ? "Available" : "Unavailable"}
                                                 </span>
                                             </td>
-                                            <td className="px-4 py-4 text-sm font-medium text-white/60">
+                                            <td className="px-4 py-4 text-sm font-medium text-slate-500">
                                                 {outage
                                                     ? outage.endsAt
                                                         ? `Until ${new Date(outage.endsAt).toLocaleString("en-US", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}`
@@ -338,8 +337,8 @@ export function SystemsView() {
                                                             className={joinClasses(
                                                                 "rounded-xl px-3 py-2 text-xs font-bold transition",
                                                                 hasBookings
-                                                                    ? "bg-[#f0b65e]/15 text-[#f0b65e] hover:bg-[#f0b65e]/25"
-                                                                    : "bg-white/10 text-white/70 hover:bg-white/15",
+                                                                    ? "bg-itx-warning/15 text-[#8a5a13] hover:bg-itx-warning/25"
+                                                                    : "bg-slate-100 text-slate-600 hover:bg-slate-200",
                                                             )}
                                                             onClick={(event) => {
                                                                 event.stopPropagation();
@@ -351,7 +350,7 @@ export function SystemsView() {
                                                         </button>
                                                     ) : (
                                                         <button
-                                                            className="rounded-xl bg-[#3ee7c2]/15 px-3 py-2 text-xs font-bold text-[#5fe3b8] transition hover:bg-[#3ee7c2]/25"
+                                                            className="rounded-xl bg-itx-success/12 px-3 py-2 text-xs font-bold text-itx-success transition hover:bg-itx-success/20"
                                                             onClick={(event) => {
                                                                 event.stopPropagation();
                                                                 makeAvailable(system);
@@ -373,28 +372,28 @@ export function SystemsView() {
                         {visibleSystems.map((system) => (
                             <button
                                 className={joinClasses(
-                                    "flex snap-start items-center gap-3 rounded-2xl border p-4 text-left shadow-[0_12px_30px_-26px_rgba(2,10,14,0.7)] transition-colors duration-150",
+                                    "flex snap-start items-center gap-3 rounded-2xl border p-4 text-left shadow-[0_12px_30px_-26px_rgba(15,23,42,0.15)] transition-colors duration-150",
                                     selected.id === system.id
-                                        ? "border-[#2f9db0] bg-[#2f9db0]/10 ring-2 ring-[#2f9db0]/15"
-                                        : "border-white/10 bg-white/5",
+                                        ? "border-[#128a93] bg-[#128a93]/8 ring-2 ring-[#128a93]/15"
+                                        : "border-itx-border bg-slate-50",
                                 )}
                                 key={system.id}
                                 onClick={() => showSystemHistory(system)}
                                 type="button"
                             >
-                                <span className="flex size-11 items-center justify-center rounded-xl bg-white/10 text-[#2f9db0] shadow-sm">
+                                <span className="flex size-11 items-center justify-center rounded-xl bg-white text-[#128a93] shadow-sm">
                                     <Monitor className="size-5" />
                                 </span>
                                 <span className="flex-1">
-                                    <span className="block text-sm font-extrabold text-white">System {String(system.id).padStart(2, "0")}</span>
-                                    <span className="mt-1 block text-xs font-semibold text-white/60">
+                                    <span className="block text-sm font-extrabold text-itx-ink">System {String(system.id).padStart(2, "0")}</span>
+                                    <span className="mt-1 block text-xs font-semibold text-slate-500">
                                         {system.status === "available" ? "Open for bookings" : "Unavailable to students"}
                                     </span>
                                 </span>
                                 <span
                                     className={joinClasses(
                                         "size-2.5 rounded-full shadow-[0_0_9px_currentColor]",
-                                        system.status === "available" ? "bg-[#3ddc97] text-[#3ddc97]" : "bg-white/40 text-white/40",
+                                        system.status === "available" ? "bg-itx-success text-itx-success" : "bg-slate-300 text-slate-300",
                                     )}
                                 />
                             </button>
@@ -408,45 +407,43 @@ export function SystemsView() {
                 </section>
 
                 <aside className={joinClasses(surface, "h-fit overflow-hidden 2xl:sticky 2xl:top-28")}>
-                    <div className="premium-hero relative overflow-hidden p-6 text-white">
-                        <span aria-hidden="true" className="absolute -right-14 -top-14 size-40 rounded-full border border-white/8" />
-                        <span aria-hidden="true" className="absolute -bottom-16 right-8 size-32 rounded-full bg-[#2f9db0]/20 blur-2xl" />
+                    <div className="premium-hero relative overflow-hidden p-6 text-itx-ink">
                         <div className="flex items-start justify-between">
-                            <span className="relative flex h-13 w-13 items-center justify-center rounded-2xl border border-white/10 bg-white/10 shadow-inner backdrop-blur-sm">
+                            <span className="relative flex h-13 w-13 items-center justify-center rounded-2xl border border-itx-border bg-white/70 shadow-inner backdrop-blur-sm">
                                 <Monitor className="h-6 w-6" />
                             </span>
                             <span
                                 className={joinClasses(
                                     "relative inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[10px] font-extrabold uppercase",
                                     selected.status === "available"
-                                        ? "border-[#65d4b0]/15 bg-[#65d4b0]/15 text-[#82dfc1]"
-                                        : "border-white/8 bg-white/10 text-white/70",
+                                        ? "border-itx-success/20 bg-itx-success/12 text-itx-success"
+                                        : "border-itx-border bg-white/70 text-slate-600",
                                 )}
                             >
                                 <span
                                     className={joinClasses(
                                         "size-1.5 rounded-full",
-                                        selected.status === "available" ? "bg-[#65d4b0] shadow-[0_0_9px_rgba(101,212,176,0.85)]" : "bg-white/50",
+                                        selected.status === "available" ? "bg-itx-success shadow-[0_0_9px_rgba(23,168,112,0.6)]" : "bg-slate-400",
                                     )}
                                 />
                                 {SYSTEM_STYLES[selected.status].label}
                             </span>
                         </div>
-                        <p className="mt-6 text-xs font-semibold text-white/65">Selected workstation</p>
-                        <h3 className="mt-1 text-3xl font-bold tracking-[-0.05em]">System {String(selected.id).padStart(2, "0")}</h3>
+                        <p className="mt-6 text-xs font-semibold text-slate-600">Selected workstation</p>
+                        <h3 className="mt-1 text-3xl font-bold tracking-[-0.05em] text-itx-ink">System {String(selected.id).padStart(2, "0")}</h3>
                     </div>
                     <div className="p-6">
                         <div
                             className={joinClasses(
                                 "rounded-2xl border p-4",
-                                selected.status === "available" ? "border-[#3ee7c2]/25 bg-[#3ee7c2]/10" : "border-white/12 bg-white/5",
+                                selected.status === "available" ? "border-itx-success/25 bg-itx-success/10" : "border-itx-border bg-slate-50",
                             )}
                         >
                             <div className="flex items-center gap-3">
-                                <span className={joinClasses("size-3 rounded-full", selected.status === "available" ? "bg-[#3ddc97]" : "bg-white/40")} />
+                                <span className={joinClasses("size-3 rounded-full", selected.status === "available" ? "bg-itx-success" : "bg-slate-400")} />
                                 <div>
-                                    <p className="text-sm font-bold text-white">{selected.status === "available" ? "Ready for bookings" : "Not available to students"}</p>
-                                    <p className="mt-1 text-xs leading-5 text-white/60">
+                                    <p className="text-sm font-bold text-itx-ink">{selected.status === "available" ? "Ready for bookings" : "Not available to students"}</p>
+                                    <p className="mt-1 text-xs leading-5 text-slate-500">
                                         {selectedOutage
                                             ? selectedOutage.endsAt
                                                 ? `Automatically available ${new Date(selectedOutage.endsAt).toLocaleString("en-US", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}`
@@ -459,7 +456,7 @@ export function SystemsView() {
                         <div className="mt-4 space-y-2">
                             {selected.status === "offline" && (
                                 <AdminAction
-                                    className="flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-[#3ee7c2] px-4 text-sm font-bold text-[#082330] shadow-[0_14px_26px_-17px_rgba(79,216,189,0.6)] transition hover:bg-[#6ee2cb]"
+                                    className="flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-itx-success px-4 text-sm font-bold text-white shadow-[0_14px_26px_-17px_rgba(23,168,112,0.6)] transition hover:bg-[#128a5c]"
                                     onClick={() => makeAvailable(selected)}
                                     type="button"
                                 >
@@ -471,8 +468,8 @@ export function SystemsView() {
                                     className={joinClasses(
                                         "min-h-12 w-full rounded-2xl border px-4 text-sm font-bold transition",
                                         selectedHasBookings
-                                            ? "border-[#f0b65e]/30 bg-[#f0b65e]/15 text-[#f0b65e] hover:bg-[#f0b65e]/25"
-                                            : "border-white/20 text-white transition hover:bg-white/10",
+                                            ? "border-itx-warning/30 bg-itx-warning/15 text-[#8a5a13] hover:bg-itx-warning/25"
+                                            : "border-itx-border text-itx-ink transition hover:bg-slate-100",
                                     )}
                                     onClick={() => openStatusDialog(selected)}
                                     type="button"
@@ -481,7 +478,7 @@ export function SystemsView() {
                                 </AdminAction>
                             )}
                             <button
-                                className="flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl border border-[#f0576a]/30 bg-[#f0576a]/10 px-4 text-sm font-bold text-[#f29aa4] transition hover:bg-[#f0576a]/20"
+                                className="flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl border border-itx-danger/30 bg-itx-danger/10 px-4 text-sm font-bold text-itx-danger transition hover:bg-itx-danger/20"
                                 onClick={() => setRemoveDialogOpen(true)}
                                 type="button"
                             >
@@ -492,15 +489,15 @@ export function SystemsView() {
                 </aside>
             </AdminReveal>
             {historyVisible && (
-                <AdminReveal className={joinClasses(surface, "overflow-hidden p-5 text-white sm:p-6")}>
+                <AdminReveal className={joinClasses(surface, "overflow-hidden p-5 text-itx-ink sm:p-6")}>
                     <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                         <div>
-                            <p className="text-xs font-extrabold uppercase tracking-[0.12em] text-[#2f9db0]">Next seven days</p>
+                            <p className="text-xs font-extrabold uppercase tracking-[0.12em] text-[#128a93]">Next seven days</p>
                             <h2 className="mt-2 text-xl font-bold">System {String(selected.id).padStart(2, "0")} day schedule</h2>
-                            <p className="mt-1 text-sm text-white/60">Review bookings and manage system availability from today onward.</p>
+                            <p className="mt-1 text-sm text-slate-500">Review bookings and manage system availability from today onward.</p>
                         </div>
                         <button
-                            className="min-h-10 rounded-xl border border-white/15 px-4 text-xs font-bold text-white transition hover:border-[#2f9db0]/40"
+                            className="min-h-10 rounded-xl border border-itx-border px-4 text-xs font-bold text-itx-ink transition hover:border-[#128a93]/40"
                             onClick={() => setHistoryVisible(false)}
                             type="button"
                         >
@@ -513,7 +510,7 @@ export function SystemsView() {
                                 aria-pressed={historyDate === date.key}
                                 className={joinClasses(
                                     "min-w-21 rounded-xl border px-3 py-2.5 text-left transition",
-                                    historyDate === date.key ? "border-[#2f9db0] bg-[#2f9db0]/15 text-[#5fd3dc]" : "border-white/10 bg-white/5 text-white/60",
+                                    historyDate === date.key ? "border-[#128a93] bg-[#128a93]/12 text-[#0d6169]" : "border-itx-border bg-slate-50 text-slate-500",
                                 )}
                                 key={date.key}
                                 onClick={() => {
@@ -528,7 +525,7 @@ export function SystemsView() {
                         ))}
                     </div>
                     {historyLoading ? (
-                        <div className="mt-5 flex min-h-48 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-sm font-bold text-white/60">
+                        <div className="mt-5 flex min-h-48 items-center justify-center rounded-2xl border border-itx-border bg-slate-50 text-sm font-bold text-slate-500">
                             Loading day history...
                         </div>
                     ) : (
@@ -545,30 +542,30 @@ export function SystemsView() {
                                     selectedRange={pendingTimelineAction}
                                 />
                                 {pendingTimelineAction && (
-                                    <div className="ui-fade-in mt-3 flex flex-col gap-3 rounded-2xl border border-[#f0576a]/25 bg-[#f0576a]/10 p-4 shadow-[0_14px_30px_-24px_rgba(240,87,106,0.4)] sm:flex-row sm:items-center sm:justify-between">
+                                    <div className="ui-fade-in mt-3 flex flex-col gap-3 rounded-2xl border border-itx-danger/25 bg-itx-danger/8 p-4 shadow-[0_14px_30px_-24px_rgba(224,99,122,0.35)] sm:flex-row sm:items-center sm:justify-between">
                                         <div>
-                                            <p className="text-xs font-extrabold uppercase tracking-[0.08em] text-[#f29aa4]">
+                                            <p className="text-xs font-extrabold uppercase tracking-[0.08em] text-itx-danger">
                                                 {pendingTimelineAction.action === "make-unavailable"
                                                     ? "Selected available time"
                                                     : "Selected unavailable period"}
                                             </p>
-                                            <p className="mt-1 text-base font-bold tabular-nums text-white">
+                                            <p className="mt-1 text-base font-bold tabular-nums text-itx-ink">
                                                 {formatMinutes(pendingTimelineAction.startMinutes)} – {formatMinutes(pendingTimelineAction.endMinutes)}
                                             </p>
-                                            <p className="mt-1 text-xs font-semibold text-white/60">
+                                            <p className="mt-1 text-xs font-semibold text-slate-500">
                                                 {formatActivityMinutes(pendingTimelineAction.endMinutes - pendingTimelineAction.startMinutes)} selected
                                             </p>
                                         </div>
                                         <div className="flex gap-2">
                                             <button
-                                                className="min-h-11 rounded-xl border border-white/20 px-4 text-sm font-bold text-white transition hover:bg-white/10"
+                                                className="min-h-11 rounded-xl border border-itx-border px-4 text-sm font-bold text-itx-ink transition hover:bg-slate-100"
                                                 onClick={() => setPendingTimelineAction(null)}
                                                 type="button"
                                             >
                                                 Clear
                                             </button>
                                             <button
-                                                className="min-h-11 rounded-xl bg-[#f0576a] px-4 text-sm font-bold text-white transition hover:bg-[#d84459]"
+                                                className="min-h-11 rounded-xl bg-itx-danger px-4 text-sm font-bold text-white transition hover:bg-[#c94f63]"
                                                 onClick={saveTimelineAction}
                                                 type="button"
                                             >
@@ -582,36 +579,36 @@ export function SystemsView() {
                                     </div>
                                 )}
                             </div>
-                            <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-                                <div className="border-b border-white/10 bg-white/5 px-4 py-3.5">
-                                    <h3 className="text-sm font-bold text-white">Daily availability table</h3>
-                                    <p className="mt-1 text-xs text-white/50">A simple summary of the continuous timeline.</p>
+                            <div className="overflow-hidden rounded-2xl border border-itx-border bg-slate-50">
+                                <div className="border-b border-itx-border bg-slate-50 px-4 py-3.5">
+                                    <h3 className="text-sm font-bold text-itx-ink">Daily availability table</h3>
+                                    <p className="mt-1 text-xs text-slate-500">A simple summary of the continuous timeline.</p>
                                 </div>
                                 <div className="max-h-120 overflow-y-auto">
                                     <table className="w-full text-left">
-                                        <thead className="sticky top-0 bg-[#0f2f38] text-[11px] font-extrabold uppercase tracking-[0.08em] text-white/50">
+                                        <thead className="sticky top-0 bg-slate-100 text-[11px] font-extrabold uppercase tracking-[0.08em] text-slate-500">
                                             <tr>
                                                 <th className="px-4 py-3">From</th>
                                                 <th className="px-4 py-3">To</th>
                                                 <th className="px-4 py-3">Status</th>
                                             </tr>
                                         </thead>
-                                        <tbody className="divide-y divide-white/10">
+                                        <tbody className="divide-y divide-slate-100">
                                             {historySegments.map((segment, index) => (
-                                                <tr className="transition hover:bg-white/5" key={`${segment.startMinutes}-${segment.status}-${index}`}>
-                                                    <td className="px-4 py-3 text-sm font-bold tabular-nums text-white/80">
+                                                <tr className="transition hover:bg-slate-100" key={`${segment.startMinutes}-${segment.status}-${index}`}>
+                                                    <td className="px-4 py-3 text-sm font-bold tabular-nums text-slate-600">
                                                         {formatMinutes(segment.startMinutes)}
                                                     </td>
-                                                    <td className="px-4 py-3 text-sm font-bold tabular-nums text-white/80">
+                                                    <td className="px-4 py-3 text-sm font-bold tabular-nums text-slate-600">
                                                         {formatMinutes(segment.endMinutes)}
                                                     </td>
                                                     <td className="px-4 py-3">
                                                         <span
                                                             className={joinClasses(
                                                                 "inline-flex rounded-full px-2.5 py-1.5 text-[11px] font-extrabold uppercase tracking-[0.05em]",
-                                                                segment.status === "available" && "bg-[#3ee7c2]/15 text-[#5fe3b8]",
-                                                                segment.status === "booked" && "bg-[#2f9db0]/15 text-[#5fd3dc]",
-                                                                segment.status === "unavailable" && "bg-[#f0576a]/15 text-[#f29aa4]",
+                                                                segment.status === "available" && "bg-itx-success/12 text-itx-success",
+                                                                segment.status === "booked" && "bg-itx-info/12 text-itx-info",
+                                                                segment.status === "unavailable" && "bg-itx-danger/12 text-itx-danger",
                                                             )}
                                                         >
                                                             {segment.status}
@@ -636,14 +633,14 @@ export function SystemsView() {
                 footer={
                     <>
                         <button
-                            className="min-h-12 rounded-2xl border border-white/20 px-5 text-sm font-bold text-white transition hover:bg-white/10"
+                            className="min-h-12 rounded-2xl border border-itx-border px-5 text-sm font-bold text-itx-ink transition hover:bg-slate-100"
                             onClick={() => setStatusDialogOpen(false)}
                             type="button"
                         >
                             Cancel
                         </button>
                         <button
-                            className="min-h-12 rounded-2xl bg-[#f0576a] px-5 text-sm font-bold text-white transition hover:bg-[#d84459] disabled:cursor-not-allowed disabled:bg-[#f0576a]/30"
+                            className="min-h-12 rounded-2xl bg-itx-danger px-5 text-sm font-bold text-white transition hover:bg-[#c94f63] disabled:cursor-not-allowed disabled:bg-itx-danger/30"
                             disabled={selectedHasBookings}
                             onClick={makeUnavailable}
                             type="button"
@@ -657,13 +654,13 @@ export function SystemsView() {
                 title={`System ${String(selected.id).padStart(2, "0")} availability`}
             >
                 {selectedHasBookings ? (
-                    <div className="rounded-2xl border border-[#f0b65e]/30 bg-[#f0b65e]/10 p-4">
-                        <p className="text-sm font-bold text-[#f0b65e]">Cancel booked slots first</p>
-                        <p className="mt-1 text-sm leading-6 text-white/70">
+                    <div className="rounded-2xl border border-itx-warning/30 bg-itx-warning/10 p-4">
+                        <p className="text-sm font-bold text-[#8a5a13]">Cancel booked slots first</p>
+                        <p className="mt-1 text-sm leading-6 text-slate-600">
                             Cancel this system's active or upcoming bookings before making it unavailable until changed.
                         </p>
                         <Link
-                            className="mt-3 inline-flex rounded-xl bg-[#3ee7c2] px-4 py-2.5 text-xs font-bold text-[#082330]"
+                            className="mt-3 inline-flex rounded-xl bg-itx-success px-4 py-2.5 text-xs font-bold text-white"
                             onClick={() => setStatusDialogOpen(false)}
                             to="/admin/bookings"
                         >
@@ -671,14 +668,14 @@ export function SystemsView() {
                         </Link>
                     </div>
                 ) : (
-                    <div className="rounded-2xl border border-[#f0576a]/30 bg-[#f0576a]/10 p-4">
-                        <p className="text-sm font-bold text-[#f29aa4]">Unavailable until manually restored</p>
-                        <p className="mt-1 text-sm leading-6 text-white/70">
+                    <div className="rounded-2xl border border-itx-danger/30 bg-itx-danger/10 p-4">
+                        <p className="text-sm font-bold text-itx-danger">Unavailable until manually restored</p>
+                        <p className="mt-1 text-sm leading-6 text-slate-600">
                             Students will see this system in red and cannot book it until an administrator restores availability.
                         </p>
                     </div>
                 )}
-                <p className="mt-4 text-sm leading-6 text-white/60">
+                <p className="mt-4 text-sm leading-6 text-slate-500">
                     For a specific temporary period, open the system’s day history and select an available timestamp.
                 </p>
             </AppDialog>

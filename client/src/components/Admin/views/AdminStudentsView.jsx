@@ -38,7 +38,7 @@ function resetStudentPassword(studentId) {
 }
 
 const formField =
-    "h-12 w-full rounded-xl border border-white/15 bg-[#0f2f38]/60 px-3.5 text-sm font-semibold text-white outline-none transition focus:border-[#2f9db0] focus:ring-4 focus:ring-[#2f9db0]/10";
+    "h-12 w-full rounded-xl border border-itx-border bg-white px-3.5 text-sm font-semibold text-itx-ink outline-none transition focus:border-[#128a93] focus:ring-4 focus:ring-[#128a93]/10";
 
 function TermRangePicker({ end, onChange, start }) {
     const [open, setOpen] = useState(false);
@@ -90,14 +90,14 @@ function TermRangePicker({ end, onChange, start }) {
                     { field: "end", label: "Ends", value: end },
                 ].map((item, index) => (
                     <div className="contents" key={item.field}>
-                        {index === 1 && <span className="hidden text-xs font-black uppercase tracking-[0.1em] text-white/40 sm:block">to</span>}
+                        {index === 1 && <span className="hidden text-xs font-black uppercase tracking-[0.1em] text-slate-400 sm:block">to</span>}
                         <button
                             aria-expanded={open && activeField === item.field}
                             className={joinClasses(
                                 "flex min-h-16 items-center gap-3 rounded-2xl border px-3.5 text-left transition",
                                 open && activeField === item.field
-                                    ? "border-[#2f9db0] bg-[#0f2f38]/60 ring-4 ring-[#2f9db0]/10"
-                                    : "border-white/15 bg-[#0f2f38]/60 hover:border-[#2f9db0]/50",
+                                    ? "border-[#128a93] bg-white ring-4 ring-[#128a93]/10"
+                                    : "border-itx-border bg-white hover:border-[#128a93]/50",
                             )}
                             onClick={() => openCalendar(item.field)}
                             type="button"
@@ -105,41 +105,41 @@ function TermRangePicker({ end, onChange, start }) {
                             <span
                                 className={joinClasses(
                                     "flex size-10 shrink-0 items-center justify-center rounded-xl",
-                                    item.value ? "bg-[#2f9db0] text-[#082330]" : "bg-white/10 text-[#2f9db0]",
+                                    item.value ? "bg-[#128a93] text-white" : "bg-slate-100 text-[#128a93]",
                                 )}
                             >
                                 <CalendarDays className="size-4.5" />
                             </span>
                             <span className="min-w-0 flex-1">
-                                <span className="block text-xs font-bold uppercase tracking-[0.08em] text-white/50">{item.label}</span>
-                                <span className={joinClasses("mt-1 block text-sm font-extrabold", item.value ? "text-white" : "text-white/40")}>
+                                <span className="block text-xs font-bold uppercase tracking-[0.08em] text-slate-500">{item.label}</span>
+                                <span className={joinClasses("mt-1 block text-sm font-extrabold", item.value ? "text-itx-ink" : "text-slate-400")}>
                                     {monthLabel(item.value)}
                                 </span>
                             </span>
-                            <ChevronRight className={joinClasses("size-4 text-white/50 transition", open && activeField === item.field && "rotate-90")} />
+                            <ChevronRight className={joinClasses("size-4 text-slate-500 transition", open && activeField === item.field && "rotate-90")} />
                         </button>
                     </div>
                 ))}
             </div>
             {open && (
-                <div className="ui-fade-in mt-3 overflow-hidden rounded-3xl border border-white/12 bg-[#0f2f38] shadow-[0_20px_45px_-28px_rgba(2,10,14,0.7)]">
+                <div className="ui-fade-in mt-3 overflow-hidden rounded-3xl border border-itx-border bg-white shadow-[0_20px_45px_-28px_rgba(15,23,42,0.2)]">
                     <div className="p-3">
-                        <div className="flex items-center justify-between rounded-2xl bg-white/5 p-1.5">
+                        <div className="flex items-center justify-between rounded-2xl bg-slate-50 p-1.5">
                             <button
                                 aria-label="Previous year"
-                                className="flex size-9 items-center justify-center rounded-xl text-white/70 hover:bg-white/10"
+                                className="flex size-9 items-center justify-center rounded-xl text-slate-600 hover:bg-slate-100"
                                 onClick={() => setYear((current) => current - 1)}
                                 type="button"
                             >
                                 <ChevronRight className="size-4 rotate-180" />
                             </button>
                             <div className="text-center">
-                                <p className="text-xs font-bold uppercase tracking-[0.08em] text-white/50">Choose {activeField}</p>
-                                <p className="mt-0.5 text-sm font-black text-white">{year}</p>
+                                <p className="text-xs font-bold uppercase tracking-[0.08em] text-slate-500">Choose {activeField}</p>
+                                <p className="mt-0.5 text-sm font-black text-itx-ink">{year}</p>
                             </div>
                             <button
                                 aria-label="Next year"
-                                className="flex size-9 items-center justify-center rounded-xl text-white/70 hover:bg-white/10"
+                                className="flex size-9 items-center justify-center rounded-xl text-slate-600 hover:bg-slate-100"
                                 onClick={() => setYear((current) => current + 1)}
                                 type="button"
                             >
@@ -152,8 +152,8 @@ function TermRangePicker({ end, onChange, start }) {
                                     className={joinClasses(
                                         "rounded-xl px-3 py-2 text-xs font-extrabold transition",
                                         year === option
-                                            ? "bg-[#2f9db0] text-[#082330]"
-                                            : "border border-white/15 text-white/70 hover:border-[#2f9db0]/40",
+                                            ? "bg-[#128a93] text-white"
+                                            : "border border-itx-border text-slate-600 hover:border-[#128a93]/40",
                                     )}
                                     key={option}
                                     onClick={() => setYear(option)}
@@ -170,12 +170,12 @@ function TermRangePicker({ end, onChange, start }) {
                                 const endSelected = end === monthValue;
                                 const inRange = Boolean(start && end && monthValue > start && monthValue < end);
                                 const disabled = activeField === "end" && (!start || monthValue <= start || monthValue > shiftMonth(start, 8));
-                                let monthStyle = "text-white/70 hover:bg-[#2f9db0]/10 hover:text-[#5fd3dc]";
+                                let monthStyle = "text-slate-600 hover:bg-[#128a93]/10 hover:text-[#0d6169]";
 
-                                if (disabled) monthStyle = "cursor-not-allowed bg-white/5 text-white/25";
-                                if (inRange) monthStyle = "bg-[#3ee7c2]/15 text-[#5fe3b8]";
-                                if (endSelected) monthStyle = "bg-[#2f9db0] text-[#082330] shadow-md";
-                                if (startSelected) monthStyle = "bg-[#3ee7c2] text-[#082330] shadow-md";
+                                if (disabled) monthStyle = "cursor-not-allowed bg-slate-50 text-slate-300";
+                                if (inRange) monthStyle = "bg-itx-success/12 text-itx-success";
+                                if (endSelected) monthStyle = "bg-[#128a93] text-white shadow-md";
+                                if (startSelected) monthStyle = "bg-itx-success text-white shadow-md";
 
                                 return (
                                     <button
@@ -291,11 +291,11 @@ function StudentFormDialog({ courses, onAddStudent, onClose, open }) {
 
     const footer = (
         <>
-            <button className="h-12 rounded-2xl border border-white/20 px-5 text-sm font-bold text-white transition hover:bg-white/10" onClick={onClose} type="button">
+            <button className="h-12 rounded-2xl border border-itx-border px-5 text-sm font-bold text-itx-ink transition hover:bg-slate-100" onClick={onClose} type="button">
                 Cancel
             </button>
             <button
-                className="h-12 rounded-2xl bg-[#3ee7c2] px-5 text-sm font-bold text-[#082330] shadow-lg shadow-[#3ee7c2]/20 transition hover:bg-[#6ee2cb] disabled:cursor-not-allowed disabled:opacity-60"
+                className="h-12 rounded-2xl bg-[#128a93] px-5 text-sm font-bold text-white shadow-lg shadow-[#128a93]/20 transition hover:bg-[#0d6169] disabled:cursor-not-allowed disabled:opacity-60"
                 disabled={saving}
                 form="add-student-form"
                 type="submit"
@@ -315,15 +315,15 @@ function StudentFormDialog({ courses, onAddStudent, onClose, open }) {
             title="Add a student"
         >
             <form className="grid gap-4 sm:grid-cols-2" id="add-student-form" onSubmit={submit}>
-                <label className="text-sm font-bold text-white/80">
+                <label className="text-sm font-bold text-slate-600">
                     First name
                     <input className={`${formField} mt-2`} name="firstName" onChange={changeField} required value={form.firstName} />
                 </label>
-                <label className="text-sm font-bold text-white/80">
+                <label className="text-sm font-bold text-slate-600">
                     Last name
                     <input className={`${formField} mt-2`} name="lastName" onChange={changeField} required value={form.lastName} />
                 </label>
-                <label className="text-sm font-bold text-white/80 sm:col-span-2">
+                <label className="text-sm font-bold text-slate-600 sm:col-span-2">
                     Course
                     <select className={`${formField} mt-2`} name="program" onChange={changeField} required value={form.program}>
                         <option value="">Select a course</option>
@@ -334,14 +334,14 @@ function StudentFormDialog({ courses, onAddStudent, onClose, open }) {
                         ))}
                     </select>
                 </label>
-                <div className="rounded-3xl border border-white/12 bg-white/5 p-4 sm:col-span-2">
+                <div className="rounded-3xl border border-itx-border bg-slate-50 p-4 sm:col-span-2">
                     <div className="mb-4 flex items-start gap-3">
-                        <span className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-[#2f9db0] text-[#082330]">
+                        <span className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-[#128a93] text-white">
                             <CalendarDays className="size-4.5" />
                         </span>
                         <div>
-                            <p className="text-sm font-extrabold text-white">Program term</p>
-                            <p className="mt-1 text-xs leading-5 text-white/60">Select start and end months. Programs can run for 2 to 9 months.</p>
+                            <p className="text-sm font-extrabold text-itx-ink">Program term</p>
+                            <p className="mt-1 text-xs leading-5 text-slate-500">Select start and end months. Programs can run for 2 to 9 months.</p>
                         </div>
                     </div>
                     <TermRangePicker
@@ -355,7 +355,7 @@ function StudentFormDialog({ courses, onAddStudent, onClose, open }) {
                     <div
                         className={joinClasses(
                             "mt-4 flex flex-col gap-1 rounded-2xl px-4 py-3 sm:flex-row sm:items-center sm:justify-between",
-                            duration ? "bg-[#3ee7c2]/15 text-[#5fe3b8]" : "bg-white/5 text-white/50",
+                            duration ? "bg-itx-success/12 text-itx-success" : "bg-white text-slate-500",
                         )}
                     >
                         <span className="text-xs font-bold uppercase tracking-[0.08em]">Term duration</span>
@@ -364,21 +364,21 @@ function StudentFormDialog({ courses, onAddStudent, onClose, open }) {
                         </span>
                     </div>
                 </div>
-                <label className="text-sm font-bold text-white/80 sm:col-span-2">
+                <label className="text-sm font-bold text-slate-600 sm:col-span-2">
                     Email
                     <input className={`${formField} mt-2`} name="email" onChange={changeField} required type="email" value={form.email} />
                 </label>
-                <label className="text-sm font-bold text-white/80 sm:col-span-2">
-                    Phone number <span className="font-medium text-white/45">(optional)</span>
+                <label className="text-sm font-bold text-slate-600 sm:col-span-2">
+                    Phone number <span className="font-medium text-slate-400">(optional)</span>
                     <input className={`${formField} mt-2`} name="phone" onChange={changeField} type="tel" value={form.phone} />
                 </label>
                 {formComplete && (
-                    <div className="rounded-2xl border border-[#3ee7c2]/25 bg-[#3ee7c2]/10 px-4 py-3 text-center sm:col-span-2">
-                        <p className="text-lg font-black tracking-[0.03em] text-[#5fe3b8]">{idLoading ? "Checking..." : studentId}</p>
+                    <div className="rounded-2xl border border-itx-success/25 bg-itx-success/10 px-4 py-3 text-center sm:col-span-2">
+                        <p className="text-lg font-black tracking-[0.03em] text-itx-success">{idLoading ? "Checking..." : studentId}</p>
                     </div>
                 )}
                 {message && (
-                    <p className="text-sm font-semibold text-[#f29aa4] sm:col-span-2" role="alert">
+                    <p className="text-sm font-semibold text-itx-danger sm:col-span-2" role="alert">
                         {message}
                     </p>
                 )}
@@ -426,14 +426,14 @@ export function CoursesView() {
     const footer = (
         <>
             <button
-                className="h-12 rounded-2xl border border-white/20 px-5 text-sm font-bold text-white transition hover:bg-white/10"
+                className="h-12 rounded-2xl border border-itx-border px-5 text-sm font-bold text-itx-ink transition hover:bg-slate-100"
                 onClick={() => setDialogOpen(false)}
                 type="button"
             >
                 Cancel
             </button>
             <button
-                className="h-12 rounded-2xl bg-[#3ee7c2] px-5 text-sm font-bold text-[#082330] shadow-lg shadow-[#3ee7c2]/20 transition hover:bg-[#6ee2cb] disabled:cursor-not-allowed disabled:opacity-60"
+                className="h-12 rounded-2xl bg-[#128a93] px-5 text-sm font-bold text-white shadow-lg shadow-[#128a93]/20 transition hover:bg-[#0d6169] disabled:cursor-not-allowed disabled:opacity-60"
                 disabled={saving}
                 form="add-course-form"
                 type="submit"
@@ -445,19 +445,17 @@ export function CoursesView() {
 
     return (
         <div className="mx-auto max-w-400 space-y-5">
-            <AdminReveal className="premium-hero group relative overflow-hidden rounded-4xl border border-white/7 p-6 text-white shadow-[0_30px_70px_-40px_rgba(4,27,39,0.85)] md:p-7">
-                <span aria-hidden="true" className="absolute -right-16 -top-20 size-64 rounded-full border border-[#67d2d5]/12" />
-                <span aria-hidden="true" className="absolute -bottom-24 right-1/4 size-48 rounded-full bg-[#6376b8]/18 blur-3xl" />
+            <AdminReveal className="premium-hero group relative overflow-hidden rounded-4xl border border-itx-border p-6 text-itx-ink shadow-[0_30px_70px_-40px_rgba(15,23,42,0.14)] md:p-7">
                 <div className="relative flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
                     <div>
-                        <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#67d2d5]">Programs offered</p>
-                        <h2 className="mt-3 text-2xl font-semibold tracking-[-0.04em] md:text-3xl">Keep course information organised.</h2>
-                        <p className="mt-2 max-w-xl text-sm leading-6 text-white/70">
+                        <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#0d6169]">Programs offered</p>
+                        <h2 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-itx-ink md:text-3xl">Keep course information organised.</h2>
+                        <p className="mt-2 max-w-xl text-sm leading-6 text-slate-600">
                             Course abbreviations are used automatically when new student IDs are created.
                         </p>
                     </div>
                     <AdminAction
-                        className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-[linear-gradient(110deg,#f7c574,#eaaa4d)] px-5 text-sm font-bold text-[#17303c] shadow-[0_15px_30px_-18px_rgba(240,182,94,0.85)] transition hover:shadow-[0_18px_34px_-18px_rgba(240,182,94,1)]"
+                        className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-[linear-gradient(110deg,#f7c574,#eaaa4d)] px-5 text-sm font-bold text-[#5a3a10] shadow-[0_15px_30px_-18px_rgba(227,172,92,0.55)] transition hover:shadow-[0_18px_34px_-18px_rgba(227,172,92,0.75)]"
                         onClick={() => setDialogOpen(true)}
                         type="button"
                     >
@@ -466,17 +464,17 @@ export function CoursesView() {
                 </div>
             </AdminReveal>
             {loading && (
-                <AdminReveal className={joinClasses(surface, "p-8 text-center text-sm font-semibold text-white/60")}>
+                <AdminReveal className={joinClasses(surface, "p-8 text-center text-sm font-semibold text-slate-500")}>
                     <span className="inline-flex items-center gap-3">
-                        <span className="size-2 rounded-full bg-[#2f9db0]" />
+                        <span className="size-2 rounded-full bg-[#128a93]" />
                         Loading courses...
                     </span>
                 </AdminReveal>
             )}
             {!loading && error && (
                 <AdminReveal className={joinClasses(surface, "p-8 text-center")}>
-                    <p className="text-sm font-semibold text-[#f29aa4]">{error}</p>
-                    <button className="mt-4 rounded-xl bg-[#3ee7c2] px-4 py-2.5 text-sm font-bold text-[#082330]" onClick={onRetry} type="button">
+                    <p className="text-sm font-semibold text-itx-danger">{error}</p>
+                    <button className="mt-4 rounded-xl bg-[#128a93] px-4 py-2.5 text-sm font-bold text-white" onClick={onRetry} type="button">
                         Try again
                     </button>
                 </AdminReveal>
@@ -486,27 +484,26 @@ export function CoursesView() {
                 <AdminReveal className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                     {courses.map((course, index) => {
                         const studentCount = students.filter((student) => student.program === course.name).length;
-                        const colors = ["bg-[#2f9db0]", "bg-[#6376b8]", "bg-[#d89b3b]", "bg-[#3ee7c2]"];
+                        const colors = ["bg-[#128a93]", "bg-[#6376b8]", "bg-[#d89b3b]", "bg-[#17a870]"];
                         return (
                             <article
-                                className={joinClasses(surface, "group relative overflow-hidden p-5 text-white transition-colors duration-150 hover:border-[#3ee7c2]/30")}
+                                className={joinClasses(surface, "group relative overflow-hidden p-5 text-itx-ink transition-colors duration-150 hover:border-[#128a93]/25")}
                                 key={course.abbreviation}
                             >
                                 <span className={`absolute inset-x-0 top-0 h-1.5 ${colors[index % colors.length]}`} />
-                                <span aria-hidden="true" className="absolute -right-10 -top-10 size-28 rounded-full bg-[#2f9db0]/8 blur-xl" />
                                 <div className="relative flex items-start justify-between gap-4">
                                     <span
-                                        className={`flex size-13 items-center justify-center rounded-2xl text-sm font-black text-[#082330] shadow-[0_12px_24px_-16px_rgba(10,45,55,0.8)] ${colors[index % colors.length]}`}
+                                        className={`flex size-13 items-center justify-center rounded-2xl text-sm font-black text-white shadow-[0_12px_24px_-16px_rgba(15,23,42,0.35)] ${colors[index % colors.length]}`}
                                     >
                                         {course.abbreviation}
                                     </span>
-                                    <span className="rounded-full border border-white/12 bg-white/5 px-3 py-1.5 text-xs font-bold text-white/70 shadow-sm">
+                                    <span className="rounded-full border border-itx-border bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-600 shadow-sm">
                                         {studentCount} students
                                     </span>
                                 </div>
-                                <h3 className="relative mt-5 text-lg font-bold text-white">{course.name}</h3>
-                                <p className="relative mt-1 text-sm text-white/60">
-                                    ID abbreviation: <strong className="text-[#2f9db0]">{course.abbreviation}</strong>
+                                <h3 className="relative mt-5 text-lg font-bold text-itx-ink">{course.name}</h3>
+                                <p className="relative mt-1 text-sm text-slate-500">
+                                    ID abbreviation: <strong className="text-[#128a93]">{course.abbreviation}</strong>
                                 </p>
                             </article>
                         );
@@ -521,7 +518,7 @@ export function CoursesView() {
                 title="Add a course"
             >
                 <form className="space-y-4" id="add-course-form" onSubmit={submit}>
-                    <label className="block text-sm font-bold text-white/80">
+                    <label className="block text-sm font-bold text-slate-600">
                         Course name
                         <input
                             className={`${formField} mt-2`}
@@ -534,7 +531,7 @@ export function CoursesView() {
                             value={name}
                         />
                     </label>
-                    <label className="block text-sm font-bold text-white/80">
+                    <label className="block text-sm font-bold text-slate-600">
                         Abbreviation
                         <input
                             className={`${formField} mt-2 uppercase`}
@@ -548,9 +545,9 @@ export function CoursesView() {
                             value={abbreviation}
                         />
                     </label>
-                    <p className="text-xs leading-5 text-white/60">Use 2 to 6 letters or numbers. Spaces and symbols are removed.</p>
+                    <p className="text-xs leading-5 text-slate-500">Use 2 to 6 letters or numbers. Spaces and symbols are removed.</p>
                     {message && (
-                        <p className="text-sm font-semibold text-[#f29aa4]" role="alert">
+                        <p className="text-sm font-semibold text-itx-danger" role="alert">
                             {message}
                         </p>
                     )}
@@ -596,17 +593,15 @@ export function StudentsView() {
     };
     return (
         <div className="mx-auto max-w-400 space-y-5">
-            <AdminReveal className="premium-hero group relative overflow-hidden rounded-4xl border border-white/7 p-6 text-white shadow-[0_30px_70px_-40px_rgba(4,27,39,0.85)] md:p-7">
-                <span aria-hidden="true" className="absolute -right-16 -top-20 size-64 rounded-full border border-[#67d2d5]/12" />
-                <span aria-hidden="true" className="absolute -bottom-24 right-1/4 size-48 rounded-full bg-[#6376b8]/18 blur-3xl" />
+            <AdminReveal className="premium-hero group relative overflow-hidden rounded-4xl border border-itx-border p-6 text-itx-ink shadow-[0_30px_70px_-40px_rgba(15,23,42,0.14)] md:p-7">
                 <div className="relative flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
                     <div>
-                        <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#67d2d5]">Student directory</p>
-                        <h2 className="mt-3 text-2xl font-semibold tracking-[-0.04em] md:text-3xl">Create access in one clear step.</h2>
-                        <p className="mt-2 max-w-xl text-sm leading-6 text-white/70">Select a course and term. The student ID is created automatically.</p>
+                        <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#0d6169]">Student directory</p>
+                        <h2 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-itx-ink md:text-3xl">Create access in one clear step.</h2>
+                        <p className="mt-2 max-w-xl text-sm leading-6 text-slate-600">Select a course and term. The student ID is created automatically.</p>
                     </div>
                     <AdminAction
-                        className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-[linear-gradient(110deg,#f7c574,#eaaa4d)] px-5 text-sm font-bold text-[#17303c] shadow-[0_15px_30px_-18px_rgba(240,182,94,0.85)] transition-colors duration-150 hover:bg-[#f3bd65] disabled:cursor-not-allowed disabled:opacity-50"
+                        className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-[linear-gradient(110deg,#f7c574,#eaaa4d)] px-5 text-sm font-bold text-[#5a3a10] shadow-[0_15px_30px_-18px_rgba(227,172,92,0.55)] transition-colors duration-150 hover:bg-[#f3bd65] disabled:cursor-not-allowed disabled:opacity-50"
                         disabled={courses.length === 0}
                         onClick={() => setFormOpen(true)}
                         type="button"
@@ -639,28 +634,27 @@ export function StudentsView() {
                 />
             </AdminReveal>
             <AdminReveal className={joinClasses(surface, "overflow-hidden")}>
-                <div className="relative overflow-hidden border-b border-white/10 bg-white/5 p-5 sm:p-6">
-                    <span aria-hidden="true" className="absolute -right-14 -top-16 size-40 rounded-full bg-[#2f9db0]/10 blur-2xl" />
+                <div className="relative overflow-hidden border-b border-itx-border bg-slate-50 p-5 sm:p-6">
                     <div className="relative flex flex-wrap items-end justify-between gap-3">
                         <div className="flex items-start gap-3">
-                            <span className="flex size-10 shrink-0 items-center justify-center rounded-2xl border border-white/12 bg-white/5 text-[#2f9db0] shadow-sm">
+                            <span className="flex size-10 shrink-0 items-center justify-center rounded-2xl border border-itx-border bg-white text-[#128a93] shadow-sm">
                                 <UsersRound className="size-4.5" />
                             </span>
                             <div>
-                                <h2 className="text-lg font-bold text-white">Student access</h2>
-                                <p className="mt-1 text-sm text-white/60">Course enrolment and monthly lab usage.</p>
+                                <h2 className="text-lg font-bold text-itx-ink">Student access</h2>
+                                <p className="mt-1 text-sm text-slate-500">Course enrolment and monthly lab usage.</p>
                             </div>
                         </div>
-                        <span className="rounded-full border border-white/12 bg-white/5 px-3 py-1.5 text-xs font-extrabold text-[#2f9db0] shadow-sm">
+                        <span className="rounded-full border border-itx-border bg-white px-3 py-1.5 text-xs font-extrabold text-[#128a93] shadow-sm">
                             {visible.length} shown
                         </span>
                     </div>
                     <div className="mt-4 grid gap-3 lg:grid-cols-[minmax(0,1fr)_14rem_12rem]">
                         <label className="relative">
                             <span className="sr-only">Search students</span>
-                            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/45" />
+                            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                             <input
-                                className="h-11 w-full rounded-xl border border-white/12 bg-[#0f2f38]/60 pl-10 pr-3 text-sm font-semibold text-white shadow-sm outline-none transition hover:border-white/20 focus:border-[#2f9db0] focus:ring-4 focus:ring-[#2f9db0]/10"
+                                className="h-11 w-full rounded-xl border border-itx-border bg-white pl-10 pr-3 text-sm font-semibold text-itx-ink shadow-sm outline-none transition hover:border-slate-300 focus:border-[#128a93] focus:ring-4 focus:ring-[#128a93]/10"
                                 onChange={(event) => setQuery(event.target.value)}
                                 placeholder="Search name, ID or email"
                                 value={query}
@@ -669,7 +663,7 @@ export function StudentsView() {
                         <label>
                             <span className="sr-only">Filter by program</span>
                             <select
-                                className="h-11 w-full rounded-xl border border-white/12 bg-[#0f2f38]/60 px-3 text-sm font-bold text-white/80 shadow-sm outline-none transition hover:border-white/20 focus:border-[#2f9db0] focus:ring-4 focus:ring-[#2f9db0]/10"
+                                className="h-11 w-full rounded-xl border border-itx-border bg-white px-3 text-sm font-bold text-slate-600 shadow-sm outline-none transition hover:border-slate-300 focus:border-[#128a93] focus:ring-4 focus:ring-[#128a93]/10"
                                 onChange={(event) => setProgramFilter(event.target.value)}
                                 value={programFilter}
                             >
@@ -684,7 +678,7 @@ export function StudentsView() {
                         <label>
                             <span className="sr-only">Sort students</span>
                             <select
-                                className="h-11 w-full rounded-xl border border-white/12 bg-[#0f2f38]/60 px-3 text-sm font-bold text-white/80 shadow-sm outline-none transition hover:border-white/20 focus:border-[#2f9db0] focus:ring-4 focus:ring-[#2f9db0]/10"
+                                className="h-11 w-full rounded-xl border border-itx-border bg-white px-3 text-sm font-bold text-slate-600 shadow-sm outline-none transition hover:border-slate-300 focus:border-[#128a93] focus:ring-4 focus:ring-[#128a93]/10"
                                 onChange={(event) => setSortBy(event.target.value)}
                                 value={sortBy}
                             >
@@ -695,11 +689,11 @@ export function StudentsView() {
                         </label>
                     </div>
                 </div>
-                {loading && <div className="p-8 text-center text-sm font-semibold text-white/60">Loading students...</div>}
+                {loading && <div className="p-8 text-center text-sm font-semibold text-slate-500">Loading students...</div>}
                 {!loading && error && (
                     <div className="p-8 text-center">
-                        <p className="text-sm font-semibold text-[#f29aa4]">{error}</p>
-                        <button className="mt-4 rounded-xl bg-[#3ee7c2] px-4 py-2.5 text-sm font-bold text-[#082330]" onClick={onRetry} type="button">
+                        <p className="text-sm font-semibold text-itx-danger">{error}</p>
+                        <button className="mt-4 rounded-xl bg-[#128a93] px-4 py-2.5 text-sm font-bold text-white" onClick={onRetry} type="button">
                             Try again
                         </button>
                     </div>
@@ -710,14 +704,14 @@ export function StudentsView() {
                             const programStyle = PROGRAM_STYLES[student.program] ?? PROGRAM_STYLES.default;
                             return (
                                 <article
-                                    className={joinClasses(surface, "group relative overflow-hidden p-5 text-white transition-colors duration-150 hover:border-[#3ee7c2]/30")}
+                                    className={joinClasses(surface, "group relative overflow-hidden p-5 text-itx-ink transition-colors duration-150 hover:border-[#128a93]/25")}
                                     key={student.id}
                                 >
                                     <span className={joinClasses("absolute inset-x-0 top-0 h-1.5", programStyle.accent)} />
                                     <div className="flex items-start gap-4">
                                         <span
                                             className={joinClasses(
-                                                "flex size-13 shrink-0 items-center justify-center rounded-2xl text-sm font-black text-white shadow-[0_12px_24px_-16px_rgba(10,45,55,0.75)]",
+                                                "flex size-13 shrink-0 items-center justify-center rounded-2xl text-sm font-black text-white shadow-[0_12px_24px_-16px_rgba(15,23,42,0.3)]",
                                                 programStyle.avatar,
                                             )}
                                         >
@@ -727,12 +721,12 @@ export function StudentsView() {
                                             <div className="flex flex-wrap items-start justify-between gap-2">
                                                 <div>
                                                     <p className="text-lg font-bold tracking-[-0.02em]">{student.name}</p>
-                                                    <p className="mt-1 text-sm font-semibold text-white/50">{student.id}</p>
+                                                    <p className="mt-1 text-sm font-semibold text-slate-500">{student.id}</p>
                                                 </div>
                                                 <span
                                                     className={joinClasses(
                                                         "rounded-full px-3 py-1.5 text-xs font-extrabold uppercase",
-                                                        student.status === "Near limit" ? "bg-[#f0b65e]/15 text-[#f0b65e]" : "bg-[#3ee7c2]/15 text-[#5fe3b8]",
+                                                        student.status === "Near limit" ? "bg-itx-warning/15 text-[#8a5a13]" : "bg-itx-success/12 text-itx-success",
                                                     )}
                                                 >
                                                     {student.status}
@@ -740,16 +734,16 @@ export function StudentsView() {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="mt-5 rounded-2xl border border-white/10 bg-white/5 p-4">
+                                    <div className="mt-5 rounded-2xl border border-itx-border bg-slate-50 p-4">
                                         <span className={joinClasses("inline-flex rounded-lg px-2.5 py-1.5 text-xs font-extrabold", programStyle.badge)}>
                                             {student.program}
                                         </span>
-                                        <p className="mt-3 text-xs font-bold uppercase tracking-[0.08em] text-white/50">Term</p>
-                                        <p className="mt-1 text-sm font-bold text-white/80">{student.term}</p>
+                                        <p className="mt-3 text-xs font-bold uppercase tracking-[0.08em] text-slate-500">Term</p>
+                                        <p className="mt-1 text-sm font-bold text-slate-600">{student.term}</p>
                                     </div>
-                                    <div className="mt-4 grid gap-2 text-sm text-white/70 sm:grid-cols-2">
+                                    <div className="mt-4 grid gap-2 text-sm text-slate-600 sm:grid-cols-2">
                                         <a
-                                            className="flex min-w-0 items-center gap-2 rounded-xl bg-white/5 px-3 py-2.5 hover:text-[#2f9db0]"
+                                            className="flex min-w-0 items-center gap-2 rounded-xl bg-slate-50 px-3 py-2.5 hover:text-[#128a93]"
                                             href={`mailto:${student.email}`}
                                         >
                                             <Mail className="size-4 shrink-0" />
@@ -757,14 +751,14 @@ export function StudentsView() {
                                         </a>
                                         {student.phoneNumber ? (
                                             <a
-                                                className="flex items-center gap-2 rounded-xl bg-white/5 px-3 py-2.5 hover:text-[#2f9db0]"
+                                                className="flex items-center gap-2 rounded-xl bg-slate-50 px-3 py-2.5 hover:text-[#128a93]"
                                                 href={`tel:${student.phoneNumber}`}
                                             >
                                                 <Phone className="size-4 shrink-0" />
                                                 <span>{student.phoneNumber}</span>
                                             </a>
                                         ) : (
-                                            <div className="flex items-center gap-2 rounded-xl bg-white/5 px-3 py-2.5 text-white/45">
+                                            <div className="flex items-center gap-2 rounded-xl bg-slate-50 px-3 py-2.5 text-slate-400">
                                                 <Phone className="size-4 shrink-0" />
                                                 <span>Not provided</span>
                                             </div>
@@ -772,29 +766,29 @@ export function StudentsView() {
                                     </div>
                                     <div className="mt-5">
                                         <div className="mb-2 flex items-center justify-between gap-3 text-sm">
-                                            <span className="font-semibold text-white/70">Monthly usage</span>
+                                            <span className="font-semibold text-slate-600">Monthly usage</span>
                                             <span className="font-extrabold">
                                                 {student.monthly} / {student.monthlyLimit}
                                             </span>
                                         </div>
-                                        <div className="h-2.5 overflow-hidden rounded-full bg-white/10 shadow-inner">
+                                        <div className="h-2.5 overflow-hidden rounded-full bg-slate-100 shadow-inner">
                                             <div
                                                 className={joinClasses(
-                                                    "h-full rounded-full shadow-[0_0_12px_rgba(31,184,196,0.25)]",
-                                                    student.percent >= 85 ? "bg-[#f0b65e]" : programStyle.accent,
+                                                    "h-full rounded-full shadow-[0_0_12px_rgba(18,138,147,0.2)]",
+                                                    student.percent >= 85 ? "bg-itx-warning" : programStyle.accent,
                                                 )}
                                                 style={{ width: `${student.percent}%` }}
                                             />
                                         </div>
-                                        <p className="mt-2 text-right text-xs font-bold text-white/50">{student.percent}% used</p>
+                                        <p className="mt-2 text-right text-xs font-bold text-slate-500">{student.percent}% used</p>
                                     </div>
-                                    <div className="mt-5 flex flex-col gap-3 border-t border-white/10 pt-4 sm:flex-row sm:items-center sm:justify-between">
+                                    <div className="mt-5 flex flex-col gap-3 border-t border-itx-border pt-4 sm:flex-row sm:items-center sm:justify-between">
                                         <div>
-                                            <p className="text-sm font-bold text-white/80">Account security</p>
-                                            <p className="mt-1 text-xs text-white/50">Restore the initial password if access is lost.</p>
+                                            <p className="text-sm font-bold text-slate-600">Account security</p>
+                                            <p className="mt-1 text-xs text-slate-500">Restore the initial password if access is lost.</p>
                                         </div>
                                         <button
-                                            className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 text-xs font-bold text-white/80 transition hover:border-[#2f9db0]/50 hover:text-[#2f9db0]"
+                                            className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-itx-border bg-slate-50 px-3 text-xs font-bold text-slate-600 transition hover:border-[#128a93]/50 hover:text-[#128a93]"
                                             onClick={() => setResetStudentId(student.id)}
                                             type="button"
                                         >

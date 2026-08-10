@@ -99,7 +99,7 @@ export function BookingsView() {
         <div className="mx-auto max-w-400 space-y-5">
             <AdminReveal className="grid gap-4 md:grid-cols-3">
                 <MetricCard
-                    accent="bg-[#1aa7b6]"
+                    accent="bg-[#128a93]"
                     icon={CalendarDays}
                     label={formatBookingDate(currentTime)}
                     note={`Bookings across ${systems.length} systems`}
@@ -110,28 +110,27 @@ export function BookingsView() {
             </AdminReveal>
 
             <AdminReveal className={joinClasses(surface, "overflow-hidden")}>
-                <div className="relative overflow-hidden border-b border-white/10 bg-white/5 p-5 sm:p-6">
-                    <span aria-hidden="true" className="absolute -right-14 -top-16 size-40 rounded-full bg-[#2f9db0]/10 blur-2xl" />
+                <div className="relative overflow-hidden border-b border-itx-border bg-slate-50 p-5 sm:p-6">
                     <div className="relative flex flex-wrap items-start justify-between gap-3">
                         <div className="flex items-start gap-3">
-                            <span className="flex size-10 shrink-0 items-center justify-center rounded-2xl border border-white/12 bg-white/5 text-[#2f9db0] shadow-sm">
+                            <span className="flex size-10 shrink-0 items-center justify-center rounded-2xl border border-itx-border bg-white text-[#128a93] shadow-sm">
                                 <SlidersHorizontal className="size-4.5" />
                             </span>
                             <div>
-                                <h2 className="text-lg font-bold text-white">Bookings</h2>
-                                <p className="mt-1 text-sm text-white/60">Search, review, and manage student bookings.</p>
+                                <h2 className="text-lg font-bold text-itx-ink">Bookings</h2>
+                                <p className="mt-1 text-sm text-slate-500">Search, review, and manage student bookings.</p>
                             </div>
                         </div>
-                        <span className="rounded-full border border-white/12 bg-white/5 px-3 py-1.5 text-xs font-extrabold text-[#2f9db0] shadow-sm">
+                        <span className="rounded-full border border-itx-border bg-white px-3 py-1.5 text-xs font-extrabold text-[#128a93] shadow-sm">
                             {visible.length} results
                         </span>
                     </div>
                     <div className="mt-4 grid gap-2 sm:grid-cols-2 xl:grid-cols-[minmax(16rem,1fr)_auto_auto_auto]">
                         <label className="relative">
                             <span className="sr-only">Search bookings</span>
-                            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/45" />
+                            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                             <input
-                                className="h-11 w-full rounded-xl border border-white/12 bg-[#0f2f38]/60 pl-10 pr-3 text-sm font-semibold text-white shadow-sm outline-none transition placeholder:text-white/40 hover:border-white/20 focus:border-[#2f9db0] focus:ring-4 focus:ring-[#2f9db0]/10"
+                                className="h-11 w-full rounded-xl border border-itx-border bg-white pl-10 pr-3 text-sm font-semibold text-itx-ink shadow-sm outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-[#128a93] focus:ring-4 focus:ring-[#128a93]/10"
                                 onChange={(event) => setQuery(event.target.value)}
                                 placeholder="Booking reference, student or system"
                                 value={query}
@@ -139,7 +138,7 @@ export function BookingsView() {
                         </label>
                         <select
                             aria-label="Filter by status"
-                            className="h-11 rounded-xl border border-white/12 bg-[#0f2f38]/60 px-3 text-sm font-bold text-white/80 shadow-sm outline-none transition hover:border-white/20 focus:border-[#2f9db0] focus:ring-4 focus:ring-[#2f9db0]/10"
+                            className="h-11 rounded-xl border border-itx-border bg-white px-3 text-sm font-bold text-slate-600 shadow-sm outline-none transition hover:border-slate-300 focus:border-[#128a93] focus:ring-4 focus:ring-[#128a93]/10"
                             onChange={(event) => setStatus(event.target.value)}
                             value={status}
                         >
@@ -149,7 +148,7 @@ export function BookingsView() {
                         </select>
                         <select
                             aria-label="Filter by program"
-                            className="h-11 rounded-xl border border-white/12 bg-[#0f2f38]/60 px-3 text-sm font-bold text-white/80 shadow-sm outline-none transition hover:border-white/20 focus:border-[#2f9db0] focus:ring-4 focus:ring-[#2f9db0]/10"
+                            className="h-11 rounded-xl border border-itx-border bg-white px-3 text-sm font-bold text-slate-600 shadow-sm outline-none transition hover:border-slate-300 focus:border-[#128a93] focus:ring-4 focus:ring-[#128a93]/10"
                             onChange={(event) => setProgram(event.target.value)}
                             value={program}
                         >
@@ -160,7 +159,7 @@ export function BookingsView() {
                         </select>
                         <select
                             aria-label="Filter by time period"
-                            className="h-11 rounded-xl border border-white/12 bg-[#0f2f38]/60 px-3 text-sm font-bold text-white/80 shadow-sm outline-none transition hover:border-white/20 focus:border-[#2f9db0] focus:ring-4 focus:ring-[#2f9db0]/10"
+                            className="h-11 rounded-xl border border-itx-border bg-white px-3 text-sm font-bold text-slate-600 shadow-sm outline-none transition hover:border-slate-300 focus:border-[#128a93] focus:ring-4 focus:ring-[#128a93]/10"
                             onChange={(event) => setTimePeriod(event.target.value)}
                             value={timePeriod}
                         >
@@ -175,7 +174,7 @@ export function BookingsView() {
                 <div className="hidden overflow-x-auto lg:block">
                     <table className="min-w-[1080px] w-full border-collapse text-left">
                         <thead>
-                            <tr className="bg-white/5 text-xs font-extrabold uppercase tracking-[0.08em] text-white/60">
+                            <tr className="bg-slate-50 text-xs font-extrabold uppercase tracking-[0.08em] text-slate-500">
                                 <th className="px-6 py-4">Reference</th>
                                 <th className="px-4 py-4">Student</th>
                                 <th className="px-4 py-4">Program</th>
@@ -186,31 +185,31 @@ export function BookingsView() {
                                 <th className="px-6 py-4 text-right">Action</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-white/10">
+                        <tbody className="divide-y divide-slate-100">
                             {visible.map((booking) => (
-                                <tr className="group text-white transition-colors duration-150 hover:bg-white/5" key={booking.id}>
+                                <tr className="group text-itx-ink transition-colors duration-150 hover:bg-slate-50" key={booking.id}>
                                     <td className="whitespace-nowrap px-6 py-4">
-                                        <span className="inline-flex rounded-lg border border-[#2f9db0]/25 bg-[#2f9db0]/10 px-2.5 py-1.5 text-xs font-extrabold tracking-wide text-[#5fd3dc]">
+                                        <span className="inline-flex rounded-lg border border-[#128a93]/25 bg-[#128a93]/10 px-2.5 py-1.5 text-xs font-extrabold tracking-wide text-[#0d6169]">
                                             {booking.reference}
                                         </span>
                                     </td>
                                     <td className="px-4 py-4">
                                         <p className="text-sm font-bold">{booking.student}</p>
-                                        <p className="mt-1 text-xs text-white/50">{booking.studentId}</p>
+                                        <p className="mt-1 text-xs text-slate-500">{booking.studentId}</p>
                                     </td>
-                                    <td className="px-4 py-4 text-sm font-semibold text-white/70">{booking.program}</td>
+                                    <td className="px-4 py-4 text-sm font-semibold text-slate-600">{booking.program}</td>
                                     <td className="whitespace-nowrap px-4 py-4 text-sm font-semibold">{booking.date}</td>
                                     <td className="whitespace-nowrap px-4 py-4">
                                         <p className="text-sm font-semibold">{booking.time}</p>
-                                        <p className="mt-1 text-xs font-bold text-[#5fd3dc]">{booking.timePeriod}</p>
-                                        {booking.startedAt && <p className="mt-1 text-xs font-bold text-[#5fe3b8]">Started {formatStartedAt(booking.startedAt)}</p>}
+                                        <p className="mt-1 text-xs font-bold text-[#0d6169]">{booking.timePeriod}</p>
+                                        {booking.startedAt && <p className="mt-1 text-xs font-bold text-itx-success">Started {formatStartedAt(booking.startedAt)}</p>}
                                         {!booking.startedAt && booking.status === "Ready" && (
-                                            <p className="mt-1 text-xs font-bold text-[#5fe3b8]">Awaiting student start</p>
+                                            <p className="mt-1 text-xs font-bold text-itx-success">Awaiting student start</p>
                                         )}
-                                        {booking.startWarning && <p className="mt-1 text-xs font-bold text-[#f0b65e]">50% elapsed · Not started</p>}
+                                        {booking.startWarning && <p className="mt-1 text-xs font-bold text-[#b57318]">50% elapsed · Not started</p>}
                                     </td>
                                     <td className="px-4 py-4 text-sm font-bold">
-                                        <span className="inline-flex items-center gap-2 rounded-xl bg-white/5 px-2.5 py-1.5 text-white/80 transition group-hover:bg-[#2f9db0]/10 group-hover:text-[#5fd3dc]">
+                                        <span className="inline-flex items-center gap-2 rounded-xl bg-slate-100 px-2.5 py-1.5 text-slate-600 transition group-hover:bg-[#128a93]/10 group-hover:text-[#0d6169]">
                                             <Monitor className="size-3.5" />
                                             {booking.system}
                                         </span>
@@ -228,7 +227,7 @@ export function BookingsView() {
                                     <td className="px-6 py-4 text-right">
                                         {booking.status === "Upcoming" ? (
                                             <button
-                                                className="rounded-lg px-3 py-2 text-xs font-bold text-[#f29aa4] transition hover:bg-[#f0576a]/15"
+                                                className="rounded-lg px-3 py-2 text-xs font-bold text-itx-danger transition hover:bg-itx-danger/12"
                                                 onClick={() => setPendingCancel(booking.id)}
                                                 type="button"
                                             >
@@ -237,7 +236,7 @@ export function BookingsView() {
                                         ) : (
                                             <button
                                                 aria-label={`View details for ${booking.student}`}
-                                                className="rounded-lg p-2 text-white/50 hover:bg-white/10 hover:text-white"
+                                                className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-itx-ink"
                                                 onClick={() => setDetailsId(booking.id)}
                                                 type="button"
                                             >
@@ -251,45 +250,45 @@ export function BookingsView() {
                     </table>
                 </div>
 
-                <div className="divide-y divide-white/10 lg:hidden">
+                <div className="divide-y divide-slate-100 lg:hidden">
                     {visible.map((booking) => (
-                        <article className="p-5 text-white transition-colors duration-150 hover:bg-white/5" key={booking.id}>
+                        <article className="p-5 text-itx-ink transition-colors duration-150 hover:bg-slate-50" key={booking.id}>
                             <div className="flex items-start justify-between gap-3">
                                 <div>
-                                    <span className="inline-flex rounded-lg border border-[#2f9db0]/25 bg-[#2f9db0]/10 px-2.5 py-1.5 text-xs font-extrabold tracking-wide text-[#5fd3dc]">
+                                    <span className="inline-flex rounded-lg border border-[#128a93]/25 bg-[#128a93]/10 px-2.5 py-1.5 text-xs font-extrabold tracking-wide text-[#0d6169]">
                                         {booking.reference}
                                     </span>
                                     <p className="mt-3 text-base font-bold">{booking.student}</p>
-                                    <p className="mt-1 text-sm text-white/50">{booking.studentId}</p>
-                                    <p className="mt-1 text-sm font-bold text-[#5fd3dc]">{booking.program}</p>
+                                    <p className="mt-1 text-sm text-slate-500">{booking.studentId}</p>
+                                    <p className="mt-1 text-sm font-bold text-[#0d6169]">{booking.program}</p>
                                 </div>
                                 <span className={joinClasses("rounded-full px-2.5 py-1.5 text-xs font-extrabold uppercase", BOOKING_BADGES[booking.status])}>
                                     {booking.status}
                                 </span>
                             </div>
-                            <div className="mt-4 grid grid-cols-2 gap-3 rounded-xl bg-white/5 p-3 text-sm">
+                            <div className="mt-4 grid grid-cols-2 gap-3 rounded-xl bg-slate-50 p-3 text-sm">
                                 <div>
-                                    <p className="text-xs font-bold uppercase text-white/45">Date</p>
+                                    <p className="text-xs font-bold uppercase text-slate-400">Date</p>
                                     <p className="mt-1 font-semibold">{booking.date}</p>
                                 </div>
                                 <div>
-                                    <p className="text-xs font-bold uppercase text-white/45">Time</p>
+                                    <p className="text-xs font-bold uppercase text-slate-400">Time</p>
                                     <p className="mt-1 font-semibold">{booking.time}</p>
-                                    <p className="mt-1 text-xs font-bold text-[#5fd3dc]">{booking.timePeriod}</p>
-                                    {booking.startedAt && <p className="mt-1 text-xs font-bold text-[#5fe3b8]">Started {formatStartedAt(booking.startedAt)}</p>}
+                                    <p className="mt-1 text-xs font-bold text-[#0d6169]">{booking.timePeriod}</p>
+                                    {booking.startedAt && <p className="mt-1 text-xs font-bold text-itx-success">Started {formatStartedAt(booking.startedAt)}</p>}
                                     {!booking.startedAt && booking.status === "Ready" && (
-                                        <p className="mt-1 text-xs font-bold text-[#5fe3b8]">Awaiting student start</p>
+                                        <p className="mt-1 text-xs font-bold text-itx-success">Awaiting student start</p>
                                     )}
-                                    {booking.startWarning && <p className="mt-1 text-xs font-bold text-[#f0b65e]">50% elapsed · Not started</p>}
+                                    {booking.startWarning && <p className="mt-1 text-xs font-bold text-[#b57318]">50% elapsed · Not started</p>}
                                 </div>
                                 <div>
-                                    <p className="text-xs font-bold uppercase text-white/45">System</p>
+                                    <p className="text-xs font-bold uppercase text-slate-400">System</p>
                                     <p className="mt-1 font-semibold">{booking.system}</p>
                                 </div>
                             </div>
                             <div className="mt-3 flex gap-2">
                                 <button
-                                    className="min-h-11 rounded-xl border border-white/20 px-4 text-sm font-bold text-white transition hover:bg-white/10"
+                                    className="min-h-11 rounded-xl border border-itx-border px-4 text-sm font-bold text-itx-ink transition hover:bg-slate-100"
                                     onClick={() => setDetailsId(booking.id)}
                                     type="button"
                                 >
@@ -297,7 +296,7 @@ export function BookingsView() {
                                 </button>
                                 {booking.status === "Upcoming" && (
                                     <button
-                                        className="min-h-11 rounded-xl bg-[#f0576a]/15 px-4 text-sm font-bold text-[#f29aa4]"
+                                        className="min-h-11 rounded-xl bg-itx-danger/12 px-4 text-sm font-bold text-itx-danger"
                                         onClick={() => setPendingCancel(booking.id)}
                                         type="button"
                                     >
@@ -320,41 +319,41 @@ export function BookingsView() {
             />
             {details && (
                 <AppDialog description="Complete booking information." onClose={() => setDetailsId("")} open title="Booking details">
-                    <dl className="space-y-3 rounded-2xl bg-white/5 p-4 text-sm text-white/80">
+                    <dl className="space-y-3 rounded-2xl bg-slate-50 p-4 text-sm text-slate-600">
                         <div className="flex justify-between gap-3">
                             <dt>Reference</dt>
-                            <dd className="font-bold tracking-wide text-white">{details.reference}</dd>
+                            <dd className="font-bold tracking-wide text-itx-ink">{details.reference}</dd>
                         </div>
                         <div className="flex justify-between gap-3">
                             <dt>Student</dt>
-                            <dd className="font-bold text-white">{details.studentName}</dd>
+                            <dd className="font-bold text-itx-ink">{details.studentName}</dd>
                         </div>
                         <div className="flex justify-between gap-3">
                             <dt>Program</dt>
-                            <dd className="font-bold text-white">{detailsStudent?.program ?? "Program not assigned"}</dd>
+                            <dd className="font-bold text-itx-ink">{detailsStudent?.program ?? "Program not assigned"}</dd>
                         </div>
                         <div className="flex justify-between gap-3">
                             <dt>System</dt>
-                            <dd className="font-bold text-white">System {String(details.systemId).padStart(2, "0")}</dd>
+                            <dd className="font-bold text-itx-ink">System {String(details.systemId).padStart(2, "0")}</dd>
                         </div>
                         <div className="flex justify-between gap-3">
                             <dt>Date</dt>
-                            <dd className="font-bold text-white">{formatBookingDate(details.startsAt)}</dd>
+                            <dd className="font-bold text-itx-ink">{formatBookingDate(details.startsAt)}</dd>
                         </div>
                         <div className="flex justify-between gap-3">
                             <dt>Time</dt>
-                            <dd className="text-right font-bold text-white">{formatBookingTime(details)}</dd>
+                            <dd className="text-right font-bold text-itx-ink">{formatBookingTime(details)}</dd>
                         </div>
                         <div className="flex justify-between gap-3">
                             <dt>Status</dt>
-                            <dd className="font-bold text-white">{displayedDetails.status}</dd>
+                            <dd className="font-bold text-itx-ink">{displayedDetails.status}</dd>
                         </div>
                         <div className="flex justify-between gap-3">
                             <dt>Session started</dt>
-                            <dd className="text-right font-bold text-white">{formatStartedAt(details.startedAt)}</dd>
+                            <dd className="text-right font-bold text-itx-ink">{formatStartedAt(details.startedAt)}</dd>
                         </div>
                         {displayedDetails.startWarning && (
-                            <div className="flex justify-between gap-3 rounded-xl bg-[#f0b65e]/15 px-3 py-2 text-[#f0b65e]">
+                            <div className="flex justify-between gap-3 rounded-xl bg-itx-warning/15 px-3 py-2 text-[#8a5a13]">
                                 <dt>Start warning</dt>
                                 <dd className="text-right font-bold">At least 50% elapsed</dd>
                             </div>

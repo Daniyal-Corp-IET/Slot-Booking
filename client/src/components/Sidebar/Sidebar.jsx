@@ -8,13 +8,11 @@ import { STUDENT_NAVIGATION } from "../Portal/StudentPortal.helpers";
 const ROLE_SIDEBAR = {
     admin: {
         navigation: ADMIN_NAVIGATION,
-        tagline: "Administration",
         ariaLabel: "Admin navigation",
         showLiveBadge: true,
     },
     student: {
         navigation: STUDENT_NAVIGATION,
-        tagline: "Student workspace",
         ariaLabel: "Student navigation",
         showLiveBadge: false,
     },
@@ -53,23 +51,14 @@ export function Sidebar({ identity, onNavigate }) {
 
     return (
         <div className="flex h-full min-h-0 flex-col overflow-hidden">
-            <div className="border-b border-white/8 px-6 py-6">
-                <div className="brand-pass relative overflow-hidden rounded-2xl border border-white/8 px-4 py-3 shadow-[0_16px_35px_-24px_rgba(83,198,207,0.75)]">
-                    <span aria-hidden="true" className="absolute -right-8 -top-8 size-20 rounded-full bg-[#53c6cf]/10 blur-xl" />
-                    <img alt="ITX Learning Hub" className="h-auto w-full object-contain" src={itxLogo} />
-                </div>
-                <div className="mt-4 flex items-center justify-between">
-                    <div>
-                        <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#53c6cf]">LabSlot</p>
-                        <p className="mt-1 text-sm font-semibold text-white">{config.tagline}</p>
-                    </div>
-                    {config.showLiveBadge && (
-                        <span className="inline-flex items-center gap-1.5 rounded-full border border-[#65d4b0]/20 bg-[#65d4b0]/8 px-2.5 py-1 text-[10px] font-bold text-[#8be6c7]">
-                            <span className="size-1.5 rounded-full bg-[#65d4b0] shadow-[0_0_10px_rgba(101,212,176,0.8)]" />
-                            LIVE
-                        </span>
-                    )}
-                </div>
+            <div className="flex min-h-18 shrink-0 items-center justify-between gap-3 border-b border-itx-border px-6 xl:min-h-20">
+                <img alt="ITX Learning Hub" className="h-8 w-auto object-contain" src={itxLogo} />
+                {config.showLiveBadge && (
+                    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-itx-success/25 bg-itx-success/10 px-2.5 py-1 text-[10px] font-bold text-itx-success">
+                        <span className="size-1.5 rounded-full bg-itx-success shadow-[0_0_10px_rgba(23,168,112,0.6)]" />
+                        LIVE
+                    </span>
+                )}
             </div>
 
             <nav aria-label={config.ariaLabel} className="hidden-scrollbar flex-1 space-y-1.5 overflow-y-auto px-4 py-5">
@@ -92,18 +81,18 @@ export function Sidebar({ identity, onNavigate }) {
                 })}
             </nav>
 
-            <div className="sticky bottom-0 z-10 shrink-0 border-t border-white/8 bg-[#082a35]/95 p-4 backdrop-blur-xl">
-                <div className="mb-3 flex items-center gap-3 rounded-2xl border border-white/6 bg-white/5 p-3 shadow-inner">
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[linear-gradient(145deg,#ffd487,#eaaa4b)] text-xs font-black text-[#17303c] shadow-[0_8px_20px_-12px_rgba(244,189,104,0.9)]">
+            <div className="sticky bottom-0 z-10 shrink-0 border-t border-itx-border bg-white/95 p-4 backdrop-blur-xl">
+                <div className="mb-3 flex items-center gap-3 rounded-2xl border border-itx-border bg-slate-50 p-3 shadow-inner">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[linear-gradient(145deg,#ffd487,#eaaa4b)] text-xs font-black text-[#5a3a10] shadow-[0_8px_20px_-12px_rgba(244,189,104,0.6)]">
                         {identity.initials}
                     </span>
                     <div className="min-w-0">
-                        <p className="truncate text-sm font-bold text-white">{identity.name}</p>
-                        <p className="truncate text-[11px] text-white/65">{identity.subtitle}</p>
+                        <p className="truncate text-sm font-bold text-itx-ink">{identity.name}</p>
+                        <p className="truncate text-[11px] text-slate-500">{identity.subtitle}</p>
                     </div>
                 </div>
                 <button
-                    className="flex w-full items-center gap-3 rounded-xl border border-transparent px-3 py-2.5 text-sm font-semibold text-white/65 transition duration-300 hover:border-white/8 hover:bg-white/7 hover:text-white"
+                    className="flex w-full items-center gap-3 rounded-xl border border-transparent px-3 py-2.5 text-sm font-semibold text-slate-500 transition duration-300 hover:border-itx-border hover:bg-slate-100 hover:text-itx-ink"
                     onClick={signOut}
                     type="button"
                 >
