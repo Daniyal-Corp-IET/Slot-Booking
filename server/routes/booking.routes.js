@@ -4,10 +4,10 @@ import { getDatabase } from "../config/database.js";
 import { requireLogin } from "../middleware/auth.js";
 import { refreshBookingStatuses } from "../services/booking.service.js";
 import { lockBooking } from "../services/databaseLocks.js";
-import { getPolicy } from "../services/policy.service.js";
+import { assertSlotWithinSchedule, assertValidBookingDuration, getPolicy } from "../services/policy.service.js";
 import { notifyBookingsChanged, notifySessionEndedEarly } from "../services/socket.service.js";
 import { stop } from "../utils/httpError.js";
-import { getLabDateKey, getLabDayRange, getLabMinutes, getLabMonthRange, isLabSunday } from "../utils/time.js";
+import { getLabDateKey, getLabDayRange, getLabMinutes, getLabMonthRange } from "../utils/time.js";
 
 const router = Router();
 router.use(requireLogin);
@@ -66,6 +66,98 @@ function totalMinutes(bookings) {
     return minutes;
 }
 
+// --- Booking creation rules -------------------------------------------
+// Each function below checks one rule and throws (via `stop`) if it fails.
+// Reading them in order tells the full story of what makes a booking valid.
+// Duration and schedule rules live in policy.service.js since they're shared
+// with system holds.
+
+async function loadStudent(transaction, studentId) {
+    const student = await transaction.student.findUnique({ where: { id: studentId } });
+    if (!student) stop(404, "Student not found.");
+    return student;
+}
+
+async function assertSystemIsActive(transaction, systemId) {
+    const system = await transaction.system.findFirst({ where: { id: systemId, isActive: true } });
+    if (!system) stop(409, "System is not available.");
+}
+
+async function assertNoOutage(transaction, systemId, startsAt, endsAt) {
+    const outage = await transaction.systemOutage.findFirst({
+        where: {
+            systemId,
+            startsAt: { lt: endsAt },
+            OR: [{ endsAt: null }, { endsAt: { gt: startsAt } }],
+        },
+    });
+    if (outage) stop(409, "This system is unavailable during the selected time.");
+}
+
+// Students must hold the system (reserved by the availability screen) before
+// they can confirm a booking on it. Admins skip this and book directly.
+async function consumeBookingHold(transaction, { holdId, studentId, systemId, startsAt, endsAt }) {
+    const bookingHold = await transaction.bookingHold.findUnique({ where: { id: holdId } });
+    if (!bookingHold) stop(409, "Your system hold has expired. Please select the system again.");
+
+    const matchesRequest =
+        bookingHold.studentId === studentId &&
+        bookingHold.systemId === systemId &&
+        bookingHold.startsAt.getTime() === startsAt.getTime() &&
+        bookingHold.endsAt.getTime() === endsAt.getTime();
+    if (!matchesRequest) stop(409, "Your selected system does not match this booking.");
+
+    if (bookingHold.expiresAt.getTime() <= Date.now()) {
+        stop(409, "Your system hold has expired. Please select the system again.");
+    }
+    return bookingHold;
+}
+
+async function assertNoConflictingHold(transaction, { systemId, startsAt, endsAt, excludeHoldId }) {
+    const where = {
+        systemId,
+        expiresAt: { gt: new Date() },
+        startsAt: { lt: endsAt },
+        endsAt: { gt: startsAt },
+    };
+    if (excludeHoldId) where.id = { not: excludeHoldId };
+
+    const anotherHold = await transaction.bookingHold.findFirst({ where });
+    if (anotherHold) stop(409, "Another student is currently selecting this system.");
+}
+
+async function assertWithinDailyLimit(transaction, { studentId, startsAt, bookedMinutes, policy }) {
+    const day = getLabDayRange(startsAt);
+    const dayBookings = await transaction.booking.findMany({
+        where: { studentId, status: { not: "CANCELLED" }, startsAt: { gte: day.start, lt: day.end } },
+    });
+    if (totalMinutes(dayBookings) + bookedMinutes > policy.dailyLimitMinutes) {
+        stop(409, `This booking exceeds the student's ${policy.dailyLimitMinutes / 60}-hour daily limit.`);
+    }
+}
+
+async function assertWithinMonthlyLimit(transaction, { studentId, startsAt, bookedMinutes, student }) {
+    const month = getLabMonthRange(startsAt);
+    const monthBookings = await transaction.booking.findMany({
+        where: { studentId, status: { not: "CANCELLED" }, startsAt: { gte: month.start, lt: month.end } },
+    });
+    if (totalMinutes(monthBookings) + bookedMinutes > student.monthlyLimitMinutes) {
+        stop(409, "This booking exceeds the student's monthly usage limit.");
+    }
+}
+
+async function assertSystemNotOverlapping(transaction, systemId, startsAt, endsAt) {
+    const overlap = await transaction.booking.findFirst({
+        where: {
+            systemId,
+            status: { not: "CANCELLED" },
+            startsAt: { lt: endsAt },
+            endsAt: { gt: startsAt },
+        },
+    });
+    if (overlap) stop(409, "This system is already booked during the selected time.");
+}
+
 // List bookings for the current portal.
 router.get("/", async (request, response, next) => {
     try {
@@ -110,115 +202,37 @@ router.post("/", async (request, response, next) => {
         const booking = await database.$transaction(
             async (transaction) => {
                 await lockBooking(transaction, systemId, studentId);
-
                 const policy = await getPolicy(transaction);
-                const validDuration =
-                    bookedMinutes >= policy.minDurationMinutes &&
-                    bookedMinutes <= policy.maxDurationMinutes &&
-                    bookedMinutes % policy.bookingIncrementMinutes === 0;
 
-                if (!validDuration) stop(400, "Provide a valid booking duration.");
+                assertValidBookingDuration(policy, bookedMinutes);
 
                 const startMinutes = getLabMinutes(startsAt);
                 const endMinutes = startMinutes + bookedMinutes;
-                if (startMinutes % policy.bookingIncrementMinutes !== 0) {
-                    stop(400, `Start times must use ${policy.bookingIncrementMinutes}-minute intervals.`);
-                }
-                if (startsAt.getTime() <= Date.now()) {
-                    stop(409, "Past time slots cannot be booked.");
-                }
-                if ((policy.sundayHoliday && isLabSunday(startsAt)) || startMinutes < policy.openMinutes || endMinutes > policy.closeMinutes) {
-                    stop(409, "This slot is outside the current lab schedule.");
-                }
+                assertSlotWithinSchedule(policy, startsAt, startMinutes, endMinutes);
 
-                const student = await transaction.student.findUnique({ where: { id: studentId } });
-                if (!student) stop(404, "Student not found.");
-
-                const system = await transaction.system.findFirst({ where: { id: systemId, isActive: true } });
-                if (!system) stop(409, "System is not available.");
+                const student = await loadStudent(transaction, studentId);
+                await assertSystemIsActive(transaction, systemId);
 
                 const endsAt = new Date(startsAt.getTime() + bookedMinutes * 60_000);
-                const outage = await transaction.systemOutage.findFirst({
-                    where: {
-                        systemId,
-                        startsAt: { lt: endsAt },
-                        OR: [{ endsAt: null }, { endsAt: { gt: startsAt } }],
-                    },
-                });
-                if (outage) stop(409, "This system is unavailable during the selected time.");
+                await assertNoOutage(transaction, systemId, startsAt, endsAt);
 
                 let bookingHold = null;
                 if (request.user.role === "student") {
-                    bookingHold = await transaction.bookingHold.findUnique({
-                        where: { id: holdId },
-                    });
-
-                    if (!bookingHold) {
-                        stop(409, "Your system hold has expired. Please select the system again.");
-                    }
-
-                    const belongsToStudent = bookingHold.studentId === studentId;
-                    const sameSystem = bookingHold.systemId === systemId;
-                    const sameStart = bookingHold.startsAt.getTime() === startsAt.getTime();
-                    const sameEnd = bookingHold.endsAt.getTime() === endsAt.getTime();
-
-                    if (!belongsToStudent || !sameSystem || !sameStart || !sameEnd) {
-                        stop(409, "Your selected system does not match this booking.");
-                    }
-                    if (bookingHold.expiresAt.getTime() <= Date.now()) {
-                        stop(409, "Your system hold has expired. Please select the system again.");
-                    }
+                    bookingHold = await consumeBookingHold(transaction, { holdId, studentId, systemId, startsAt, endsAt });
                 }
+                await assertNoConflictingHold(transaction, { systemId, startsAt, endsAt, excludeHoldId: bookingHold?.id });
 
-                const holdWhere = {
-                    systemId,
-                    expiresAt: { gt: new Date() },
-                    startsAt: { lt: endsAt },
-                    endsAt: { gt: startsAt },
-                };
-                if (bookingHold) holdWhere.id = { not: bookingHold.id };
+                await assertWithinDailyLimit(transaction, { studentId, startsAt, bookedMinutes, policy });
+                await assertWithinMonthlyLimit(transaction, { studentId, startsAt, bookedMinutes, student });
 
-                const anotherHold = await transaction.bookingHold.findFirst({
-                    where: holdWhere,
-                });
-                if (anotherHold) stop(409, "Another student is currently selecting this system.");
-
-                const day = getLabDayRange(startsAt);
-                const month = getLabMonthRange(startsAt);
-                const dayBookings = await transaction.booking.findMany({
-                    where: { studentId, status: { not: "CANCELLED" }, startsAt: { gte: day.start, lt: day.end } },
-                });
-                const dailyMinutes = totalMinutes(dayBookings);
-                if (dailyMinutes + bookedMinutes > policy.dailyLimitMinutes) {
-                    stop(409, `This booking exceeds the student's ${policy.dailyLimitMinutes / 60}-hour daily limit.`);
-                }
-
-                const monthBookings = await transaction.booking.findMany({
-                    where: { studentId, status: { not: "CANCELLED" }, startsAt: { gte: month.start, lt: month.end } },
-                });
-                const monthlyMinutes = totalMinutes(monthBookings);
-                if (monthlyMinutes + bookedMinutes > student.monthlyLimitMinutes) {
-                    stop(409, "This booking exceeds the student's monthly usage limit.");
-                }
-
-                const overlap = await transaction.booking.findFirst({
-                    where: {
-                        systemId,
-                        status: { not: "CANCELLED" },
-                        startsAt: { lt: endsAt },
-                        endsAt: { gt: startsAt },
-                    },
-                });
-                if (overlap) stop(409, "This system is already booked during the selected time.");
+                await assertSystemNotOverlapping(transaction, systemId, startsAt, endsAt);
 
                 if (bookingHold) {
-                    await transaction.bookingHold.delete({
-                        where: { id: bookingHold.id },
-                    });
+                    await transaction.bookingHold.delete({ where: { id: bookingHold.id } });
                 }
 
                 const id = randomUUID();
-                const savedBooking = await transaction.booking.create({
+                return transaction.booking.create({
                     data: {
                         id,
                         reference: createReference(id),
@@ -230,8 +244,6 @@ router.post("/", async (request, response, next) => {
                     },
                     include: { student: true },
                 });
-
-                return savedBooking;
             },
             { isolationLevel: "Serializable" },
         );

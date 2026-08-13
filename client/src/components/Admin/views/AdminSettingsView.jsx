@@ -71,7 +71,7 @@ function AdminFormDialog({ onClose, onCreated, open }) {
                 Cancel
             </button>
             <button
-                className="h-12 rounded-2xl bg-[#128a93] px-5 text-sm font-bold text-white transition hover:bg-[#0d6169] disabled:cursor-not-allowed disabled:opacity-60"
+                className="h-12 rounded-xl bg-[#3096A7] px-5 text-sm font-bold text-white transition hover:bg-[#287f8e] disabled:cursor-not-allowed disabled:opacity-60"
                 disabled={saving}
                 form="add-admin-form"
                 type="submit"
@@ -177,7 +177,7 @@ export function SettingsView() {
     const [adminDialogOpen, setAdminDialogOpen] = useState(false);
     const { dismissToast: dismissAdminToast, showToast: setAdminToast, toastMessage: adminToast } = useToast();
     const fieldClass =
-        "h-11 min-w-0 w-full rounded-xl border border-itx-border bg-white px-3 text-right text-sm font-bold text-itx-ink outline-none focus:border-[#128a93] focus:ring-4 focus:ring-[#128a93]/10 sm:w-32";
+        "h-11 min-w-0 w-full rounded-xl border border-itx-border bg-white px-3 text-right text-sm font-bold text-itx-ink outline-none focus:border-[#3096A7] focus:ring-4 focus:ring-[#3096A7]/10 sm:w-32";
     const unavailableSystems = systemOutages.map((outage) => String(outage.systemId).padStart(2, "0"));
     useEffect(() => {
         // Keep the editable form in sync when another administrator changes the saved policy.
@@ -245,7 +245,7 @@ export function SettingsView() {
         <div className="mx-auto max-w-300 space-y-5">
             <AdminReveal className={cn(surface, "p-5 md:p-6 xl:p-7")}>
                 <div className="flex items-center gap-4 border-b border-itx-border pb-5">
-                    <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#128a93]/12 text-[#128a93]">
+                    <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#3096A7]/12 text-[#3096A7]">
                         <SlidersHorizontal className="h-5 w-5" />
                     </span>
                     <div>
@@ -280,7 +280,7 @@ export function SettingsView() {
                                 className={cn(
                                     "min-h-10 rounded-xl px-3 text-sm font-bold transition-colors",
                                     bookingIncrement === minutes
-                                        ? "bg-[#128a93] text-white shadow-sm"
+                                        ? "bg-[#3096A7] text-white shadow-sm"
                                         : "text-slate-600 hover:bg-slate-100 hover:text-itx-ink",
                                 )}
                                 key={minutes}
@@ -358,7 +358,7 @@ export function SettingsView() {
                 <SettingRow description="Prevents Sunday bookings and marks the lab as closed." title="Sunday holiday">
                     <button
                         aria-checked={sundayHoliday}
-                        className={cn("relative h-7 w-13 rounded-full p-1 transition", sundayHoliday ? "bg-[#128a93]" : "bg-slate-200")}
+                        className={cn("relative h-7 w-13 rounded-full p-1 transition", sundayHoliday ? "bg-[#3096A7]" : "bg-slate-200")}
                         onClick={() => setSundayHoliday((current) => !current)}
                         role="switch"
                         type="button"
@@ -370,7 +370,7 @@ export function SettingsView() {
             <AdminReveal className={cn(surface, "p-5 sm:p-6")}>
                 <div className="flex flex-col gap-4 text-itx-ink sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex items-start gap-4">
-                        <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-[#128a93]/12 text-[#128a93]">
+                        <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-[#3096A7]/12 text-[#3096A7]">
                             <ShieldCheck className="size-5" />
                         </span>
                         <div>
@@ -381,7 +381,7 @@ export function SettingsView() {
                         </div>
                     </div>
                     <button
-                        className="inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-2xl bg-[#128a93] px-5 text-sm font-bold text-white transition hover:bg-[#0d6169]"
+                        className="inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-xl bg-[#3096A7] px-5 text-sm font-bold text-white transition hover:bg-[#287f8e]"
                         onClick={() => setAdminDialogOpen(true)}
                         type="button"
                     >
@@ -403,7 +403,7 @@ export function SettingsView() {
                         </p>
                     </div>
                     <Link
-                        className="hidden rounded-xl border border-itx-border px-4 py-2.5 text-xs font-bold text-itx-ink transition hover:border-[#128a93]/40 hover:text-[#128a93] sm:block"
+                        className="hidden rounded-xl border border-itx-border px-4 py-2.5 text-xs font-bold text-itx-ink transition hover:border-[#3096A7]/40 hover:text-[#3096A7] sm:block"
                         to="/admin/systems"
                     >
                         Open systems
@@ -416,7 +416,7 @@ export function SettingsView() {
                 )}
                 {hasChanges && (
                     <button
-                        className="ui-fade-in ui-press inline-flex items-center gap-2 rounded-2xl bg-[#128a93] px-5 py-3 text-sm font-bold text-white shadow-lg shadow-[#128a93]/20 transition hover:bg-[#0d6169] disabled:cursor-wait disabled:opacity-60"
+                        className="ui-fade-in ui-press inline-flex items-center gap-2 rounded-xl bg-[#3096A7] px-5 py-3 text-sm font-bold text-white shadow-lg shadow-[#3096A7]/20 transition hover:bg-[#287f8e] disabled:cursor-wait disabled:opacity-60"
                         disabled={saving}
                         onClick={save}
                         type="button"

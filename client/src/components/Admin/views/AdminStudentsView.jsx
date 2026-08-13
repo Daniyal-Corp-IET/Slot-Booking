@@ -5,11 +5,12 @@ import { AppDialog, ConfirmDialog, EmptyState, LoadingState, Toast } from "../..
 import { useToast } from "../../../hooks/useToast";
 import { apiRequest } from "../../../utils/apiClient";
 import { cn } from "../../../utils/cn";
-import { MONTH_OPTIONS, PROGRAM_STYLES, monthLabel, shiftMonth, termDuration } from "../AdminPanel.helpers";
+import { MONTH_OPTIONS, monthLabel, shiftMonth, termDuration } from "../AdminPanel.helpers";
 import { AdminAction, AdminReveal, surface } from "../AdminPanel.view";
 import { MetricCard } from "../../ui/MetricCard";
 import { SearchField } from "../../ui/SearchField";
-import { FORM_FIELD_CLASS, SELECT_FIELD_CLASS } from "../../ui/fieldStyles";
+import { InteractiveSelect } from "../../ui/InteractiveSelect";
+import { FORM_FIELD_CLASS } from "../../ui/fieldStyles";
 
 async function getNextStudentId(courseId) {
     const data = await apiRequest(`/students/next-id?courseId=${courseId}`);
@@ -76,8 +77,8 @@ function TermRangePicker({ end, onChange, start }) {
                             className={cn(
                                 "flex min-h-16 items-center gap-3 rounded-2xl border px-3.5 text-left transition",
                                 open && activeField === item.field
-                                    ? "border-[#128a93] bg-white ring-4 ring-[#128a93]/10"
-                                    : "border-itx-border bg-white hover:border-[#128a93]/50",
+                                    ? "border-[#3096A7] bg-white ring-4 ring-[#3096A7]/10"
+                                    : "border-itx-border bg-white hover:border-[#3096A7]/50",
                             )}
                             onClick={() => openCalendar(item.field)}
                             type="button"
@@ -85,7 +86,7 @@ function TermRangePicker({ end, onChange, start }) {
                             <span
                                 className={cn(
                                     "flex size-10 shrink-0 items-center justify-center rounded-xl",
-                                    item.value ? "bg-[#128a93] text-white" : "bg-slate-100 text-[#128a93]",
+                                    item.value ? "bg-[#3096A7] text-white" : "bg-slate-100 text-[#3096A7]",
                                 )}
                             >
                                 <CalendarDays className="size-4.5" />
@@ -132,8 +133,8 @@ function TermRangePicker({ end, onChange, start }) {
                                     className={cn(
                                         "rounded-xl px-3 py-2 text-xs font-extrabold transition",
                                         year === option
-                                            ? "bg-[#128a93] text-white"
-                                            : "border border-itx-border text-slate-600 hover:border-[#128a93]/40",
+                                            ? "bg-[#3096A7] text-white"
+                                            : "border border-itx-border text-slate-600 hover:border-[#3096A7]/40",
                                     )}
                                     key={option}
                                     onClick={() => setYear(option)}
@@ -150,11 +151,11 @@ function TermRangePicker({ end, onChange, start }) {
                                 const endSelected = end === monthValue;
                                 const inRange = Boolean(start && end && monthValue > start && monthValue < end);
                                 const disabled = activeField === "end" && (!start || monthValue <= start || monthValue > shiftMonth(start, 8));
-                                let monthStyle = "text-slate-600 hover:bg-[#128a93]/10 hover:text-[#0d6169]";
+                                let monthStyle = "text-slate-600 hover:bg-[#3096A7]/10 hover:text-[#287f8e]";
 
                                 if (disabled) monthStyle = "cursor-not-allowed bg-slate-50 text-slate-300";
                                 if (inRange) monthStyle = "bg-itx-success/12 text-itx-success";
-                                if (endSelected) monthStyle = "bg-[#128a93] text-white shadow-md";
+                                if (endSelected) monthStyle = "bg-[#3096A7] text-white shadow-md";
                                 if (startSelected) monthStyle = "bg-itx-success text-white shadow-md";
 
                                 return (
@@ -275,7 +276,7 @@ function StudentFormDialog({ courses, onAddStudent, onClose, open }) {
                 Cancel
             </button>
             <button
-                className="h-12 rounded-2xl bg-[#128a93] px-5 text-sm font-bold text-white shadow-lg shadow-[#128a93]/20 transition hover:bg-[#0d6169] disabled:cursor-not-allowed disabled:opacity-60"
+                className="h-12 rounded-xl bg-[#3096A7] px-5 text-sm font-bold text-white shadow-lg shadow-[#3096A7]/20 transition hover:bg-[#287f8e] disabled:cursor-not-allowed disabled:opacity-60"
                 disabled={saving}
                 form="add-student-form"
                 type="submit"
@@ -316,7 +317,7 @@ function StudentFormDialog({ courses, onAddStudent, onClose, open }) {
                 </label>
                 <div className="rounded-3xl border border-itx-border bg-slate-50 p-4 sm:col-span-2">
                     <div className="mb-4 flex items-start gap-3">
-                        <span className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-[#128a93] text-white">
+                        <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#3096A7] text-white">
                             <CalendarDays className="size-4.5" />
                         </span>
                         <div>
@@ -413,7 +414,7 @@ export function CoursesView() {
                 Cancel
             </button>
             <button
-                className="h-12 rounded-2xl bg-[#128a93] px-5 text-sm font-bold text-white shadow-lg shadow-[#128a93]/20 transition hover:bg-[#0d6169] disabled:cursor-not-allowed disabled:opacity-60"
+                className="h-12 rounded-xl bg-[#3096A7] px-5 text-sm font-bold text-white shadow-lg shadow-[#3096A7]/20 transition hover:bg-[#287f8e] disabled:cursor-not-allowed disabled:opacity-60"
                 disabled={saving}
                 form="add-course-form"
                 type="submit"
@@ -425,29 +426,24 @@ export function CoursesView() {
 
     return (
         <div className="mx-auto max-w-400 space-y-5">
-            <AdminReveal className="premium-hero group relative overflow-hidden rounded-4xl border border-itx-border p-6 text-itx-ink shadow-[0_30px_70px_-40px_rgba(15,23,42,0.14)] md:p-7">
-                <div className="relative flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-                    <div>
-                        <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#0d6169]">Programs offered</p>
-                        <h2 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-itx-ink md:text-3xl">Keep course information organised.</h2>
-                        <p className="mt-2 max-w-xl text-sm leading-6 text-slate-600">
-                            Course abbreviations are used automatically when new student IDs are created.
-                        </p>
-                    </div>
-                    <AdminAction
-                        className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-[linear-gradient(110deg,#f7c574,#eaaa4d)] px-5 text-sm font-bold text-[#5a3a10] shadow-[0_15px_30px_-18px_rgba(227,172,92,0.55)] transition hover:shadow-[0_18px_34px_-18px_rgba(227,172,92,0.75)]"
-                        onClick={() => setDialogOpen(true)}
-                        type="button"
-                    >
-                        <Plus className="size-4" /> Add course
-                    </AdminAction>
+            <AdminReveal className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <h2 className="text-xl font-bold tracking-[-0.03em] text-itx-ink">Programs offered</h2>
+                    <p className="mt-1 text-sm text-slate-500">Abbreviations are used automatically when student IDs are created.</p>
                 </div>
+                <AdminAction
+                    className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#3096A7] px-4 text-sm font-bold text-white shadow-[0_14px_28px_-18px_rgba(48,150,167,0.7)] hover:bg-[#287f8e]"
+                    onClick={() => setDialogOpen(true)}
+                    type="button"
+                >
+                    <Plus className="size-4" /> Add course
+                </AdminAction>
             </AdminReveal>
             {loading && <LoadingState message="Loading courses..." />}
             {!loading && error && (
                 <AdminReveal className={cn(surface, "p-8 text-center")}>
                     <p className="text-sm font-semibold text-itx-danger">{error}</p>
-                    <button className="mt-4 rounded-xl bg-[#128a93] px-4 py-2.5 text-sm font-bold text-white" onClick={onRetry} type="button">
+                    <button className="mt-4 rounded-xl bg-[#3096A7] px-4 py-2.5 text-sm font-bold text-white" onClick={onRetry} type="button">
                         Try again
                     </button>
                 </AdminReveal>
@@ -455,29 +451,30 @@ export function CoursesView() {
             {!loading && !error && courses.length === 0 && <EmptyState message="No courses have been added yet." />}
             {!loading && !error && courses.length > 0 && (
                 <AdminReveal className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                    {courses.map((course, index) => {
+                    {courses.map((course) => {
                         const studentCount = students.filter((student) => student.program === course.name).length;
-                        const colors = ["bg-[#128a93]", "bg-[#6376b8]", "bg-[#d89b3b]", "bg-[#17a870]"];
                         return (
                             <article
-                                className={cn(surface, "group relative overflow-hidden p-5 text-itx-ink transition-colors duration-150 hover:border-[#128a93]/25")}
+                                className={cn(
+                                    surface,
+                                    "group relative overflow-hidden border-[#cfe1e3] bg-[linear-gradient(145deg,#ffffff_0%,#f4fafa_100%)] p-4 text-itx-ink shadow-[0_16px_34px_-28px_rgba(7,56,68,0.42)] hover:border-[#3096A7]/35",
+                                )}
                                 key={course.abbreviation}
                             >
-                                <span className={`absolute inset-x-0 top-0 h-1.5 ${colors[index % colors.length]}`} />
-                                <div className="relative flex items-start justify-between gap-4">
-                                    <span
-                                        className={`flex size-13 items-center justify-center rounded-2xl text-sm font-black text-white shadow-[0_12px_24px_-16px_rgba(15,23,42,0.35)] ${colors[index % colors.length]}`}
-                                    >
-                                        {course.abbreviation}
+                                <div className="flex items-center gap-3">
+                                    <span className="relative flex size-12 shrink-0 items-center justify-center rounded-xl bg-[#3096A7] text-xs font-black text-white shadow-[0_12px_24px_-16px_rgba(48,150,167,0.72)]">
+                                        <span className="absolute inset-1 rounded-lg border border-white/20" />
+                                        <span className="relative">{course.abbreviation}</span>
                                     </span>
-                                    <span className="rounded-full border border-itx-border bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-600 shadow-sm">
-                                        {studentCount} students
-                                    </span>
+                                    <div className="min-w-0 flex-1">
+                                        <h3 className="truncate text-base font-bold text-itx-ink">{course.name}</h3>
+                                        <p className="mt-0.5 text-xs font-semibold text-slate-400">ID prefix · {course.abbreviation}</p>
+                                    </div>
+                                    <div className="shrink-0 rounded-xl border border-[#3096A7]/15 bg-white px-3 py-2 text-right shadow-sm">
+                                        <p className="text-[9px] font-extrabold uppercase tracking-[0.1em] text-slate-400">Enrolled</p>
+                                        <p className="mt-0.5 text-sm font-black text-[#287f8e]">{studentCount}</p>
+                                    </div>
                                 </div>
-                                <h3 className="relative mt-5 text-lg font-bold text-itx-ink">{course.name}</h3>
-                                <p className="relative mt-1 text-sm text-slate-500">
-                                    ID abbreviation: <strong className="text-[#128a93]">{course.abbreviation}</strong>
-                                </p>
                             </article>
                         );
                     })}
@@ -566,23 +563,6 @@ export function StudentsView() {
     };
     return (
         <div className="mx-auto max-w-400 space-y-5">
-            <AdminReveal className="premium-hero group relative overflow-hidden rounded-4xl border border-itx-border p-6 text-itx-ink shadow-[0_30px_70px_-40px_rgba(15,23,42,0.14)] md:p-7">
-                <div className="relative flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-                    <div>
-                        <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#0d6169]">Student directory</p>
-                        <h2 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-itx-ink md:text-3xl">Create access in one clear step.</h2>
-                        <p className="mt-2 max-w-xl text-sm leading-6 text-slate-600">Select a course and term. The student ID is created automatically.</p>
-                    </div>
-                    <AdminAction
-                        className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-[linear-gradient(110deg,#f7c574,#eaaa4d)] px-5 text-sm font-bold text-[#5a3a10] shadow-[0_15px_30px_-18px_rgba(227,172,92,0.55)] transition-colors duration-150 hover:bg-[#f3bd65] disabled:cursor-not-allowed disabled:opacity-50"
-                        disabled={courses.length === 0}
-                        onClick={() => setFormOpen(true)}
-                        type="button"
-                    >
-                        <UserPlus className="size-4" /> Add student
-                    </AdminAction>
-                </div>
-            </AdminReveal>
             <AdminReveal className="grid gap-4 md:grid-cols-3">
                 <MetricCard
                     accent="bg-[#6376b8]"
@@ -606,11 +586,11 @@ export function StudentsView() {
                     value={students.filter((student) => student.status === "Near limit").length}
                 />
             </AdminReveal>
-            <AdminReveal className={cn(surface, "overflow-hidden")}>
-                <div className="relative overflow-hidden border-b border-itx-border bg-slate-50 p-5 sm:p-6">
+            <AdminReveal className={cn(surface, "relative")}>
+                <div className="relative rounded-t-[21px] border-b border-itx-border bg-slate-50 p-5 sm:p-6">
                     <div className="relative flex flex-wrap items-end justify-between gap-3">
                         <div className="flex items-start gap-3">
-                            <span className="flex size-10 shrink-0 items-center justify-center rounded-2xl border border-itx-border bg-white text-[#128a93] shadow-sm">
+                            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#3096A7]/10 text-[#3096A7]">
                                 <UsersRound className="size-4.5" />
                             </span>
                             <div>
@@ -618,9 +598,16 @@ export function StudentsView() {
                                 <p className="mt-1 text-sm text-slate-500">Course enrolment and monthly lab usage.</p>
                             </div>
                         </div>
-                        <span className="rounded-full border border-itx-border bg-white px-3 py-1.5 text-xs font-extrabold text-[#128a93] shadow-sm">
-                            {visible.length} shown
-                        </span>
+                        <div className="flex flex-wrap items-center gap-2">
+                            <AdminAction
+                                className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#3096A7] px-4 text-xs font-bold text-white shadow-[0_12px_24px_-16px_rgba(48,150,167,0.65)] hover:bg-[#287f8e] disabled:cursor-not-allowed disabled:opacity-50"
+                                disabled={courses.length === 0}
+                                onClick={() => setFormOpen(true)}
+                                type="button"
+                            >
+                                <UserPlus className="size-4" /> Add student
+                            </AdminAction>
+                        </div>
                     </div>
                     <div className="mt-4 grid gap-3 lg:grid-cols-[minmax(0,1fr)_14rem_12rem]">
                         <SearchField
@@ -629,36 +616,36 @@ export function StudentsView() {
                             placeholder="Search name, ID or email"
                             value={query}
                         />
-                        <label>
-                            <span className="sr-only">Filter by program</span>
-                            <select
-                                className={cn(SELECT_FIELD_CLASS, "w-full")}
-                                onChange={(event) => setProgramFilter(event.target.value)}
-                                value={programFilter}
-                            >
-                                <option value="all">All programs</option>
-                                {courses.map((course) => (
-                                    <option key={course.abbreviation} value={course.name}>
-                                        {course.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </label>
-                        <label>
-                            <span className="sr-only">Sort students</span>
-                            <select className={cn(SELECT_FIELD_CLASS, "w-full")} onChange={(event) => setSortBy(event.target.value)} value={sortBy}>
-                                <option value="name">Name A-Z</option>
-                                <option value="program">Program A-Z</option>
-                                <option value="recent">Recently added</option>
-                            </select>
-                        </label>
+                        <InteractiveSelect
+                            defaultValue="all"
+                            label="Filter by program"
+                            onChange={(event) => setProgramFilter(event.target.value)}
+                            value={programFilter}
+                        >
+                            <option value="all">All programs</option>
+                            {courses.map((course) => (
+                                <option key={course.abbreviation} value={course.name}>
+                                    {course.name}
+                                </option>
+                            ))}
+                        </InteractiveSelect>
+                        <InteractiveSelect
+                            defaultValue="name"
+                            label="Sort students"
+                            onChange={(event) => setSortBy(event.target.value)}
+                            value={sortBy}
+                        >
+                            <option value="name">Name A-Z</option>
+                            <option value="program">Program A-Z</option>
+                            <option value="recent">Recently added</option>
+                        </InteractiveSelect>
                     </div>
                 </div>
                 {loading && <LoadingState message="Loading students..." />}
                 {!loading && error && (
                     <div className="p-8 text-center">
                         <p className="text-sm font-semibold text-itx-danger">{error}</p>
-                        <button className="mt-4 rounded-xl bg-[#128a93] px-4 py-2.5 text-sm font-bold text-white" onClick={onRetry} type="button">
+                        <button className="mt-4 rounded-xl bg-[#3096A7] px-4 py-2.5 text-sm font-bold text-white" onClick={onRetry} type="button">
                             Try again
                         </button>
                     </div>
@@ -666,20 +653,16 @@ export function StudentsView() {
                 {!loading && !error && (
                     <div className="grid gap-5 p-4 sm:p-6 xl:grid-cols-2">
                         {visible.map((student) => {
-                            const programStyle = PROGRAM_STYLES[student.program] ?? PROGRAM_STYLES.default;
                             return (
                                 <article
-                                    className={cn(surface, "group relative overflow-hidden p-5 text-itx-ink transition-colors duration-150 hover:border-[#128a93]/25")}
+                                    className={cn(
+                                        surface,
+                                        "group relative overflow-hidden border-[#cadcdf] bg-white p-0 text-itx-ink shadow-[0_20px_42px_-32px_rgba(7,56,68,0.48)] hover:border-[#3096A7]/38 hover:shadow-[0_24px_46px_-30px_rgba(7,56,68,0.52)]",
+                                    )}
                                     key={student.id}
                                 >
-                                    <span className={cn("absolute inset-x-0 top-0 h-1.5", programStyle.accent)} />
-                                    <div className="flex items-start gap-4">
-                                        <span
-                                            className={cn(
-                                                "flex size-13 shrink-0 items-center justify-center rounded-2xl text-sm font-black text-white shadow-[0_12px_24px_-16px_rgba(15,23,42,0.3)]",
-                                                programStyle.avatar,
-                                            )}
-                                        >
+                                    <div className="flex items-start gap-3.5 border-b border-[#dce9ea] bg-[linear-gradient(135deg,#f7fbfb_0%,#eef7f7_100%)] p-4 sm:px-5">
+                                        <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-[#073844] text-sm font-black text-white shadow-[0_12px_24px_-16px_rgba(7,56,68,0.6)]">
                                             {student.initials}
                                         </span>
                                         <div className="min-w-0 flex-1">
@@ -699,16 +682,20 @@ export function StudentsView() {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="mt-5 rounded-2xl border border-itx-border bg-slate-50 p-4">
-                                        <span className={cn("inline-flex rounded-lg px-2.5 py-1.5 text-xs font-extrabold", programStyle.badge)}>
-                                            {student.program}
-                                        </span>
-                                        <p className="mt-3 text-xs font-bold uppercase tracking-[0.08em] text-slate-500">Term</p>
-                                        <p className="mt-1 text-sm font-bold text-slate-600">{student.term}</p>
+                                    <div className="p-4 sm:p-5">
+                                    <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-xl border border-itx-border bg-[#f8fafb] px-3.5 py-3">
+                                        <div className="min-w-0">
+                                            <p className="text-[10px] font-extrabold uppercase tracking-[0.08em] text-slate-400">Program</p>
+                                            <p className="mt-1 truncate text-sm font-bold text-[#287f8e]">{student.program}</p>
+                                        </div>
+                                        <div className="border-l border-itx-border pl-3 text-right">
+                                            <p className="text-[10px] font-extrabold uppercase tracking-[0.08em] text-slate-400">Term</p>
+                                            <p className="mt-1 text-sm font-bold text-slate-600">{student.term}</p>
+                                        </div>
                                     </div>
                                     <div className="mt-4 grid gap-2 text-sm text-slate-600 sm:grid-cols-2">
                                         <a
-                                            className="flex min-w-0 items-center gap-2 rounded-xl bg-slate-50 px-3 py-2.5 hover:text-[#128a93]"
+                                            className="flex min-w-0 items-center gap-2 rounded-xl border border-transparent bg-slate-50 px-3 py-2.5 hover:border-[#3096A7]/20 hover:bg-[#3096A7]/5 hover:text-[#3096A7]"
                                             href={`mailto:${student.email}`}
                                         >
                                             <Mail className="size-4 shrink-0" />
@@ -716,7 +703,7 @@ export function StudentsView() {
                                         </a>
                                         {student.phoneNumber ? (
                                             <a
-                                                className="flex items-center gap-2 rounded-xl bg-slate-50 px-3 py-2.5 hover:text-[#128a93]"
+                                                className="flex items-center gap-2 rounded-xl border border-transparent bg-slate-50 px-3 py-2.5 hover:border-[#3096A7]/20 hover:bg-[#3096A7]/5 hover:text-[#3096A7]"
                                                 href={`tel:${student.phoneNumber}`}
                                             >
                                                 <Phone className="size-4 shrink-0" />
@@ -736,29 +723,30 @@ export function StudentsView() {
                                                 {student.monthly} / {student.monthlyLimit}
                                             </span>
                                         </div>
-                                        <div className="h-2.5 overflow-hidden rounded-full bg-slate-100 shadow-inner">
+                                        <div className="h-2 overflow-hidden rounded-full bg-slate-100 shadow-inner">
                                             <div
                                                 className={cn(
-                                                    "h-full rounded-full shadow-[0_0_12px_rgba(18,138,147,0.2)]",
-                                                    student.percent >= 85 ? "bg-itx-warning" : programStyle.accent,
+                                                    "h-full rounded-full shadow-[0_0_12px_rgba(48,150,167,0.2)]",
+                                                    student.percent >= 85 ? "bg-itx-warning" : "bg-[#3096A7]",
                                                 )}
                                                 style={{ width: `${student.percent}%` }}
                                             />
                                         </div>
                                         <p className="mt-2 text-right text-xs font-bold text-slate-500">{student.percent}% used</p>
                                     </div>
-                                    <div className="mt-5 flex flex-col gap-3 border-t border-itx-border pt-4 sm:flex-row sm:items-center sm:justify-between">
+                                    <div className="mt-4 flex flex-col gap-3 border-t border-itx-border pt-4 sm:flex-row sm:items-center sm:justify-between">
                                         <div>
                                             <p className="text-sm font-bold text-slate-600">Account security</p>
                                             <p className="mt-1 text-xs text-slate-500">Restore the initial password if access is lost.</p>
                                         </div>
                                         <button
-                                            className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-itx-border bg-slate-50 px-3 text-xs font-bold text-slate-600 transition hover:border-[#128a93]/50 hover:text-[#128a93]"
+                                            className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-itx-border bg-slate-50 px-3 text-xs font-bold text-slate-600 transition hover:border-[#3096A7]/50 hover:text-[#3096A7]"
                                             onClick={() => setResetStudentId(student.id)}
                                             type="button"
                                         >
                                             <KeyRound className="size-4" /> Reset password
                                         </button>
+                                    </div>
                                     </div>
                                 </article>
                             );

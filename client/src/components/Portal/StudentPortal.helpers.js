@@ -1,28 +1,26 @@
-import { CalendarDays, CalendarSearch, History, Home } from "lucide-react";
+import { CalendarDays, History, Home } from "lucide-react";
 import { bookingWindow, isBookingBlocking, isSystemUnavailable } from "../../context/LabContext.helpers";
 
 export const STUDENT_NAVIGATION = [
     { label: "Home", path: "/portal", icon: Home, end: true },
-    { label: "Availability", path: "/portal/availability", icon: CalendarSearch },
     { label: "Book Slot", path: "/portal/book", icon: CalendarDays },
     { label: "History", path: "/portal/history", icon: History },
 ];
 
 export const STUDENT_PAGE_TITLES = {
     "/portal": { title: "Overview", description: "Your bookings and lab activity at a glance." },
-    "/portal/availability": { title: "System availability", description: "Check open lab systems across the week." },
-    "/portal/book": { title: "Book a slot", description: "Reserve a lab system for your session." },
+    "/portal/availability": { title: "System availability", description: "Review workstation availability across the week." },
+    "/portal/book": { title: "Book a slot", description: "Reserve a workstation for your lab session." },
     "/portal/history": { title: "Booking history", description: "Review your past and upcoming bookings." },
 };
 
 export const DURATION_PRESETS = [30, 40, 45, 60, 75, 90, 120, 150, 180];
 
 export const BOOKING_FLOW_STEPS = [
-    { id: "date", label: "Select date" },
-    { id: "time", label: "Select time" },
-    { id: "system", label: "Available systems" },
-    { id: "booking", label: "Booking" },
-    { id: "complete", label: "Booking successful" },
+    { id: "date", label: "Date" },
+    { id: "time", label: "Time" },
+    { id: "system", label: "Workstation" },
+    { id: "booking", label: "Confirm" },
 ];
 
 const LAB_OPEN_MINUTES = 9 * 60;

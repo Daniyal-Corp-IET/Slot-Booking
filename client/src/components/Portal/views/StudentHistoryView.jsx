@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { CalendarX2, Check, Monitor, Play, TimerReset } from "lucide-react";
+import { CalendarX2, Check, ClipboardList, Monitor, Play, TimerReset } from "lucide-react";
 import { useLab } from "../../../context/LabContext";
 import { formatBookingDate, formatBookingTime, hasPassedHalfwayWithoutStart } from "../../../context/LabContext.helpers";
 import { cn } from "../../../utils/cn";
 import { AppDialog, EmptyState } from "../../Feedback/Feedback";
 import { StatusBadge } from "../../ui/StatusBadge";
+import { StudentPageIntro } from "../StudentPageIntro";
 import { formatDuration, getMonthlyBalances, getSessionUsage } from "../StudentPortal.helpers";
 
 function formatStartedAt(startedAt) {
@@ -60,6 +61,10 @@ export function HistoryView({ student }) {
 
         const isEarlierReadySession = status === "Ready" && (!readySession || session.startsAt < readySession.startsAt);
         if (isEarlierReadySession) readySession = session;
+    }
+    let upcomingSessionCount = 0;
+    for (const session of sessions) {
+        if (["Upcoming", "Ready", "Ongoing"].includes(session.status)) upcomingSessionCount += 1;
     }
     const [statusFilter, setStatusFilter] = useState("All");
     const [cancelledSlot, setCancelledSlot] = useState("");
@@ -184,13 +189,18 @@ export function HistoryView({ student }) {
         Completed: "bg-[#edf0f1] text-[#64757a]",
     };
     return (
-        <div className="space-y-6">
-            <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
-                <p className="text-sm text-slate-500">Track your upcoming, ongoing, and completed computer lab sessions.</p>
-                <span className="w-fit rounded-full bg-slate-100 px-3 py-2 text-[10px] font-bold text-slate-500 shadow-sm">
-                    {policy.monthlyLimitHours} monthly hours
-                </span>
-            </div>
+        <div className="student-workspace-page space-y-5">
+            <StudentPageIntro
+                description="Review upcoming sessions, start an available booking, or check the outcome of completed lab time."
+                eyebrow="Session management"
+                icon={ClipboardList}
+                stats={[
+                    { label: "All sessions", value: sessions.length },
+                    { label: "Upcoming", value: upcomingSessionCount },
+                    { label: "Allowance", value: `${policy.monthlyLimitHours} hr` },
+                ]}
+                title="Your lab sessions"
+            />
 
             {cancelledSlot && (
                 <div
@@ -222,7 +232,7 @@ export function HistoryView({ student }) {
             )}
 
             {featuredSession && (
-                <section className="premium-hero relative overflow-hidden rounded-4xl p-5 text-itx-ink md:p-6 xl:p-7">
+                <section className="portal-surface relative overflow-hidden rounded-[22px] border p-5 text-itx-ink md:p-6">
                     <div className="relative grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
                         <div>
                             <div className="flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#0d6169]">
@@ -289,7 +299,7 @@ export function HistoryView({ student }) {
                                 )}
                             </div>
                         </div>
-                        <div className="rounded-3xl border border-itx-border bg-white/70 p-4 backdrop-blur-sm sm:min-w-72">
+                        <div className="rounded-xl border border-slate-200 bg-[#f7fafb] p-4 sm:min-w-72">
                             {featuredIsReady ? (
                                 <>
                                     <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-slate-500">Session window is open</p>
@@ -307,7 +317,7 @@ export function HistoryView({ student }) {
                                             { label: "Minutes", value: countdownMinutes },
                                             { label: "Seconds", value: countdownSeconds },
                                         ].map((unit) => (
-                                            <div className="rounded-2xl bg-white/70 px-2 py-3" key={unit.label}>
+                                            <div className="rounded-xl border border-slate-200/80 bg-white px-2 py-3" key={unit.label}>
                                                 <span className="block text-2xl font-bold tabular-nums tracking-[-0.04em] text-itx-ink">{String(unit.value).padStart(2, "0")}</span>
                                                 <span className="mt-1 block text-[10px] font-bold uppercase tracking-wide text-slate-500">{unit.label}</span>
                                             </div>
@@ -320,17 +330,17 @@ export function HistoryView({ student }) {
                 </section>
             )}
 
-            <section className="portal-surface overflow-hidden rounded-3xl border">
+            <section className="portal-surface overflow-hidden rounded-[22px] border">
                 <div className="flex flex-col gap-4 border-b border-itx-border p-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
                     <div>
                         <h2 className="text-lg font-bold text-itx-ink">Booking history</h2>
                         <p className="mt-1 text-sm text-slate-500">Your balance updates after each completed session.</p>
                     </div>
-                    <div className="flex flex-wrap gap-1.5 rounded-xl bg-slate-100 p-1.5">
+                    <div className="grid w-full grid-cols-5 gap-1 rounded-xl bg-slate-100 p-1.5 sm:w-auto">
                         {["All", "Upcoming", "Ready", "Ongoing", "Completed"].map((filter) => (
                             <button
                                 className={cn(
-                                    "rounded-lg px-3 py-2 text-xs font-bold transition",
+                                    "min-w-0 rounded-lg px-1 py-2 text-[10px] font-bold transition sm:px-3 sm:text-xs",
                                     statusFilter === filter ? "bg-white text-[#128a93] shadow-sm" : "text-slate-500 hover:text-itx-ink",
                                 )}
                                 key={filter}
@@ -427,7 +437,7 @@ export function HistoryView({ student }) {
                         {session.status === "Completed" && <span className="hidden text-right text-xs text-slate-300 xl:block">—</span>}
                     </article>
                 ))}
-                {remainingSessions.length === 0 && <EmptyState message={`No ${statusFilter.toLowerCase()} sessions to show.`} />}
+                {remainingSessions.length === 0 && <EmptyState message={statusFilter === "All" ? "No sessions to show." : `No ${statusFilter.toLowerCase()} sessions to show.`} />}
             </section>
 
             {pendingAction && pendingSession && (

@@ -11,7 +11,7 @@ import { AdminReveal, surface } from "../AdminPanel.view";
 import { MetricCard } from "../../ui/MetricCard";
 import { SearchField } from "../../ui/SearchField";
 import { StatusBadge } from "../../ui/StatusBadge";
-import { SELECT_FIELD_CLASS } from "../../ui/fieldStyles";
+import { InteractiveSelect } from "../../ui/InteractiveSelect";
 
 function formatStartedAt(startedAt) {
     if (!startedAt) return "Not started by student";
@@ -105,7 +105,7 @@ export function BookingsView() {
         <div className="mx-auto max-w-400 space-y-5">
             <AdminReveal className="grid gap-4 md:grid-cols-3">
                 <MetricCard
-                    accent="bg-[#128a93]"
+                    accent="bg-[#3096A7]"
                     icon={CalendarDays}
                     label={formatBookingDate(currentTime)}
                     note={`Bookings across ${systems.length} systems`}
@@ -115,11 +115,11 @@ export function BookingsView() {
                 <MetricCard accent="bg-[#e4a541]" icon={Clock3} label="Next slot" note={`${upcomingCount} bookings scheduled`} value={nextSlot} />
             </AdminReveal>
 
-            <AdminReveal className={cn(surface, "overflow-hidden")}>
-                <div className="relative overflow-hidden border-b border-itx-border bg-slate-50 p-5 sm:p-6">
+            <AdminReveal className={cn(surface, "relative")}>
+                <div className="relative rounded-t-[21px] border-b border-itx-border bg-slate-50 p-5 sm:p-6">
                     <div className="relative flex flex-wrap items-start justify-between gap-3">
                         <div className="flex items-start gap-3">
-                            <span className="flex size-10 shrink-0 items-center justify-center rounded-2xl border border-itx-border bg-white text-[#128a93] shadow-sm">
+                            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#3096A7]/10 text-[#3096A7]">
                                 <SlidersHorizontal className="size-4.5" />
                             </span>
                             <div>
@@ -127,7 +127,7 @@ export function BookingsView() {
                                 <p className="mt-1 text-sm text-slate-500">Search, review, and manage student bookings.</p>
                             </div>
                         </div>
-                        <span className="rounded-full border border-itx-border bg-white px-3 py-1.5 text-xs font-extrabold text-[#128a93] shadow-sm">
+                        <span className="rounded-full border border-itx-border bg-white px-3 py-1.5 text-xs font-extrabold text-[#3096A7] shadow-sm">
                             {visible.length} results
                         </span>
                     </div>
@@ -138,19 +138,19 @@ export function BookingsView() {
                             placeholder="Booking reference, student or system"
                             value={query}
                         />
-                        <select
-                            aria-label="Filter by status"
-                            className={SELECT_FIELD_CLASS}
+                        <InteractiveSelect
+                            className="sm:min-w-40"
+                            label="Filter by status"
                             onChange={(event) => setStatus(event.target.value)}
                             value={status}
                         >
                             {["All", "Active", "Ready", "Upcoming", "Completed", "Cancelled"].map((option) => (
                                 <option key={option}>{option}</option>
                             ))}
-                        </select>
-                        <select
-                            aria-label="Filter by program"
-                            className={SELECT_FIELD_CLASS}
+                        </InteractiveSelect>
+                        <InteractiveSelect
+                            className="sm:min-w-44"
+                            label="Filter by program"
                             onChange={(event) => setProgram(event.target.value)}
                             value={program}
                         >
@@ -158,10 +158,10 @@ export function BookingsView() {
                             {programs.map((option) => (
                                 <option key={option}>{option}</option>
                             ))}
-                        </select>
-                        <select
-                            aria-label="Filter by time period"
-                            className={SELECT_FIELD_CLASS}
+                        </InteractiveSelect>
+                        <InteractiveSelect
+                            className="sm:min-w-48"
+                            label="Filter by time period"
                             onChange={(event) => setTimePeriod(event.target.value)}
                             value={timePeriod}
                         >
@@ -169,7 +169,7 @@ export function BookingsView() {
                             {["Morning", "Afternoon", "Evening"].map((option) => (
                                 <option key={option}>{option}</option>
                             ))}
-                        </select>
+                        </InteractiveSelect>
                     </div>
                 </div>
 
@@ -191,7 +191,7 @@ export function BookingsView() {
                             {visible.map((booking) => (
                                 <tr className="group text-itx-ink transition-colors duration-150 hover:bg-slate-50" key={booking.id}>
                                     <td className="whitespace-nowrap px-6 py-4">
-                                        <span className="inline-flex rounded-lg border border-[#128a93]/25 bg-[#128a93]/10 px-2.5 py-1.5 text-xs font-extrabold tracking-wide text-[#0d6169]">
+                                        <span className="inline-flex rounded-lg border border-[#3096A7]/25 bg-[#3096A7]/10 px-2.5 py-1.5 text-xs font-extrabold tracking-wide text-[#287f8e]">
                                             {booking.reference}
                                         </span>
                                     </td>
@@ -203,7 +203,7 @@ export function BookingsView() {
                                     <td className="whitespace-nowrap px-4 py-4 text-sm font-semibold">{booking.date}</td>
                                     <td className="whitespace-nowrap px-4 py-4">
                                         <p className="text-sm font-semibold">{booking.time}</p>
-                                        <p className="mt-1 text-xs font-bold text-[#0d6169]">{booking.timePeriod}</p>
+                                        <p className="mt-1 text-xs font-bold text-[#287f8e]">{booking.timePeriod}</p>
                                         {booking.startedAt && <p className="mt-1 text-xs font-bold text-itx-success">Started {formatStartedAt(booking.startedAt)}</p>}
                                         {!booking.startedAt && booking.status === "Ready" && (
                                             <p className="mt-1 text-xs font-bold text-itx-success">Awaiting student start</p>
@@ -211,7 +211,7 @@ export function BookingsView() {
                                         {booking.startWarning && <p className="mt-1 text-xs font-bold text-[#b57318]">50% elapsed · Not started</p>}
                                     </td>
                                     <td className="px-4 py-4 text-sm font-bold">
-                                        <span className="inline-flex items-center gap-2 rounded-xl bg-slate-100 px-2.5 py-1.5 text-slate-600 transition group-hover:bg-[#128a93]/10 group-hover:text-[#0d6169]">
+                                        <span className="inline-flex items-center gap-2 rounded-xl bg-slate-100 px-2.5 py-1.5 text-slate-600 transition group-hover:bg-[#3096A7]/10 group-hover:text-[#287f8e]">
                                             <Monitor className="size-3.5" />
                                             {booking.system}
                                         </span>
@@ -250,12 +250,12 @@ export function BookingsView() {
                         <article className="p-5 text-itx-ink transition-colors duration-150 hover:bg-slate-50" key={booking.id}>
                             <div className="flex items-start justify-between gap-3">
                                 <div>
-                                    <span className="inline-flex rounded-lg border border-[#128a93]/25 bg-[#128a93]/10 px-2.5 py-1.5 text-xs font-extrabold tracking-wide text-[#0d6169]">
+                                    <span className="inline-flex rounded-lg border border-[#3096A7]/25 bg-[#3096A7]/10 px-2.5 py-1.5 text-xs font-extrabold tracking-wide text-[#287f8e]">
                                         {booking.reference}
                                     </span>
                                     <p className="mt-3 text-base font-bold">{booking.student}</p>
                                     <p className="mt-1 text-sm text-slate-500">{booking.studentId}</p>
-                                    <p className="mt-1 text-sm font-bold text-[#0d6169]">{booking.program}</p>
+                                    <p className="mt-1 text-sm font-bold text-[#287f8e]">{booking.program}</p>
                                 </div>
                                 <StatusBadge label={booking.status} toneClassName={BOOKING_BADGES[booking.status]} />
                             </div>
@@ -267,7 +267,7 @@ export function BookingsView() {
                                 <div>
                                     <p className="text-xs font-bold uppercase text-slate-400">Time</p>
                                     <p className="mt-1 font-semibold">{booking.time}</p>
-                                    <p className="mt-1 text-xs font-bold text-[#0d6169]">{booking.timePeriod}</p>
+                                    <p className="mt-1 text-xs font-bold text-[#287f8e]">{booking.timePeriod}</p>
                                     {booking.startedAt && <p className="mt-1 text-xs font-bold text-itx-success">Started {formatStartedAt(booking.startedAt)}</p>}
                                     {!booking.startedAt && booking.status === "Ready" && (
                                         <p className="mt-1 text-xs font-bold text-itx-success">Awaiting student start</p>

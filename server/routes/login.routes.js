@@ -3,6 +3,7 @@ import { Router } from "express";
 import jwt from "jsonwebtoken";
 import { env } from "../config/env.js";
 import { findAccountByLoginId, getPublicUser } from "../models/users.js";
+import { setAuthCookie } from "../utils/authCookie.js";
 
 const router = Router();
 
@@ -41,12 +42,7 @@ router.post("/login", async (request, response) => {
         { expiresIn: "3d" },
     );
 
-    response.cookie("authToken", token, {
-        httpOnly: true,
-        sameSite: "lax",
-        secure: env.NODE_ENV === "production",
-        maxAge: 3 * 24 * 60 * 60 * 1000,
-    });
+    setAuthCookie(response, token);
 
     response.json({
         message: "Login successful.",

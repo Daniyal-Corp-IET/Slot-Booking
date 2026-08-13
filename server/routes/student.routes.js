@@ -5,6 +5,7 @@ import { requireLogin, requireRole } from "../middleware/auth.js";
 import { getPolicy } from "../services/policy.service.js";
 import { notifyStudentsChanged } from "../services/socket.service.js";
 import { lockCourse } from "../services/databaseLocks.js";
+import { stop } from "../utils/httpError.js";
 import { getLabMonthRange } from "../utils/time.js";
 
 const router = Router();
@@ -181,11 +182,7 @@ router.post("/", requireLogin, requireRole("admin"), async (request, response, n
                 await lockCourse(transaction, courseId);
                 const course = await transaction.course.findUnique({ where: { id: courseId } });
 
-                if (!course) {
-                    const error = new Error("The selected course does not exist.");
-                    error.status = 404;
-                    throw error;
-                }
+                if (!course) stop(404, "The selected course does not exist.");
 
                 const studentId = await getNextStudentId(transaction, course);
                 const policy = await getPolicy(transaction);

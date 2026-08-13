@@ -5,7 +5,7 @@ import { useLogin } from "../../context/LoginContext";
 import { AppDialog, Toast } from "../Feedback/Feedback";
 import { joinClasses } from "./AdminPanel.helpers";
 
-const API_URL = import.meta.env.VITE_API_URL || "/api";
+const API_URL = `${import.meta.env.VITE_BACKEND_URL || "http://localhost:5000"}/api`;
 
 async function apiRequest(path, method, values) {
     let response;
@@ -27,7 +27,7 @@ async function apiRequest(path, method, values) {
 }
 
 const formField =
-    "h-12 w-full rounded-xl border border-itx-border bg-white px-3.5 text-sm font-semibold text-itx-ink outline-none transition focus:border-[#128a93] focus:ring-4 focus:ring-[#128a93]/10";
+    "h-12 w-full rounded-xl border border-itx-border bg-white px-3.5 text-sm font-semibold text-itx-ink outline-none transition focus:border-[#3096A7] focus:ring-4 focus:ring-[#3096A7]/10";
 
 function PasswordField({ autoComplete, id, label, onChange, value }) {
     const [visible, setVisible] = useState(false);
@@ -51,7 +51,7 @@ function PasswordField({ autoComplete, id, label, onChange, value }) {
                 <button
                     aria-label={visible ? "Hide password" : "Show password"}
                     aria-pressed={visible}
-                    className="absolute right-2 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-lg text-slate-500 transition hover:bg-[#128a93]/10 hover:text-[#128a93]"
+                    className="absolute right-2 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-lg text-slate-500 transition hover:bg-[#3096A7]/10 hover:text-[#3096A7]"
                     onClick={() => setVisible((current) => !current)}
                     type="button"
                 >
@@ -218,7 +218,7 @@ function ProfileDialog({ onClose, open }) {
                             </p>
                         )}
                         <button
-                            className="h-12 w-full rounded-2xl bg-[#128a93] px-5 text-sm font-bold text-white transition hover:bg-[#0d6169] disabled:cursor-not-allowed disabled:opacity-60"
+                            className="h-12 w-full rounded-xl bg-[#3096A7] px-5 text-sm font-bold text-white transition hover:bg-[#287f8e] disabled:cursor-not-allowed disabled:opacity-60"
                             disabled={detailsSaving}
                             type="submit"
                         >
@@ -255,7 +255,7 @@ function ProfileDialog({ onClose, open }) {
                             </p>
                         )}
                         <button
-                            className="h-12 w-full rounded-2xl bg-[#128a93] px-5 text-sm font-bold text-white transition hover:bg-[#0d6169] disabled:cursor-not-allowed disabled:opacity-60"
+                            className="h-12 w-full rounded-xl bg-[#3096A7] px-5 text-sm font-bold text-white transition hover:bg-[#287f8e] disabled:cursor-not-allowed disabled:opacity-60"
                             disabled={passwordSaving}
                             type="submit"
                         >
@@ -310,7 +310,7 @@ export function AdminAccountMenu({ align = "end", placement = "bottom", trigger 
             <button
                 aria-expanded={open}
                 aria-haspopup="menu"
-                className="ui-press flex w-full items-center gap-3 rounded-xl outline-none focus-visible:ring-4 focus-visible:ring-[#128a93]/15"
+                className="ui-press flex w-full items-center gap-3 rounded-xl outline-none focus-visible:ring-4 focus-visible:ring-[#3096A7]/15"
                 onClick={() => setOpen((current) => !current)}
                 type="button"
             >

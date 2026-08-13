@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X } from "lucide-react";
+import { CalendarDays, CalendarSearch, X } from "lucide-react";
 import { Outlet, useLocation } from "react-router-dom";
 import { useLab } from "../../context/LabContext";
 import { NotificationDialog } from "../Feedback/Feedback";
@@ -7,7 +7,13 @@ import { Navbar } from "../Navbar/Navbar";
 import { Sidebar } from "../Sidebar/Sidebar";
 import { SidebarCollapseToggle } from "../Sidebar/SidebarCollapseToggle";
 import { useSidebarCollapse } from "../Sidebar/useSidebarCollapse";
+import { SectionTabs } from "../ui/SectionTabs";
 import { STUDENT_PAGE_TITLES } from "./StudentPortal.helpers";
+
+const BOOKING_WORKSPACE_TABS = [
+    { label: "Book Slot", path: "/portal/book", icon: CalendarDays },
+    { label: "Availability", path: "/portal/availability", icon: CalendarSearch },
+];
 
 // Student route layout
 export function StudentPortalView({ onPasswordChanged, student }) {
@@ -17,6 +23,7 @@ export function StudentPortalView({ onPasswordChanged, student }) {
     const [notificationsOpen, setNotificationsOpen] = useState(false);
     const [collapsed, toggleCollapsed] = useSidebarCollapse();
     const page = STUDENT_PAGE_TITLES[location.pathname] ?? STUDENT_PAGE_TITLES["/portal"];
+    const bookingWorkspaceOpen = ["/portal/book", "/portal/availability"].includes(location.pathname);
     const identity = { name: student.name, initials: student.initials, subtitle: student.id };
 
     let upcomingBookings = 0;
@@ -58,15 +65,22 @@ export function StudentPortalView({ onPasswordChanged, student }) {
                         >
                             <X className="h-5 w-5" />
                         </button>
-                        <Sidebar identity={identity} onNavigate={closeMenu} />
+                        <Sidebar identity={identity} mobileClose onNavigate={closeMenu} />
                     </aside>
                 </div>
             )}
 
             <div className={`min-h-screen transition-[margin] duration-300 ${collapsed ? "xl:ml-20" : "xl:ml-72"}`}>
                 <Navbar identity={identity} onMenuOpen={() => setMenuOpen(true)} onNotificationsOpen={() => setNotificationsOpen(true)} page={page} />
+                {bookingWorkspaceOpen && (
+                    <div className="border-b border-slate-200/80 bg-white/65 px-4 py-2.5 backdrop-blur-xl sm:px-6 lg:px-8 xl:px-10">
+                        <div className="mx-auto flex max-w-[94rem] items-center">
+                            <SectionTabs tabs={BOOKING_WORKSPACE_TABS} />
+                        </div>
+                    </div>
+                )}
                 <main className="px-4 py-5 sm:px-6 sm:py-6 lg:px-8 xl:px-10 xl:py-7">
-                    <div className="ui-page-enter" key={location.pathname}>
+                    <div className="ui-page-enter mx-auto max-w-[94rem]" key={location.pathname}>
                         <Outlet context={{ onPasswordChanged, student }} />
                     </div>
                 </main>

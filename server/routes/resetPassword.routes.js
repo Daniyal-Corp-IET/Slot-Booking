@@ -1,8 +1,8 @@
 import bcrypt from "bcryptjs";
 import { Router } from "express";
 import { getDatabase } from "../config/database.js";
-import { env } from "../config/env.js";
 import { requireLogin, requireRole } from "../middleware/auth.js";
+import { clearAuthCookie } from "../utils/authCookie.js";
 
 const router = Router();
 
@@ -75,11 +75,7 @@ router.post("/students/:studentId/change-password", requireLogin, async (request
             },
         });
 
-        response.clearCookie("authToken", {
-            httpOnly: true,
-            sameSite: "lax",
-            secure: env.NODE_ENV === "production",
-        });
+        clearAuthCookie(response);
         response.json({ message: "Password updated. Please log in again." });
     } catch (error) {
         next(error);

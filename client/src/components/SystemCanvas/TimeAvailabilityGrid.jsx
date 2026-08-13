@@ -22,56 +22,48 @@ export function TimeAvailabilityGrid({ intervalMinutes, onSelect, options, selec
 
     return (
         <div>
-            <div className="grid grid-cols-3 gap-1.5 rounded-2xl border border-itx-border bg-slate-50 p-1.5 shadow-[0_12px_30px_-26px_rgba(15,23,42,0.15)]">
+            <div className="grid grid-cols-3 gap-1 rounded-xl border border-itx-border bg-slate-50 p-1">
                 {PERIODS.map((period) => {
                     const selected = periodId === period.id;
                     let tabStyle = "text-slate-500 hover:bg-white hover:text-itx-ink";
-                    if (selected) tabStyle = "text-white shadow-md";
+                    if (selected) tabStyle = "bg-[#3096A7] text-white shadow-sm";
 
                     return (
                         <button
                             aria-pressed={selected}
-                            className={`ui-press relative isolate min-h-13 overflow-hidden rounded-xl px-1 py-2 text-center outline-none transition-colors focus-visible:ring-4 focus-visible:ring-[#128a93]/15 sm:px-2 ${tabStyle}`}
+                            className={`ui-press min-h-10 rounded-lg px-1 py-1.5 text-center outline-none transition-colors focus-visible:ring-4 focus-visible:ring-[#3096A7]/15 sm:px-2 ${tabStyle}`}
                             key={period.id}
                             onClick={() => setPeriodId(period.id)}
                             type="button"
                         >
-                            {selected && (
-                                <span
-                                    aria-hidden="true"
-                                    className="absolute inset-0 -z-10 rounded-xl bg-gradient-to-br from-[#128a93] to-[#0d6169] shadow-inner shadow-white/10"
-                                />
-                            )}
-                            <span className="relative block break-words text-[11px] leading-tight font-bold sm:text-[13px] sm:leading-normal">{period.label}</span>
-                            <span className="relative mt-0.5 hidden text-[11px] font-medium opacity-75 sm:block">{period.detail}</span>
+                            <span className="block break-words text-[11px] font-bold leading-tight sm:text-xs">{period.label}</span>
+                            <span className="mt-0.5 hidden text-[10px] font-medium opacity-75 sm:block">{period.detail}</span>
                         </button>
                     );
                 })}
             </div>
 
-            <div className="mt-4 flex items-center justify-between gap-3">
-                <p className="flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.06em] text-slate-600">
-                    <span className="flex size-8 items-center justify-center rounded-xl bg-[#128a93]/12 text-[#128a93] shadow-inner shadow-white/40">
-                        <Clock3 className="size-4" />
-                    </span>
+            <div className="mt-3 flex items-center justify-between gap-3">
+                <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.06em] text-slate-600">
+                    <Clock3 className="size-3.5 text-[#3096A7]" />
                     Select a start time
                 </p>
-                <p className="rounded-full border border-itx-border bg-slate-50 px-2.5 py-1 text-[11px] font-semibold text-slate-500">
-                    {intervalMinutes}-minute intervals
+                <p className="text-[10px] font-semibold text-slate-400">
+                    {intervalMinutes}-min intervals
                 </p>
             </div>
 
-            <div className="ui-fade-in mt-3 grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5" key={selectedPeriod.id}>
+            <div className="ui-fade-in mt-2.5 grid max-h-44 grid-cols-2 gap-2 overflow-y-auto pr-1 sm:grid-cols-3" key={selectedPeriod.id}>
                 {visibleOptions.map((option) => {
                     const selected = selectedTimeId === option.id;
                     const startLabel = option.label.split(/\s+[–-]\s+/)[0];
                     let buttonStyle =
-                        "border-itx-border bg-slate-50 text-slate-600 hover:border-[#128a93]/50 hover:bg-[#128a93]/8 hover:shadow-[0_14px_30px_-22px_rgba(18,138,147,0.3)]";
+                        "border-itx-border bg-slate-50 text-slate-600 hover:border-[#3096A7]/50 hover:bg-[#3096A7]/8 hover:shadow-[0_14px_30px_-22px_rgba(48,150,167,0.3)]";
                     let availabilityStyle = getAvailabilityStyle(option.availableSystems);
 
                     if (selected) {
                         buttonStyle =
-                            "border-[#128a93] bg-gradient-to-br from-[#128a93] to-[#0d6169] text-white shadow-lg shadow-[#128a93]/20";
+                            "border-[#3096A7] bg-[#3096A7] text-white shadow-lg shadow-[#3096A7]/20";
                         availabilityStyle = "bg-white/20 text-white ring-1 ring-white/25";
                     }
 
@@ -79,14 +71,14 @@ export function TimeAvailabilityGrid({ intervalMinutes, onSelect, options, selec
                         <button
                             aria-label={`${option.label}, ${option.availableSystems} systems available`}
                             aria-pressed={selected}
-                            className={`ui-press group relative min-h-17 overflow-hidden rounded-2xl border px-3 py-2.5 text-left outline-none transition-[background-color,border-color,box-shadow,color] focus-visible:ring-4 focus-visible:ring-[#128a93]/15 ${buttonStyle}`}
+                            className={`ui-press group relative min-h-13 overflow-hidden rounded-xl border px-2.5 py-2 text-left outline-none transition-[background-color,border-color,box-shadow,color] focus-visible:ring-4 focus-visible:ring-[#3096A7]/15 ${buttonStyle}`}
                             key={option.id}
                             onClick={() => onSelect(option.id)}
                             type="button"
                         >
-                            <span className="relative block text-[15px] font-bold tabular-nums">{startLabel}</span>
+                            <span className="relative block text-sm font-bold tabular-nums">{startLabel}</span>
                             <span
-                                className={`relative mt-1.5 block w-fit whitespace-nowrap rounded-full px-2 py-0.5 text-[11px] font-semibold ${availabilityStyle}`}
+                                className={`relative mt-1 block w-fit whitespace-nowrap rounded-md px-1.5 py-0.5 text-[10px] font-semibold ${availabilityStyle}`}
                             >
                                 {option.availableSystems} free
                             </span>
@@ -101,7 +93,7 @@ export function TimeAvailabilityGrid({ intervalMinutes, onSelect, options, selec
             </div>
 
             {visibleOptions.length === 0 && (
-                <div className="ui-opacity-in relative mt-3 overflow-hidden rounded-2xl border border-dashed border-itx-border bg-slate-50 py-10 text-center text-xs font-medium text-slate-400">
+                <div className="ui-opacity-in relative mt-3 overflow-hidden rounded-xl border border-dashed border-itx-border bg-slate-50 py-6 text-center text-xs font-medium text-slate-400">
                     <span className="relative">No starts are available during this period.</span>
                 </div>
             )}

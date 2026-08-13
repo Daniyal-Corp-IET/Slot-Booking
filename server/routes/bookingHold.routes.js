@@ -2,10 +2,10 @@ import { Router } from "express";
 import { getDatabase } from "../config/database.js";
 import { requireLogin, requireRole } from "../middleware/auth.js";
 import { lockBooking } from "../services/databaseLocks.js";
-import { getPolicy } from "../services/policy.service.js";
+import { assertSlotWithinSchedule, assertValidBookingDuration, getPolicy } from "../services/policy.service.js";
 import { notifyHoldsChanged } from "../services/socket.service.js";
 import { stop } from "../utils/httpError.js";
-import { getLabDateKey, getLabMinutes, isLabSunday } from "../utils/time.js";
+import { getLabDateKey, getLabMinutes } from "../utils/time.js";
 
 const router = Router();
 const HOLD_MINUTES = 5;
@@ -76,23 +76,9 @@ router.post("/holds", requireRole("student"), async (request, response, next) =>
                 const policy = await getPolicy(transaction);
                 const startMinutes = getLabMinutes(startsAt);
                 const endMinutes = startMinutes + bookedMinutes;
-                const validDuration =
-                    bookedMinutes >= policy.minDurationMinutes &&
-                    bookedMinutes <= policy.maxDurationMinutes &&
-                    bookedMinutes % policy.bookingIncrementMinutes === 0;
 
-                if (!validDuration) stop(400, "Provide a valid booking duration.");
-                if (startMinutes % policy.bookingIncrementMinutes !== 0) {
-                    stop(400, `Start times must use ${policy.bookingIncrementMinutes}-minute intervals.`);
-                }
-                if (startsAt.getTime() <= Date.now()) stop(409, "Past time slots cannot be selected.");
-                const sundayIsClosed = policy.sundayHoliday && isLabSunday(startsAt);
-                const beforeOpening = startMinutes < policy.openMinutes;
-                const afterClosing = endMinutes > policy.closeMinutes;
-
-                if (sundayIsClosed || beforeOpening || afterClosing) {
-                    stop(409, "This slot is outside the current lab schedule.");
-                }
+                assertValidBookingDuration(policy, bookedMinutes);
+                assertSlotWithinSchedule(policy, startsAt, startMinutes, endMinutes, "selected");
 
                 const system = await transaction.system.findFirst({
                     where: { id: systemId, isActive: true },

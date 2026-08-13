@@ -16,6 +16,15 @@ function dateRange(dateValue) {
     return { dayStart: range.start, dayEnd: range.end };
 }
 
+// Outage start/end times must land on the 5-minute lines of the timeline UI.
+function isFiveMinuteAligned(date) {
+    return date.getMinutes() % 5 === 0 && date.getSeconds() === 0;
+}
+
+function bookingsOverlapRange(bookings, rangeStart, rangeEndTime) {
+    return bookings.some((booking) => booking.startsAt.getTime() < rangeEndTime && booking.endsAt.getTime() > rangeStart.getTime());
+}
+
 function buildSegments(bookings, outages, openMinutes, closeMinutes) {
     const slots = [];
 
@@ -217,11 +226,7 @@ router.patch("/:systemId/outages/:outageId", requireRole("admin"), async (reques
             response.status(409).json({ message: "The unavailable period must end in the future." });
             return;
         }
-        if (
-            (!outageIsActive && (startsAt.getMinutes() % 5 !== 0 || startsAt.getSeconds() !== 0)) ||
-            endsAt.getMinutes() % 5 !== 0 ||
-            endsAt.getSeconds() !== 0
-        ) {
+        if ((!outageIsActive && !isFiveMinuteAligned(startsAt)) || !isFiveMinuteAligned(endsAt)) {
             response.status(400).json({ message: "Unavailable time must follow the 5-minute timeline lines." });
             return;
         }
@@ -234,16 +239,7 @@ router.patch("/:systemId/outages/:outageId", requireRole("admin"), async (reques
                 startsAt: { gte: dayStart, lt: endsAt },
             },
         });
-        let overlapsBooking = false;
-        for (const booking of bookings) {
-            const bookingStart = booking.startsAt.getTime();
-            const bookingEnd = booking.endsAt.getTime();
-            if (bookingStart < endsAt.getTime() && bookingEnd > startsAt.getTime()) {
-                overlapsBooking = true;
-                break;
-            }
-        }
-        if (overlapsBooking) {
+        if (bookingsOverlapRange(bookings, startsAt, endsAt.getTime())) {
             response.status(409).json({ message: "The unavailable period overlaps a booking." });
             return;
         }
@@ -286,11 +282,11 @@ router.patch("/:systemId/unavailable", requireRole("admin"), async (request, res
             response.status(400).json({ message: "Provide a valid unavailable time range." });
             return;
         }
-        if (hasScheduledStart && (startsAt < now || startsAt.getMinutes() % 5 !== 0 || startsAt.getSeconds() !== 0)) {
+        if (hasScheduledStart && (startsAt < now || !isFiveMinuteAligned(startsAt))) {
             response.status(400).json({ message: "Scheduled outages must start in the future on a 5-minute interval." });
             return;
         }
-        if (endsAt && (endsAt <= startsAt || endsAt.getMinutes() % 5 !== 0 || endsAt.getSeconds() !== 0)) {
+        if (endsAt && (endsAt <= startsAt || !isFiveMinuteAligned(endsAt))) {
             response.status(400).json({ message: "The end time must be after the start on a 5-minute interval." });
             return;
         }
@@ -313,16 +309,7 @@ router.patch("/:systemId/unavailable", requireRole("admin"), async (request, res
         let outageEndTime = Number.POSITIVE_INFINITY;
         if (endsAt) outageEndTime = endsAt.getTime();
 
-        let bookingClash = false;
-        for (const booking of savedBookings) {
-            const bookingStart = booking.startsAt.getTime();
-            const bookingEnd = booking.endsAt.getTime();
-            if (bookingStart < outageEndTime && bookingEnd > startsAt.getTime()) {
-                bookingClash = true;
-                break;
-            }
-        }
-        if (bookingClash) {
+        if (bookingsOverlapRange(savedBookings, startsAt, outageEndTime)) {
             let message = "Cancel this system's active or upcoming bookings before marking it unavailable until changed.";
             if (endsAt) message = "This period contains a booking. Choose an available time range.";
             response.status(409).json({ message });

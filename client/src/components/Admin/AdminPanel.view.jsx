@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { TimerReset, X } from "lucide-react";
+import { BookOpen, CalendarClock, MonitorCog, TimerReset, UsersRound, X } from "lucide-react";
 import { Outlet, useLocation } from "react-router-dom";
 import { useLab } from "../../context/LabContext";
 import { useLogin } from "../../context/LoginContext";
@@ -10,9 +10,20 @@ import { Navbar } from "../Navbar/Navbar";
 import { Sidebar } from "../Sidebar/Sidebar";
 import { SidebarCollapseToggle } from "../Sidebar/SidebarCollapseToggle";
 import { useSidebarCollapse } from "../Sidebar/useSidebarCollapse";
+import { SectionTabs } from "../ui/SectionTabs";
 import { ADMIN_PAGE_TITLES, SYSTEM_STYLES } from "./AdminPanel.helpers";
 
-export const surface = "admin-surface rounded-3xl shadow-[0_20px_55px_-40px_rgba(2,10,14,0.7)]";
+export const surface = "admin-surface rounded-[22px] border";
+
+const OPERATIONS_WORKSPACE_TABS = [
+    { label: "Bookings", path: "/admin/bookings", icon: CalendarClock },
+    { label: "Systems", path: "/admin/systems", icon: MonitorCog },
+];
+
+const DIRECTORY_WORKSPACE_TABS = [
+    { label: "Students", path: "/admin/students", icon: UsersRound },
+    { label: "Courses", path: "/admin/courses", icon: BookOpen },
+];
 
 // Shared admin layout
 export function AdminReveal({ children, className }) {
@@ -35,6 +46,8 @@ function AdminShell({ children }) {
     const { user } = useLogin();
     const location = useLocation();
     const page = ADMIN_PAGE_TITLES[location.pathname] ?? ADMIN_PAGE_TITLES["/admin"];
+    const operationsWorkspaceOpen = ["/admin/bookings", "/admin/systems"].includes(location.pathname);
+    const directoryWorkspaceOpen = ["/admin/students", "/admin/courses"].includes(location.pathname);
     const adminName = user?.name || user?.username || "Administrator";
     const identity = {
         name: adminName,
@@ -86,13 +99,20 @@ function AdminShell({ children }) {
                         >
                             <X className="h-5 w-5" />
                         </button>
-                        <Sidebar identity={identity} onNavigate={closeMenu} />
+                        <Sidebar identity={identity} mobileClose onNavigate={closeMenu} />
                     </aside>
                 </div>
             )}
 
             <div className={cn("min-h-screen transition-[margin] duration-300", collapsed ? "xl:ml-20" : "xl:ml-72")}>
                 <Navbar identity={identity} onMenuOpen={() => setMenuOpen(true)} onNotificationsOpen={() => setNotificationsOpen(true)} page={page} />
+                {(operationsWorkspaceOpen || directoryWorkspaceOpen) && (
+                    <div className="border-b border-slate-200/80 bg-white/65 px-4 py-2.5 backdrop-blur-xl sm:px-6 lg:px-8 xl:px-10">
+                        <div className="mx-auto flex max-w-400 items-center">
+                            <SectionTabs tabs={operationsWorkspaceOpen ? OPERATIONS_WORKSPACE_TABS : DIRECTORY_WORKSPACE_TABS} />
+                        </div>
+                    </div>
+                )}
                 <main className="px-4 py-5 sm:px-6 sm:py-6 lg:px-8 xl:px-10 xl:py-7">
                     {earlyEndNotice && (
                         <div

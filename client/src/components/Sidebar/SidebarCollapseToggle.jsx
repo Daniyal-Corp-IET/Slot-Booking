@@ -13,7 +13,7 @@ export function SidebarCollapseToggle({ collapsed, onToggle }) {
         <button
             aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
             aria-pressed={collapsed}
-            className={`ui-press fixed top-1/2 z-50 hidden size-7 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#0c4a58] text-white shadow-[0_10px_24px_-12px_rgba(15,23,42,0.55)] ring-2 ring-white transition-[left] duration-300 hover:bg-[#07303c] xl:flex ${collapsed ? "left-20" : "left-72"}`}
+            className={`ui-press fixed top-1/2 z-50 hidden size-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/80 bg-[#073844] text-white shadow-[0_12px_28px_-12px_rgba(7,56,68,0.65)] ring-4 ring-white/75 transition-[left] duration-300 hover:bg-[#3096A7] xl:flex ${collapsed ? "left-20" : "left-72"}`}
             onClick={onToggle}
             type="button"
         >

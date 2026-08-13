@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { getDatabase } from "../config/database.js";
 import { env } from "../config/env.js";
+import { AUTH_COOKIE_NAME } from "../utils/authCookie.js";
 
 function getCookie(cookieHeader, cookieName) {
     const cookies = cookieHeader?.split(";") || [];
@@ -15,7 +16,7 @@ function getCookie(cookieHeader, cookieName) {
 
 export async function authenticateSocket(socket, next) {
     try {
-        const token = getCookie(socket.handshake.headers.cookie, "authToken");
+        const token = getCookie(socket.handshake.headers.cookie, AUTH_COOKIE_NAME);
         if (!token) throw new Error("Authentication required.");
 
         const user = jwt.verify(token, env.JWT_SECRET);

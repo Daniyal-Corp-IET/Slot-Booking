@@ -9,7 +9,7 @@ let socket;
 
 function connectSocket() {
     if (!socket) {
-        socket = io("/", {
+        socket = io(import.meta.env.VITE_BACKEND_URL || "http://localhost:5000", {
             path: "/api/socket.io",
             withCredentials: true,
             autoConnect: false,
@@ -149,6 +149,7 @@ const DEFAULT_POLICY = {
     openMinutes: 9 * 60,
     closeMinutes: 18 * 60,
     cancelBeforeMinutes: 0,
+    bookingStartGraceMinutes: 5,
     sundayHoliday: true,
 };
 

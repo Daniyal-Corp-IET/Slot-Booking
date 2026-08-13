@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || "/api";
+const API_URL = `${import.meta.env.VITE_BACKEND_URL || "http://localhost:5000"}/api`;
 
 // Shared fetch wrapper for authenticated JSON API calls used across contexts and admin views.
 export async function apiRequest(path, method = "GET", values, options = {}) {

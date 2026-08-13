@@ -213,12 +213,12 @@ export function SystemsView() {
                     <div className="relative -mx-5 -mt-5 overflow-hidden border-b border-itx-border bg-slate-50 p-5 sm:-mx-6 sm:-mt-6 sm:p-6">
                         <div className="relative flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                             <div>
-                                <p className="text-[10px] font-extrabold uppercase tracking-[0.13em] text-[#128a93]">Lab operations</p>
+                                <p className="text-[10px] font-extrabold uppercase tracking-[0.13em] text-[#3096A7]">Lab operations</p>
                                 <h2 className="mt-2 text-lg font-bold">System inventory</h2>
                                 <p className="mt-1 text-sm text-slate-500">{systems.length} workstations currently registered in the lab.</p>
                             </div>
                             <AdminAction
-                                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[linear-gradient(110deg,#128a93,#0d6169)] px-4 text-sm font-bold text-white shadow-[0_14px_28px_-16px_rgba(18,138,147,0.6)] transition hover:shadow-[0_18px_30px_-16px_rgba(18,138,147,0.75)] disabled:opacity-60"
+                                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#3096A7] px-4 text-sm font-bold text-white shadow-[0_14px_28px_-16px_rgba(48,150,167,0.55)] transition hover:bg-[#287f8e] disabled:opacity-60"
                                 disabled={saving}
                                 onClick={addNewSystem}
                                 type="button"
@@ -241,7 +241,7 @@ export function SystemsView() {
                                 onClick={() => setFilter(option)}
                                 type="button"
                             >
-                                {filter === option && <span aria-hidden="true" className="absolute inset-0 bg-[linear-gradient(110deg,#128a93,#17a870)]" />}
+                                {filter === option && <span aria-hidden="true" className="absolute inset-0 bg-[#3096A7]" />}
                                 <span className="relative">{option === "offline" ? "Unavailable" : option}</span>
                             </button>
                         ))}
@@ -265,7 +265,7 @@ export function SystemsView() {
                                         <tr
                                             className={cn(
                                                 "group cursor-pointer snap-start transition-colors duration-150 hover:bg-slate-50",
-                                                selected.id === system.id && "bg-[#128a93]/8 shadow-[inset_3px_0_0_#128a93]",
+                                                selected.id === system.id && "bg-[#3096A7]/8",
                                             )}
                                             key={system.id}
                                             onClick={() => showSystemHistory(system)}
@@ -279,7 +279,7 @@ export function SystemsView() {
                                                     }}
                                                     type="button"
                                                 >
-                                                    <span className="flex size-10 items-center justify-center rounded-xl border border-itx-border bg-white text-[#128a93] shadow-sm transition-colors duration-150 group-hover:border-[#128a93]/40">
+                                                    <span className="flex size-10 items-center justify-center rounded-xl border border-itx-border bg-white text-[#3096A7] shadow-sm transition-colors duration-150 group-hover:border-[#3096A7]/40">
                                                         <Monitor className="size-4.5" />
                                                     </span>
                                                     <span className="text-sm font-extrabold text-itx-ink">System {String(system.id).padStart(2, "0")}</span>
@@ -344,14 +344,14 @@ export function SystemsView() {
                                 className={cn(
                                     "flex snap-start items-center gap-3 rounded-2xl border p-4 text-left shadow-[0_12px_30px_-26px_rgba(15,23,42,0.15)] transition-colors duration-150",
                                     selected.id === system.id
-                                        ? "border-[#128a93] bg-[#128a93]/8 ring-2 ring-[#128a93]/15"
+                                        ? "border-[#3096A7] bg-[#3096A7]/8 ring-2 ring-[#3096A7]/15"
                                         : "border-itx-border bg-slate-50",
                                 )}
                                 key={system.id}
                                 onClick={() => showSystemHistory(system)}
                                 type="button"
                             >
-                                <span className="flex size-11 items-center justify-center rounded-xl bg-white text-[#128a93] shadow-sm">
+                                <span className="flex size-11 items-center justify-center rounded-xl bg-white text-[#3096A7] shadow-sm">
                                     <Monitor className="size-5" />
                                 </span>
                                 <span className="flex-1">
@@ -456,12 +456,12 @@ export function SystemsView() {
                 <AdminReveal className={cn(surface, "overflow-hidden p-5 text-itx-ink sm:p-6")}>
                     <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                         <div>
-                            <p className="text-xs font-extrabold uppercase tracking-[0.12em] text-[#128a93]">Next seven days</p>
+                            <p className="text-xs font-extrabold uppercase tracking-[0.12em] text-[#3096A7]">Next seven days</p>
                             <h2 className="mt-2 text-xl font-bold">System {String(selected.id).padStart(2, "0")} day schedule</h2>
                             <p className="mt-1 text-sm text-slate-500">Review bookings and manage system availability from today onward.</p>
                         </div>
                         <button
-                            className="min-h-10 rounded-xl border border-itx-border px-4 text-xs font-bold text-itx-ink transition hover:border-[#128a93]/40"
+                            className="min-h-10 rounded-xl border border-itx-border px-4 text-xs font-bold text-itx-ink transition hover:border-[#3096A7]/40"
                             onClick={() => setHistoryVisible(false)}
                             type="button"
                         >
@@ -474,7 +474,7 @@ export function SystemsView() {
                                 aria-pressed={historyDate === date.key}
                                 className={cn(
                                     "min-w-21 rounded-xl border px-3 py-2.5 text-left transition",
-                                    historyDate === date.key ? "border-[#128a93] bg-[#128a93]/12 text-[#0d6169]" : "border-itx-border bg-slate-50 text-slate-500",
+                                    historyDate === date.key ? "border-[#3096A7] bg-[#3096A7]/12 text-[#287f8e]" : "border-itx-border bg-slate-50 text-slate-500",
                                 )}
                                 key={date.key}
                                 onClick={() => {

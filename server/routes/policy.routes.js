@@ -3,10 +3,62 @@ import { getDatabase } from "../config/database.js";
 import { requireLogin, requireRole } from "../middleware/auth.js";
 import { getPolicy, publicPolicy } from "../services/policy.service.js";
 import { notifyPolicyChanged } from "../services/socket.service.js";
+import { stop } from "../utils/httpError.js";
 
 const router = Router();
 
 router.use(requireLogin);
+
+// --- Policy update rules -------------------------------------------------
+// Each function checks one rule against the submitted settings and throws
+// (via `stop`) if it fails. Reading them in order tells the full story of
+// what makes a policy update valid.
+
+function assertValidMinuteValues(values) {
+    const hasInvalidValue = values.some((value) => !Number.isInteger(value) || value < 0);
+    if (hasInvalidValue) stop(400, "Settings must contain valid whole-minute values.");
+}
+
+function assertValidIncrement(bookingIncrementMinutes) {
+    const allowedIncrements = [5, 10, 15, 30];
+    if (!allowedIncrements.includes(bookingIncrementMinutes)) {
+        stop(400, "Choose a booking increment of 5, 10, 15, or 30 minutes.");
+    }
+}
+
+function assertValidUsageLimits(monthlyLimitMinutes, dailyLimitMinutes) {
+    const invalidMonthlyLimit = monthlyLimitMinutes < 60;
+    const invalidDailyLimit = dailyLimitMinutes < 60 || dailyLimitMinutes > 24 * 60;
+    if (invalidMonthlyLimit || invalidDailyLimit) stop(400, "Usage limits are outside the allowed range.");
+}
+
+function assertValidDurationRange(minDurationMinutes, maxDurationMinutes, bookingIncrementMinutes) {
+    const durationTooShort = minDurationMinutes < bookingIncrementMinutes || maxDurationMinutes < minDurationMinutes;
+    const durationNotOnInterval =
+        minDurationMinutes % bookingIncrementMinutes !== 0 || maxDurationMinutes % bookingIncrementMinutes !== 0;
+    if (durationTooShort || durationNotOnInterval) {
+        stop(400, `Session durations must use ${bookingIncrementMinutes}-minute intervals.`);
+    }
+}
+
+function assertValidLabHours(openMinutes, closeMinutes, maxDurationMinutes, bookingIncrementMinutes) {
+    const labTimesNotOnInterval = openMinutes % bookingIncrementMinutes !== 0 || closeMinutes % bookingIncrementMinutes !== 0;
+    const invalidLabTimeRange = openMinutes >= closeMinutes || closeMinutes > 24 * 60;
+    if (labTimesNotOnInterval || invalidLabTimeRange) {
+        stop(400, `Lab hours must use valid ${bookingIncrementMinutes}-minute times.`);
+    }
+    if (maxDurationMinutes > closeMinutes - openMinutes) {
+        stop(400, "The maximum session cannot be longer than the lab day.");
+    }
+}
+
+function assertValidCancellationAndHoliday(cancelBeforeMinutes, bookingIncrementMinutes, sundayHoliday) {
+    const invalidCancellationTime = cancelBeforeMinutes % bookingIncrementMinutes !== 0;
+    const invalidHolidaySetting = typeof sundayHoliday !== "boolean";
+    if (invalidCancellationTime || invalidHolidaySetting) {
+        stop(400, "Cancellation and holiday settings are invalid.");
+    }
+}
 
 router.get("/", async (request, response, next) => {
     try {
@@ -27,7 +79,8 @@ router.patch("/", requireRole("admin"), async (request, response, next) => {
         const closeMinutes = Number(request.body.closeMinutes);
         const cancelBeforeMinutes = Number(request.body.cancelBeforeMinutes);
         const sundayHoliday = request.body.sundayHoliday;
-        const minuteValues = [
+
+        assertValidMinuteValues([
             monthlyLimitMinutes,
             dailyLimitMinutes,
             bookingIncrementMinutes,
@@ -36,83 +89,31 @@ router.patch("/", requireRole("admin"), async (request, response, next) => {
             openMinutes,
             closeMinutes,
             cancelBeforeMinutes,
-        ];
+        ]);
+        assertValidIncrement(bookingIncrementMinutes);
+        assertValidUsageLimits(monthlyLimitMinutes, dailyLimitMinutes);
+        assertValidDurationRange(minDurationMinutes, maxDurationMinutes, bookingIncrementMinutes);
+        assertValidLabHours(openMinutes, closeMinutes, maxDurationMinutes, bookingIncrementMinutes);
+        assertValidCancellationAndHoliday(cancelBeforeMinutes, bookingIncrementMinutes, sundayHoliday);
 
-        let containsInvalidMinutes = false;
-        for (const value of minuteValues) {
-            if (!Number.isInteger(value) || value < 0) containsInvalidMinutes = true;
-        }
-
-        if (containsInvalidMinutes) {
-            response.status(400).json({ message: "Settings must contain valid whole-minute values." });
-            return;
-        }
-
-        const allowedIncrements = [5, 10, 15, 30];
-        if (!allowedIncrements.includes(bookingIncrementMinutes)) {
-            response.status(400).json({ message: "Choose a booking increment of 5, 10, 15, or 30 minutes." });
-            return;
-        }
-
-        const invalidMonthlyLimit = monthlyLimitMinutes < 60;
-        const invalidDailyLimit = dailyLimitMinutes < 60 || dailyLimitMinutes > 24 * 60;
-        if (invalidMonthlyLimit || invalidDailyLimit) {
-            response.status(400).json({ message: "Usage limits are outside the allowed range." });
-            return;
-        }
-
-        const durationTooShort = minDurationMinutes < bookingIncrementMinutes || maxDurationMinutes < minDurationMinutes;
-        const durationNotOnInterval =
-            minDurationMinutes % bookingIncrementMinutes !== 0 || maxDurationMinutes % bookingIncrementMinutes !== 0;
-        if (durationTooShort || durationNotOnInterval) {
-            response.status(400).json({ message: `Session durations must use ${bookingIncrementMinutes}-minute intervals.` });
-            return;
-        }
-
-        const labTimesNotOnInterval = openMinutes % bookingIncrementMinutes !== 0 || closeMinutes % bookingIncrementMinutes !== 0;
-        const invalidLabTimeRange = openMinutes >= closeMinutes || closeMinutes > 24 * 60;
-        if (labTimesNotOnInterval || invalidLabTimeRange) {
-            response.status(400).json({ message: `Lab hours must use valid ${bookingIncrementMinutes}-minute times.` });
-            return;
-        }
-        if (maxDurationMinutes > closeMinutes - openMinutes) {
-            response.status(400).json({ message: "The maximum session cannot be longer than the lab day." });
-            return;
-        }
-        const invalidCancellationTime = cancelBeforeMinutes % bookingIncrementMinutes !== 0;
-        const invalidHolidaySetting = typeof sundayHoliday !== "boolean";
-        if (invalidCancellationTime || invalidHolidaySetting) {
-            response.status(400).json({ message: "Cancellation and holiday settings are invalid." });
-            return;
-        }
+        const policyData = {
+            monthlyLimitMinutes,
+            dailyLimitMinutes,
+            bookingIncrementMinutes,
+            minDurationMinutes,
+            maxDurationMinutes,
+            openMinutes,
+            closeMinutes,
+            cancelBeforeMinutes,
+            sundayHoliday,
+        };
 
         const database = getDatabase();
         const [policy] = await database.$transaction([
             database.labPolicy.upsert({
                 where: { id: 1 },
-                update: {
-                    monthlyLimitMinutes,
-                    dailyLimitMinutes,
-                    bookingIncrementMinutes,
-                    minDurationMinutes,
-                    maxDurationMinutes,
-                    openMinutes,
-                    closeMinutes,
-                    cancelBeforeMinutes,
-                    sundayHoliday,
-                },
-                create: {
-                    id: 1,
-                    monthlyLimitMinutes,
-                    dailyLimitMinutes,
-                    bookingIncrementMinutes,
-                    minDurationMinutes,
-                    maxDurationMinutes,
-                    openMinutes,
-                    closeMinutes,
-                    cancelBeforeMinutes,
-                    sundayHoliday,
-                },
+                update: policyData,
+                create: { id: 1, ...policyData },
             }),
             database.student.updateMany({ data: { monthlyLimitMinutes } }),
         ]);

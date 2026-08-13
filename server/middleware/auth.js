@@ -1,9 +1,10 @@
 import jwt from "jsonwebtoken";
 import { getDatabase } from "../config/database.js";
 import { env } from "../config/env.js";
+import { AUTH_COOKIE_NAME } from "../utils/authCookie.js";
 
 export async function requireLogin(request, response, next) {
-    const token = request.cookies.authToken;
+    const token = request.cookies[AUTH_COOKIE_NAME];
 
     if (!token) {
         response.status(401).json({ message: "Please log in first." });
@@ -20,7 +21,7 @@ export async function requireLogin(request, response, next) {
             });
 
             if (!student || student.sessionVersion !== tokenUser.sessionVersion) {
-                response.clearCookie("authToken");
+                response.clearCookie(AUTH_COOKIE_NAME);
                 response.status(401).json({ message: "Your password changed. Please log in again." });
                 return;
             }
@@ -33,7 +34,7 @@ export async function requireLogin(request, response, next) {
             });
 
             if (!admin) {
-                response.clearCookie("authToken");
+                response.clearCookie(AUTH_COOKIE_NAME);
                 response.status(401).json({ message: "Your administrator account is no longer available." });
                 return;
             }
