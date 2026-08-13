@@ -146,7 +146,7 @@ function EmptyUpcomingSlot() {
                 <p className="text-sm font-bold text-itx-ink">No booking scheduled</p>
                 <p className="mx-auto mt-1.5 max-w-xs text-xs leading-5 text-slate-500">Reserve a workstation whenever you are ready for your next lab session.</p>
             </div>
-            <Link className="ui-press mt-4 flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#3096A7] px-4 text-sm font-bold text-white shadow-[0_14px_28px_-16px_rgba(48,150,167,0.7)] hover:bg-[#278898]" to="/portal/book">
+            <Link className="ui-press ui-lift mt-4 flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#3096A7] px-4 text-sm font-bold text-white shadow-[0_14px_28px_-16px_rgba(48,150,167,0.7)] hover:bg-[#278898]" to="/portal/book">
                 Find an available slot <ArrowUpRight className="size-4" />
             </Link>
         </article>
@@ -368,7 +368,7 @@ function ChangePasswordDialog({ onChanged, onClose, open, student }) {
     const footer = (
         <>
             <button className="h-12 rounded-xl border border-slate-200 px-5 text-sm font-bold text-slate-600" onClick={closeDialog} type="button">Cancel</button>
-            <button className="h-12 rounded-xl bg-[#3096A7] px-5 text-sm font-bold text-white shadow-lg shadow-[#3096A7]/20" form="change-password-form" type="submit">Update password</button>
+            <button className="ui-press ui-lift h-12 rounded-xl bg-[#3096A7] px-5 text-sm font-bold text-white shadow-lg shadow-[#3096A7]/20" form="change-password-form" type="submit">Update password</button>
         </>
     );
 

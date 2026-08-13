@@ -62,12 +62,12 @@ export function InteractiveSelect({ children, className, defaultValue = "All", l
                 aria-haspopup="listbox"
                 aria-label={`${label}: ${selectedOption?.label ?? value}`}
                 className={cn(
-                    "flex h-11 w-full items-center rounded-xl border bg-white pl-3.5 pr-2 text-left text-sm font-bold outline-none",
-                    "transition-[border-color,background-color,box-shadow,color] duration-150",
-                    "focus-visible:border-[#3096A7] focus-visible:bg-white focus-visible:text-itx-ink focus-visible:ring-4 focus-visible:ring-[#3096A7]/10",
+                    "flex h-11 w-full items-center rounded-xl border pl-3.5 pr-2 text-left text-sm font-bold outline-none",
+                    "transition-[border-color,background-color,box-shadow,color] duration-200",
+                    "focus-visible:border-[#3096A7] focus-visible:bg-white focus-visible:text-itx-ink focus-visible:ring-4 focus-visible:ring-[#3ee7c2]/15",
                     filtered
                         ? "border-[#3096A7]/30 bg-[#3096A7]/6 text-[#287f8e] hover:border-[#3096A7]/50"
-                        : "border-itx-border text-slate-600 shadow-sm hover:border-[#3096A7]/35 hover:bg-[#f8fbfb] hover:text-itx-ink",
+                        : "border-itx-border bg-[#f8fafb] text-slate-600 shadow-sm hover:border-[#3096A7]/35 hover:bg-white hover:text-itx-ink",
                 )}
                 data-select-trigger
                 onClick={() => setOpen((current) => !current)}

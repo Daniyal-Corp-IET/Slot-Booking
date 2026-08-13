@@ -7,7 +7,8 @@ import { useToast } from "../../../hooks/useToast";
 import { apiRequest } from "../../../utils/apiClient";
 import { cn } from "../../../utils/cn";
 import { formatActivityMinutes } from "../../../utils/sessionActivity";
-import { AppDialog, ConfirmDialog, EmptyState, LoadingState, Toast } from "../../Feedback/Feedback";
+import { AppDialog, ConfirmDialog, EmptyState, Toast } from "../../Feedback/Feedback";
+import { TimelineSkeleton } from "../../Feedback/Skeletons";
 import { EditableSystemTimeline } from "../../SystemCanvas/EditableSystemTimeline";
 import { SYSTEM_STYLES, formatMinutes, historyDates } from "../AdminPanel.helpers";
 import { AdminAction, AdminReveal, surface } from "../AdminPanel.view";
@@ -489,9 +490,7 @@ export function SystemsView() {
                         ))}
                     </div>
                     {historyLoading ? (
-                        <div className="mt-5">
-                            <LoadingState message="Loading day history..." />
-                        </div>
+                        <TimelineSkeleton />
                     ) : (
                         <div className="mt-5 grid gap-5 2xl:grid-cols-[1.15fr_0.85fr]">
                             <div>

@@ -1,5 +1,5 @@
 import { Navigate, useNavigate } from "react-router-dom";
-import { PortalLoader } from "../components/Feedback/PortalLoader";
+import { LoginCardSkeleton } from "../components/Feedback/LoginCardSkeleton";
 import LoginForm from "../components/Forms/LoginForm";
 import { useLogin } from "../context/LoginContext";
 
@@ -13,7 +13,7 @@ export default function LoginPage() {
         navigate(portalPath);
     };
 
-    if (loading) return <PortalLoader />;
+    if (loading) return <LoginCardSkeleton />;
     if (user) {
         return <Navigate replace to={user.role === "admin" ? "/admin" : "/portal"} />;
     }

@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { AlertTriangle, CalendarDays, ChevronRight, KeyRound, Mail, Phone, Plus, ShieldCheck, UserPlus, UsersRound } from "lucide-react";
 import { useOutletContext } from "react-router-dom";
-import { AppDialog, ConfirmDialog, EmptyState, LoadingState, Toast } from "../../Feedback/Feedback";
+import { AppDialog, ConfirmDialog, EmptyState, Toast } from "../../Feedback/Feedback";
+import { CourseCardSkeletonGrid, StudentCardSkeletonGrid } from "../../Feedback/Skeletons";
 import { useToast } from "../../../hooks/useToast";
 import { apiRequest } from "../../../utils/apiClient";
 import { cn } from "../../../utils/cn";
@@ -276,7 +277,7 @@ function StudentFormDialog({ courses, onAddStudent, onClose, open }) {
                 Cancel
             </button>
             <button
-                className="h-12 rounded-xl bg-[#3096A7] px-5 text-sm font-bold text-white shadow-lg shadow-[#3096A7]/20 transition hover:bg-[#287f8e] disabled:cursor-not-allowed disabled:opacity-60"
+                className="ui-press ui-lift h-12 rounded-xl bg-[#3096A7] px-5 text-sm font-bold text-white shadow-lg shadow-[#3096A7]/20 transition hover:bg-[#287f8e] disabled:cursor-not-allowed disabled:opacity-60"
                 disabled={saving}
                 form="add-student-form"
                 type="submit"
@@ -414,7 +415,7 @@ export function CoursesView() {
                 Cancel
             </button>
             <button
-                className="h-12 rounded-xl bg-[#3096A7] px-5 text-sm font-bold text-white shadow-lg shadow-[#3096A7]/20 transition hover:bg-[#287f8e] disabled:cursor-not-allowed disabled:opacity-60"
+                className="ui-press ui-lift h-12 rounded-xl bg-[#3096A7] px-5 text-sm font-bold text-white shadow-lg shadow-[#3096A7]/20 transition hover:bg-[#287f8e] disabled:cursor-not-allowed disabled:opacity-60"
                 disabled={saving}
                 form="add-course-form"
                 type="submit"
@@ -439,7 +440,7 @@ export function CoursesView() {
                     <Plus className="size-4" /> Add course
                 </AdminAction>
             </AdminReveal>
-            {loading && <LoadingState message="Loading courses..." />}
+            {loading && <CourseCardSkeletonGrid />}
             {!loading && error && (
                 <AdminReveal className={cn(surface, "p-8 text-center")}>
                     <p className="text-sm font-semibold text-itx-danger">{error}</p>
@@ -564,25 +565,17 @@ export function StudentsView() {
     return (
         <div className="mx-auto max-w-400 space-y-5">
             <AdminReveal className="grid gap-4 md:grid-cols-3">
-                <MetricCard
-                    accent="bg-[#6376b8]"
-                    icon={UsersRound}
-                    label="Active students"
-                    note={`Across ${courses.length} programs`}
-                    value={students.length}
-                />
+                <MetricCard accent="bg-[#6376b8]" icon={UsersRound} label="Active students" value={students.length} />
                 <MetricCard
                     accent="bg-[#45a982]"
                     icon={ShieldCheck}
                     label="Within limits"
-                    note="Ready to make bookings"
                     value={students.filter((student) => student.status === "Active").length}
                 />
                 <MetricCard
                     accent="bg-[#e4a541]"
                     icon={AlertTriangle}
                     label="Near monthly limit"
-                    note="Requires awareness"
                     value={students.filter((student) => student.status === "Near limit").length}
                 />
             </AdminReveal>
@@ -641,7 +634,7 @@ export function StudentsView() {
                         </InteractiveSelect>
                     </div>
                 </div>
-                {loading && <LoadingState message="Loading students..." />}
+                {loading && <StudentCardSkeletonGrid />}
                 {!loading && error && (
                     <div className="p-8 text-center">
                         <p className="text-sm font-semibold text-itx-danger">{error}</p>

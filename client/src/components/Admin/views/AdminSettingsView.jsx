@@ -71,7 +71,7 @@ function AdminFormDialog({ onClose, onCreated, open }) {
                 Cancel
             </button>
             <button
-                className="h-12 rounded-xl bg-[#3096A7] px-5 text-sm font-bold text-white transition hover:bg-[#287f8e] disabled:cursor-not-allowed disabled:opacity-60"
+                className="ui-press ui-lift h-12 rounded-xl bg-[#3096A7] px-5 text-sm font-bold text-white transition hover:bg-[#287f8e] disabled:cursor-not-allowed disabled:opacity-60"
                 disabled={saving}
                 form="add-admin-form"
                 type="submit"

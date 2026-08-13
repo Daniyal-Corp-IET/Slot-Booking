@@ -76,7 +76,7 @@ export function ConfirmDialog({ confirmLabel, description, open, title, tone = "
                         Cancel
                     </button>
                     <button
-                        className={`ui-press h-12 rounded-2xl bg-gradient-to-br px-5 text-sm font-bold text-white shadow-lg transition-[filter] hover:brightness-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-current/20 ${confirmClass}`}
+                        className={`ui-press ui-lift h-12 rounded-2xl bg-gradient-to-br px-5 text-sm font-bold text-white shadow-lg transition-[filter,transform,box-shadow] hover:brightness-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-current/20 ${confirmClass}`}
                         onClick={onConfirm}
                         type="button"
                     >
@@ -146,18 +146,6 @@ export function EmptyState({ message }) {
                 <Inbox className="size-6" />
             </span>
             <p className="relative mt-4 text-sm font-semibold text-slate-500">{message}</p>
-        </div>
-    );
-}
-export function LoadingState({ message }) {
-    return (
-        <div className="relative overflow-hidden rounded-3xl border border-dashed border-slate-200 bg-slate-50 px-6 py-12 text-center">
-            <span className="relative mx-auto flex size-12 items-center justify-center rounded-2xl border border-itx-border bg-white text-[#128a93] shadow-[0_14px_30px_-22px_rgba(15,23,42,0.15)]">
-                <span aria-hidden="true" className="size-2.5 animate-pulse rounded-full bg-current" />
-            </span>
-            <p className="relative mt-4 text-sm font-semibold text-slate-500" role="status">
-                {message}
-            </p>
         </div>
     );
 }

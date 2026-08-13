@@ -27,7 +27,7 @@ function formatStartedAt(startedAt) {
 // Booking management page
 export function BookingsView() {
     const { students } = useOutletContext();
-    const { bookings, cancelBooking, systems } = useLab();
+    const { bookings, cancelBooking } = useLab();
     const [currentTime, setCurrentTime] = useState(() => Date.now());
     const [query, setQuery] = useState("");
     const [status, setStatus] = useState("All");
@@ -62,8 +62,6 @@ export function BookingsView() {
     const today = new Date(currentTime);
     let todayBookingCount = 0;
     let activeCount = 0;
-    let readyCount = 0;
-    let upcomingCount = 0;
     let nextBooking;
 
     for (const booking of bookings) {
@@ -71,14 +69,8 @@ export function BookingsView() {
         if (date.toDateString() === today.toDateString()) todayBookingCount += 1;
         if (booking.status === "Active") activeCount += 1;
 
-        if (booking.status === "Upcoming") {
-            const ready = booking.startsAt <= currentTime && booking.endsAt > currentTime;
-            if (ready) {
-                readyCount += 1;
-            } else if (booking.startsAt > currentTime) {
-                upcomingCount += 1;
-                if (!nextBooking || booking.startsAt < nextBooking.startsAt) nextBooking = booking;
-            }
+        if (booking.status === "Upcoming" && booking.startsAt > currentTime) {
+            if (!nextBooking || booking.startsAt < nextBooking.startsAt) nextBooking = booking;
         }
     }
 
@@ -104,15 +96,9 @@ export function BookingsView() {
     return (
         <div className="mx-auto max-w-400 space-y-5">
             <AdminReveal className="grid gap-4 md:grid-cols-3">
-                <MetricCard
-                    accent="bg-[#3096A7]"
-                    icon={CalendarDays}
-                    label={formatBookingDate(currentTime)}
-                    note={`Bookings across ${systems.length} systems`}
-                    value={todayBookingCount}
-                />
-                <MetricCard accent="bg-[#45a982]" icon={Activity} label="Active now" note={`${readyCount} awaiting student start`} value={activeCount} />
-                <MetricCard accent="bg-[#e4a541]" icon={Clock3} label="Next slot" note={`${upcomingCount} bookings scheduled`} value={nextSlot} />
+                <MetricCard accent="bg-[#3096A7]" icon={CalendarDays} label={formatBookingDate(currentTime)} value={todayBookingCount} />
+                <MetricCard accent="bg-[#45a982]" icon={Activity} label="Active now" value={activeCount} />
+                <MetricCard accent="bg-[#e4a541]" icon={Clock3} label="Next slot" value={nextSlot} />
             </AdminReveal>
 
             <AdminReveal className={cn(surface, "relative")}>

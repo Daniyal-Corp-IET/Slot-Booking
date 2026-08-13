@@ -1,6 +1,6 @@
 import { lazy, Suspense } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
-import { PortalLoader } from "../components/Feedback/PortalLoader";
+import { AppShellSkeleton } from "../components/Feedback/AppShellSkeleton";
 import { useLogin } from "../context/LoginContext";
 import LoginPage from "../pages/LoginPage";
 import NotFoundPage from "../pages/NotFoundPage";
@@ -24,7 +24,7 @@ const AdminNotFoundPage = lazy(() => import("../pages/admin/AdminNotFoundPage"))
 function ProtectedRoute({ children, role }) {
     const { loading, user } = useLogin();
 
-    if (loading) return <PortalLoader />;
+    if (loading) return <AppShellSkeleton />;
     if (!user) return <Navigate replace to="/" />;
     if (user.role !== role) {
         let homePage = "/portal";
@@ -55,7 +55,7 @@ export default function AppRoutes() {
                 element={
                     <ProtectedRoute role="student">
                         <div className="ui-page-enter">
-                            <Suspense fallback={<PortalLoader />}>
+                            <Suspense fallback={<AppShellSkeleton />}>
                                 <StudentPortalPage />
                             </Suspense>
                         </div>
@@ -73,7 +73,7 @@ export default function AppRoutes() {
                 element={
                     <ProtectedRoute role="admin">
                         <div className="ui-page-enter">
-                            <Suspense fallback={<PortalLoader />}>
+                            <Suspense fallback={<AppShellSkeleton />}>
                                 <AdminPanelPage />
                             </Suspense>
                         </div>

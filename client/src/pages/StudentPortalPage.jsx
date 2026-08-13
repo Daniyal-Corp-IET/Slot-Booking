@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { PortalLoader } from "../components/Feedback/PortalLoader";
+import { AppShellSkeleton } from "../components/Feedback/AppShellSkeleton";
 import { StudentPortalView } from "../components/Portal/StudentPortal.view";
 import { useLogin } from "../context/LoginContext";
 import { StudentProvider, useStudent } from "../context/StudentContext";
@@ -24,7 +24,7 @@ function StudentPortalContent() {
         navigate("/", { replace: true });
     };
 
-    if (loading) return <PortalLoader />;
+    if (loading) return <AppShellSkeleton />;
 
     if (!student) {
         return (

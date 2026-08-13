@@ -425,7 +425,7 @@ export function BookSlotView({ student }) {
                     <p className="mt-5 text-sm leading-6 text-slate-500">Your booking has been confirmed and added to your history.</p>
                     <div className="mt-7 flex flex-col gap-3 sm:flex-row">
                         <Link
-                            className="flex h-11 flex-1 items-center justify-center rounded-xl bg-[#3096A7] px-5 text-sm font-bold text-white shadow-lg shadow-[#3096A7]/20 transition-colors duration-150 hover:bg-[#287f8e]"
+                            className="ui-press ui-lift flex h-11 flex-1 items-center justify-center rounded-xl bg-[#3096A7] px-5 text-sm font-bold text-white shadow-lg shadow-[#3096A7]/20 transition-colors duration-150 hover:bg-[#287f8e]"
                             to="/portal"
                         >
                             Return home
@@ -498,7 +498,7 @@ export function BookSlotView({ student }) {
                                     </div>
                                     <div className="mt-5 flex justify-end">
                                         <button
-                                            className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#3096A7] px-6 text-sm font-bold text-white transition hover:bg-[#287f8e] disabled:cursor-not-allowed disabled:opacity-35 sm:w-auto"
+                                            className="ui-press ui-lift flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#3096A7] px-6 text-sm font-bold text-white transition hover:bg-[#287f8e] disabled:cursor-not-allowed disabled:opacity-35 sm:w-auto"
                                             disabled={!selectedDateKey}
                                             onClick={() => setCurrentStep("time")}
                                             type="button"
@@ -685,7 +685,7 @@ export function BookSlotView({ student }) {
                                             <ChevronLeft className="size-4" /> Back
                                         </button>
                                         <button
-                                            className="flex h-11 items-center justify-center gap-2 rounded-xl bg-[#3096A7] px-6 text-sm font-bold text-white transition hover:bg-[#287f8e] disabled:cursor-not-allowed disabled:opacity-35"
+                                            className="ui-press ui-lift flex h-11 items-center justify-center gap-2 rounded-xl bg-[#3096A7] px-6 text-sm font-bold text-white transition hover:bg-[#287f8e] disabled:cursor-not-allowed disabled:opacity-35"
                                             disabled={!durationFitsDailyLimit || dailyRemainingMinutes < policy.minDurationMinutes || !selectedTimeId}
                                             onClick={() => setCurrentStep("system")}
                                             type="button"
@@ -730,7 +730,7 @@ export function BookSlotView({ student }) {
                                             <ChevronLeft className="size-4" /> Back
                                         </button>
                                         <button
-                                            className="flex h-11 items-center justify-center gap-2 rounded-xl bg-[#3096A7] px-6 text-sm font-bold text-white transition hover:bg-[#287f8e] disabled:cursor-not-allowed disabled:opacity-35"
+                                            className="ui-press ui-lift flex h-11 items-center justify-center gap-2 rounded-xl bg-[#3096A7] px-6 text-sm font-bold text-white transition hover:bg-[#287f8e] disabled:cursor-not-allowed disabled:opacity-35"
                                             disabled={!selectedSystem || !selectedHoldId || selectedSystemIsBlocked || Boolean(holdingSystemId)}
                                             onClick={() => setCurrentStep("booking")}
                                             type="button"
@@ -789,7 +789,7 @@ export function BookSlotView({ student }) {
                                             <ChevronLeft className="size-4" /> Back
                                         </button>
                                         <button
-                                            className="flex h-11 items-center justify-center gap-2 rounded-xl bg-itx-success px-6 text-sm font-bold text-white transition hover:bg-[#128a5c] disabled:cursor-not-allowed disabled:opacity-40"
+                                            className="ui-press ui-lift flex h-11 items-center justify-center gap-2 rounded-xl bg-itx-success px-6 text-sm font-bold text-white shadow-[0_14px_28px_-16px_rgba(23,168,112,0.55)] transition hover:bg-[#128a5c] disabled:cursor-not-allowed disabled:opacity-40"
                                             disabled={!selectedHoldId || selectedSystemIsBlocked}
                                             onClick={confirmBooking}
                                             type="button"

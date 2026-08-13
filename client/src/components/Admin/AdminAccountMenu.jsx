@@ -218,7 +218,7 @@ function ProfileDialog({ onClose, open }) {
                             </p>
                         )}
                         <button
-                            className="h-12 w-full rounded-xl bg-[#3096A7] px-5 text-sm font-bold text-white transition hover:bg-[#287f8e] disabled:cursor-not-allowed disabled:opacity-60"
+                            className="ui-press ui-lift h-12 w-full rounded-xl bg-[#3096A7] px-5 text-sm font-bold text-white transition hover:bg-[#287f8e] disabled:cursor-not-allowed disabled:opacity-60"
                             disabled={detailsSaving}
                             type="submit"
                         >
@@ -255,7 +255,7 @@ function ProfileDialog({ onClose, open }) {
                             </p>
                         )}
                         <button
-                            className="h-12 w-full rounded-xl bg-[#3096A7] px-5 text-sm font-bold text-white transition hover:bg-[#287f8e] disabled:cursor-not-allowed disabled:opacity-60"
+                            className="ui-press ui-lift h-12 w-full rounded-xl bg-[#3096A7] px-5 text-sm font-bold text-white transition hover:bg-[#287f8e] disabled:cursor-not-allowed disabled:opacity-60"
                             disabled={passwordSaving}
                             type="submit"
                         >

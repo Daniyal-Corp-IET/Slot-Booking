@@ -133,7 +133,7 @@ export function AvailabilityView() {
                         </div>
                     </div>
                     <SystemDayTimeline blocks={systemSchedule} closeMinutes={policy.closeMinutes} openMinutes={policy.openMinutes} />
-                    <Link className="group mt-5 flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#3096A7] px-5 text-sm font-bold text-white shadow-[0_12px_24px_-18px_rgba(48,150,167,0.7)] transition-colors hover:bg-[#277f8e] sm:ml-auto sm:w-fit" to={`/portal/book?date=${selectedDateKey}`}>
+                    <Link className="ui-press ui-lift group mt-5 flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#3096A7] px-5 text-sm font-bold text-white shadow-[0_12px_24px_-18px_rgba(48,150,167,0.7)] transition-colors hover:bg-[#277f8e] sm:ml-auto sm:w-fit" to={`/portal/book?date=${selectedDateKey}`}>
                         Book this time <ArrowUpRight className="size-4" />
                     </Link>
                 </article>

@@ -32,7 +32,7 @@ export function AdminReveal({ children, className }) {
 
 export function AdminAction({ children, className, ...props }) {
     return (
-        <button className={cn("ui-press", className)} {...props}>
+        <button className={cn("ui-press ui-lift", className)} {...props}>
             {children}
         </button>
     );
@@ -107,8 +107,8 @@ function AdminShell({ children }) {
             <div className={cn("min-h-screen transition-[margin] duration-300", collapsed ? "xl:ml-20" : "xl:ml-72")}>
                 <Navbar identity={identity} onMenuOpen={() => setMenuOpen(true)} onNotificationsOpen={() => setNotificationsOpen(true)} page={page} />
                 {(operationsWorkspaceOpen || directoryWorkspaceOpen) && (
-                    <div className="border-b border-slate-200/80 bg-white/65 px-4 py-2.5 backdrop-blur-xl sm:px-6 lg:px-8 xl:px-10">
-                        <div className="mx-auto flex max-w-400 items-center">
+                    <div className="bg-white/90 shadow-[0_1px_0_rgba(15,23,42,0.06),0_16px_32px_-30px_rgba(7,56,68,0.22)] backdrop-blur-2xl">
+                        <div className="mx-auto max-w-400 px-4 sm:px-6 lg:px-8 xl:px-10">
                             <SectionTabs tabs={operationsWorkspaceOpen ? OPERATIONS_WORKSPACE_TABS : DIRECTORY_WORKSPACE_TABS} />
                         </div>
                     </div>

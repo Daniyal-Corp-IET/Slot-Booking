@@ -52,10 +52,10 @@ export function ReportsView() {
     return (
         <div className="mx-auto max-w-400 space-y-5">
             <AdminReveal className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                <MetricCard accent="bg-[#3096A7]" icon={Activity} label="Avg. utilisation" note={report.comparison} value={`${report.average}%`} />
-                <MetricCard accent="bg-[#6376b8]" icon={Clock3} label="Lab hours used" note="Current week" value={report.labHours} />
-                <MetricCard accent="bg-[#45a982]" icon={UsersRound} label="Registered students" note="Current directory" value={students.length} />
-                <MetricCard accent="bg-[#e4a541]" icon={Laptop} label="Peak demand" note={report.peakLabel} value={`${report.peak}%`} />
+                <MetricCard accent="bg-[#3096A7]" icon={Activity} label="Avg. utilisation" value={`${report.average}%`} />
+                <MetricCard accent="bg-[#6376b8]" icon={Clock3} label="Lab hours used" value={report.labHours} />
+                <MetricCard accent="bg-[#45a982]" icon={UsersRound} label="Registered students" value={students.length} />
+                <MetricCard accent="bg-[#e4a541]" icon={Laptop} label="Peak demand" value={`${report.peak}%`} />
             </AdminReveal>
             <AdminReveal className="grid items-start gap-5 lg:grid-cols-[minmax(0,1.25fr)_minmax(18rem,0.75fr)]">
                 <article className={cn(surface, "flex flex-col overflow-hidden p-5 text-itx-ink sm:p-6 lg:h-128")}>
